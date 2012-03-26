@@ -10,14 +10,19 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.SwingConstants;
 
-
+/**
+ * window
+ * Dummy window to start the demo
+ * 
+ * @author Zong
+ *
+ */
 public class window {
 
 	private JFrame frame;
 	protected JTextField txtPort;
 	protected Thread proxyThread;
 	private ProxyNetwork proxy;
-	private FilterSystem filter;
 	ConcurrentLinkedQueue<ProxyDatagram> toProxy, toFilter;
 	protected JButton btnListen;
 	protected Thread filterThread;
@@ -54,7 +59,6 @@ public class window {
 		toProxy = new ConcurrentLinkedQueue<ProxyDatagram>();
 		toFilter = new ConcurrentLinkedQueue<ProxyDatagram>();
 		proxy = new ProxyNetwork(toProxy,toFilter);
-		filter = new FilterSystem(toFilter,toProxy);
 		frame = new JFrame();
 		frame.setBounds(100, 100, 321, 78);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -73,6 +77,7 @@ public class window {
 		
 		btnListen = new JButton("Listen");
 		btnListen.addMouseListener(new MouseAdapter() {
+			@SuppressWarnings("deprecation")
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				if (btnListen.getText().equals("Listen")&&!proxy.isRunning()) {

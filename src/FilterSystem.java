@@ -1,8 +1,13 @@
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-
+/**
+ * FilterSystem
+ * A dummy filter system, doesn't do anything at the moment, except extracts the host name, which should really be a network task,
+ * but was just faster in here I thought atleast.
+ * 
+ * @author Zong
+ *
+ */
 public class FilterSystem implements Runnable{
 
 	private boolean running = false;
@@ -10,10 +15,14 @@ public class FilterSystem implements Runnable{
 	private ConcurrentLinkedQueue<ProxyDatagram> outQueue;
 	
 	public FilterSystem(ConcurrentLinkedQueue<ProxyDatagram> incoming, ConcurrentLinkedQueue<ProxyDatagram> outgoing) {
-		inQueue = incoming;
+		this.inQueue = incoming;
 		outQueue = outgoing;
 	}
 	
+	/**
+	 * run
+	 * Main body for filtering system
+	 */
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
@@ -32,12 +41,7 @@ public class FilterSystem implements Runnable{
 			}
 			else {
 				String dataString = null;
-				try {
-					dataString = getString(currentDatagram);
-				} catch (UnsupportedEncodingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				dataString = currentDatagram.toString();
 				((ProxyConnection) currentDatagram.getKey().attachment()).setHostURL(this.getHostURL(dataString));
 				//filter stuff here
 				
@@ -48,6 +52,13 @@ public class FilterSystem implements Runnable{
 		}
 	}
 
+	/**
+	 * getHostURL
+	 * Simple Extracting of host URL, needed for Proxy Network Subsystem
+	 * 
+	 * @param dataString, String representation of the data
+	 * @return a string for the Host URL
+	 */
 	private String getHostURL(String dataString) {
 		String returnString = null;
 		String [] parsed = dataString.split("\r\n");
@@ -58,16 +69,6 @@ public class FilterSystem implements Runnable{
 				i = parsed.length;
 			}
 		}
-		return returnString;
-	}
-
-	private String getString(ProxyDatagram datagram) throws UnsupportedEncodingException {
-		String returnString = "";
-		
-		for (int i =0; i < datagram.getData().size(); i++) {
-			returnString += new String(datagram.getData().get(i), "UTF8");
-		}
-		
 		return returnString;
 	}
 	
