@@ -411,10 +411,10 @@ public class ProxyNetwork implements Runnable {
 			}
 		}
 		
+		System.out.println("Closed: " + key.channel().toString() );
+		
 		// close this key
 		key.channel().close();
 		key.cancel();
-		
-		System.out.println("Closed: " + key.channel().toString() );
 	}
 }
