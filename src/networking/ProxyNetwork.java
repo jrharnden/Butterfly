@@ -1,3 +1,4 @@
+package networking;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -297,7 +298,7 @@ public class ProxyNetwork implements Runnable {
 			this.processingChannels.add(key);
 			this.outQueue.add(datagram);
 			
-			System.out.println("Read something: " + key.channel().toString() );
+			System.out.println("Read: " + key.channel().toString() );
 		}
 	}
 	
@@ -323,7 +324,7 @@ public class ProxyNetwork implements Runnable {
 						hostSocketChannel.configureBlocking(false);
 					    hostSocketChannel.socket().setSoTimeout(DEFAULT_SOCKET_TIMEOUT);
 						
-						System.out.println("Connected to host: " + hostSocketChannel.toString() );
+						System.out.println("Host: " + hostSocketChannel.toString() );
 					} catch (IOException e) {
 						System.err.println("Unabled to connect/un-block host: " + conn.getHostURL());
 					}

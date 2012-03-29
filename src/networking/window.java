@@ -1,3 +1,4 @@
+package networking;
 import java.awt.EventQueue;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;
