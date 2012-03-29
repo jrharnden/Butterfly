@@ -58,7 +58,7 @@ public class ProxyNetwork implements Runnable {
 	}
 	
 	public ProxyNetwork(ConcurrentLinkedQueue<ProxyDatagram> incoming, ConcurrentLinkedQueue<ProxyDatagram> outgoing, String newAddress, int newPort) throws IOException {
-		this.initProxy(incoming,outgoing,DEFAULT_ADDRESS,newPort);
+		this.initProxy(incoming,outgoing,newAddress,newPort);
 	}
 	
 	/**
@@ -233,6 +233,8 @@ public class ProxyNetwork implements Runnable {
 		} //end while(running)
 		try {
 			this.server.socket().close();
+			this.server.close();
+			this.selector.close();
 		} catch (IOException e) {
 			//TODO New error message. Old one was not informative
 			System.err.println("Unable to legally close proxy server: " + e.getMessage());
@@ -243,7 +245,7 @@ public class ProxyNetwork implements Runnable {
 	/*****************************************************************
 	 * Private Methods
 	 *****************************************************************/
-	
+
 	/**
 	 * acceptConnection
 	 * Accepts in connection attempt to the key
@@ -340,6 +342,17 @@ public class ProxyNetwork implements Runnable {
 					    hostSocketChannel.socket().setSoTimeout(DEFAULT_SOCKET_TIMEOUT);
 						
 						System.out.println("Host: " + hostSocketChannel.toString() );
+						
+						SelectionKey hostKey = null;
+						try {
+							hostKey = hostSocketChannel.register(this.selector, SelectionKey.OP_WRITE, new ProxyConnection(filteredData.getKey() , ProxyConnection.INCOMING));
+						} catch (ClosedChannelException e) {
+							System.err.println("Unable to register host key");
+						}
+						conn.setToKey(hostKey);
+						
+						// add the data to hash map, to be written
+						this.writingMap.put((SocketChannel) hostKey.channel(), filteredData.getData());
 					} catch (IOException e) {
 						//TODO New error message. Old one was not informative
 						System.err.println("Unabled to connect/un-block host: " + e.getMessage());
@@ -348,14 +361,15 @@ public class ProxyNetwork implements Runnable {
 					SelectionKey hostKey = null;
 					try {
 						hostKey = hostSocketChannel.register(this.selector, SelectionKey.OP_WRITE, new ProxyConnection(filteredData.getKey() , ProxyConnection.INCOMING));
-					} catch (ClosedChannelException e) {
+					} catch (ClosedChannelException e1) {
 						//TODO New error message. Old one was not informative
-						System.err.println("Unable to register host key: " + e.getMessage());
+						System.err.println("Unable to register host key: " + e1.getMessage());
 					}
 					conn.setToKey(hostKey);
 					
 					// add the data to hash map, to be written
 					this.writingMap.put((SocketChannel) hostKey.channel(), filteredData.getData());
+
 				}
 				// else we change the toKey to be ready to write
 				else {
@@ -387,20 +401,22 @@ public class ProxyNetwork implements Runnable {
 	 */
 	private void writeSocketChannel(SelectionKey key) throws IOException {
 		SocketChannel socketChannel = (SocketChannel) key.channel();
-		ArrayList<byte[]> data = this.writingMap.get(socketChannel);
+		ArrayList<byte[]> data = this.writingMap.remove(socketChannel);
 		
-		// for all of the data in list of data, we write it out
-		for (int i = 0; i < data.size(); i++) {
-			this.buffer.clear();
-			this.buffer.put(data.get(i));
-			this.buffer.flip();
-			socketChannel.write(this.buffer);
+		if (data != null) {
+			// for all of the data in list of data, we write it out
+			for (int i = 0; i < data.size(); i++) {
+				this.buffer.clear();
+				this.buffer.put(data.get(i));
+				this.buffer.flip();
+				socketChannel.write(this.buffer);
+			} 
 		}
 		
 		// after finishing reading it, we change the key back to reading
 		key.interestOps(SelectionKey.OP_READ);
 		
-		System.out.println("Wrote something: " + key.channel().toString() );
+		System.out.println("Wrote: " + key.channel().toString() );
 		
 		// if this key was prompted to be canceled we cancel it
 		if (this.canceledKeys.contains(key)) {
@@ -421,7 +437,7 @@ public class ProxyNetwork implements Runnable {
 		
 		// We check if the other side of the connection needs to be written to of if it even exist,
 		// if so we add it the list to close, or simply close it
-		if (((other = conn.getToKey()) != null)&&(this.writingMap.containsKey(other.channel()))) {
+		if ((other = conn.getToKey()) != null) {
 			if (this.processingChannels.contains(other)||this.writingMap.containsKey(other.channel())) {
 				this.canceledKeys.add(other);
 			}
