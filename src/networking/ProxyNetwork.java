@@ -144,15 +144,20 @@ public class ProxyNetwork implements Runnable {
 	 */
 	@Override
 	public void run() {
-		// turn on running
 		this.running = true;
 		
 	    // Bind the server socket to the specified address and port
 	    InetSocketAddress address = new InetSocketAddress(this.serverAddress, this.port);
+	    
 	    try {
 			this.server.socket().bind(address);
 		} catch (IOException e) {
-			System.err.println("Unabled to connect to " + address.getHostName() + " - "+address.getAddress());
+			//TODO New error message. Old one was not informative
+			System.err.println("Could not bind server socket: " + e.getMessage());
+			//TODO This is a fatal error... I had it fail and then acceptConnection fails because socket is not bound when trying accept
+			//Address already in use was the exception. This situation needs to be handled gracefully
+			//Can reproduce with stop/listen in app window
+			//See http://hea-www.harvard.edu/~fine/Tech/addrinuse.html
 		}
 
 	    // Register the server socket channel, indicating an interest in 
@@ -160,7 +165,8 @@ public class ProxyNetwork implements Runnable {
 	    try {
 			this.server.register(this.selector, SelectionKey.OP_ACCEPT);
 		} catch (ClosedChannelException e) {
-			System.err.println("Unabled to register server to selector");
+			//TODO New error message. Old one was not informative
+			System.err.println("Unabled to register server to selector: " + e.getMessage());
 		}
 	    
 	    // Main Event Loop for Network
@@ -168,15 +174,17 @@ public class ProxyNetwork implements Runnable {
 			// pull any data sitting in queue
 			try {
 				this.pullDataFromInQueue();
-			} catch (IOException e1) {
-				System.err.println("Unable to pull data from incoming queue");
+			} catch (IOException e) {
+				//TODO New error message. Old one was not informative
+				System.err.println("Unable to pull data from incoming queue: " + e.getMessage());
 			}
 			
 			// Wait for an event one of the registered channels
 	        try {
 				this.selector.select();
 			} catch (IOException e) {
-				System.err.println("Unabled to select anything from selector");
+				//TODO New error message. Old one was not informative
+				System.err.println("Unabled to select anything from selector: " + e.getMessage());
 			}
 
 	        // Iterate over the set of keys for which events are available
@@ -196,7 +204,8 @@ public class ProxyNetwork implements Runnable {
 	        		try {
 	        			this.acceptConnection(currentKey);
 	        		} catch (IOException e) {
-	        			System.err.println("Unable to accept a connection");
+	    				//TODO New error message. Old one was not informative
+	    				System.err.println("Unable to accept a connection: " + e.getMessage());
 	        		}
 	        	}
 	        	else if (currentKey.isReadable()) {
@@ -204,7 +213,10 @@ public class ProxyNetwork implements Runnable {
 	        		try {
 	        			this.readChannel(currentKey);
 	        		} catch (IOException e) {
-	        			System.err.println("Unabled to read connection");
+	    				//TODO New error message. Old one was not informative
+	    				System.err.println("Unable to read connection: " + e.getMessage());
+	    				//TODO I've gotten a "Connection reset by peer" error... probably needs to be handled
+	    				//FYI it was directly after a close message
 	        		}
 	        	}
 	        	else if (currentKey.isWritable()) {
@@ -212,7 +224,9 @@ public class ProxyNetwork implements Runnable {
 	        		try {
 	        			this.writeSocketChannel(currentKey);
 	        		} catch (IOException e) {
-	        			System.err.println("Unable to write to connection");
+	    				//TODO New error message. Old one was not informative
+	    				System.err.println("Unable to write to connection: " + e.getMessage());
+	    				//TODO This went into an infinite loop on me before I altered error message. Haven't reproduced.
 	        		}
 	        	}
 	        } //end while(selectedKeys.hasNext())
@@ -220,7 +234,8 @@ public class ProxyNetwork implements Runnable {
 		try {
 			this.server.socket().close();
 		} catch (IOException e) {
-			System.err.println("Unable to legally close proxy server");
+			//TODO New error message. Old one was not informative
+			System.err.println("Unable to legally close proxy server: " + e.getMessage());
 		}
 		
 	}
@@ -326,14 +341,16 @@ public class ProxyNetwork implements Runnable {
 						
 						System.out.println("Host: " + hostSocketChannel.toString() );
 					} catch (IOException e) {
-						System.err.println("Unabled to connect/un-block host: " + conn.getHostURL());
+						//TODO New error message. Old one was not informative
+						System.err.println("Unabled to connect/un-block host: " + e.getMessage());
 					}
 					
 					SelectionKey hostKey = null;
 					try {
 						hostKey = hostSocketChannel.register(this.selector, SelectionKey.OP_WRITE, new ProxyConnection(filteredData.getKey() , ProxyConnection.INCOMING));
 					} catch (ClosedChannelException e) {
-						System.err.println("Unable to register host key");
+						//TODO New error message. Old one was not informative
+						System.err.println("Unable to register host key: " + e.getMessage());
 					}
 					conn.setToKey(hostKey);
 					
@@ -342,9 +359,12 @@ public class ProxyNetwork implements Runnable {
 				}
 				// else we change the toKey to be ready to write
 				else {
-					// change key to writing
-					conn.getToKey().interestOps(SelectionKey.OP_WRITE);
-					
+					//TODO: Program is crashing here on cancelled keys. I added the if statement to bypass
+					if(conn.getToKey().isValid()){
+						// change key to writing
+						conn.getToKey().interestOps(SelectionKey.OP_WRITE);
+					}
+										
 					// add the data to hash map, to be written
 					this.writingMap.put((SocketChannel) conn.getToKey().channel(), filteredData.getData());
 				}

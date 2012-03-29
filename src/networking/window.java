@@ -10,7 +10,7 @@ import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.SwingConstants;
-
+//TODO A list of open connections in the window would be SUPER helpful
 /**
  * window
  * Dummy window to start the demo
