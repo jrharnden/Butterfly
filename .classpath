@@ -2,19 +2,19 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Programming/eclipse/plugins/org.eclipse.osgi_3.6.1.R36x_v20100806.jar" sourcepath="C:/Programming/eclipse/plugins/org.eclipse.osgi_3.6.1.R36x_v20100806.jar"/>
-	<classpathentry kind="lib" path="C:/Programming/eclipse/plugins/org.eclipse.core.commands_3.6.0.I20100512-1500.jar" sourcepath="C:/Programming/eclipse/plugins/org.eclipse.core.commands_3.6.0.I20100512-1500.jar"/>
-	<classpathentry kind="lib" path="C:/Programming/eclipse/plugins/org.eclipse.equinox.common_3.6.0.v20100503.jar" sourcepath="C:/Programming/eclipse/plugins/org.eclipse.equinox.common_3.6.0.v20100503.jar"/>
-	<classpathentry kind="lib" path="C:/Programming/eclipse/plugins/org.eclipse.equinox.registry_3.5.0.v20100503.jar" sourcepath="C:/Programming/eclipse/plugins/org.eclipse.equinox.registry_3.5.0.v20100503.jar"/>
-	<classpathentry kind="lib" path="C:/Programming/eclipse/plugins/org.eclipse.core.runtime_3.6.0.v20100505.jar" sourcepath="C:/Programming/eclipse/plugins/org.eclipse.core.runtime_3.6.0.v20100505.jar"/>
-	<classpathentry kind="lib" path="C:/Programming/eclipse/plugins/org.eclipse.text_3.5.0.v20100601-1300.jar" sourcepath="C:/Programming/eclipse/plugins/org.eclipse.text_3.5.0.v20100601-1300.jar"/>
-	<classpathentry kind="lib" path="C:/Programming/eclipse/plugins/org.eclipse.swt.win32.win32.x86_64_3.6.1.v3655c.jar" sourcepath="C:/Programming/eclipse/plugins/org.eclipse.swt.win32.win32.x86_64_3.6.1.v3655c.jar"/>
-	<classpathentry kind="lib" path="C:/Programming/eclipse/plugins/org.eclipse.jface_3.6.1.M20100825-0800.jar" sourcepath="C:/Programming/eclipse/plugins/org.eclipse.jface_3.6.1.M20100825-0800.jar"/>
-	<classpathentry kind="lib" path="C:/Programming/eclipse/plugins/org.eclipse.jface.text_3.6.1.r361_v20100825-0800.jar" sourcepath="C:/Programming/eclipse/plugins/org.eclipse.jface.text_3.6.1.r361_v20100825-0800.jar"/>
-	<classpathentry kind="lib" path="C:/Programming/eclipse/plugins/org.eclipse.ui.workbench_3.6.1.M20100826-1330.jar" sourcepath="C:/Programming/eclipse/plugins/org.eclipse.ui.workbench_3.6.1.M20100826-1330.jar"/>
-	<classpathentry kind="lib" path="C:/Programming/eclipse/plugins/com.ibm.icu_4.2.1.v20100412.jar" sourcepath="C:/Programming/eclipse/plugins/com.ibm.icu_4.2.1.v20100412.jar"/>
-	<classpathentry kind="lib" path="C:/Programming/eclipse/plugins/org.eclipse.ui.forms_3.5.2.r36_v20100702.jar" sourcepath="C:/Programming/eclipse/plugins/org.eclipse.ui.forms_3.5.2.r36_v20100702.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Pylo/Desktop/eclipse/Butterfly/swing2swt.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Pylo/Desktop/eclipse/Butterfly/swt-grouplayout.jar"/>
+	<classpathentry kind="lib" path="lib/com.ibm.icu_4.2.1.v20100412.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.core.commands_3.6.0.I20100512-1500.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.core.runtime_3.6.0.v20100505.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.equinox.common_3.6.0.v20100503.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.equinox.registry_3.5.0.v20100503.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.jface_3.6.1.M20100825-0800.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.jface.text_3.6.1.r361_v20100825-0800.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.osgi_3.6.1.R36x_v20100806.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.swt.win32.win32.x86_64_3.6.1.v3655c.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.text_3.5.0.v20100601-1300.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.ui.forms_3.5.2.r36_v20100702.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.ui.workbench_3.6.1.M20100826-1330.jar"/>
+	<classpathentry kind="lib" path="lib/swing2swt.jar"/>
+	<classpathentry kind="lib" path="lib/swt-grouplayout.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
