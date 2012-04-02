@@ -18,7 +18,7 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.widgets.Button;
 
 
-public class LoginWindow {
+public class LoginShell {
 	private Text txtUsername;
 	private Text txtPassword;
 	/**
@@ -26,7 +26,7 @@ public class LoginWindow {
 	 * @param args
 	 */
 
-	public LoginWindow() {
+	public LoginShell() {
 	}
 		
 

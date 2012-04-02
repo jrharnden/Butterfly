@@ -8,7 +8,6 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.custom.SashForm;
-import swing2swt.layout.BoxLayout;
 import java.awt.Frame;
 import org.eclipse.swt.awt.SWT_AWT;
 import java.awt.Panel;
@@ -18,15 +17,17 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.GridData;
-import java.awt.CardLayout;
 import javax.swing.JTextArea;
 import org.eclipse.swt.widgets.List;
-import org.eclipse.jface.viewers.ListViewer;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.jface.viewers.TreeViewer;
 import swing2swt.layout.FlowLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.ListViewer;
 
 public class ApplicationWindow {
 
@@ -109,16 +110,23 @@ public class ApplicationWindow {
 		
 		Composite statusFilterComposite = new Composite(statusSashForm, SWT.NONE);
 		statusFilterComposite.setLayout(new GridLayout(2, false));
-
-		
-		Composite composite_1 = new Composite(statusFilterComposite, SWT.NONE);
-		GridData gd_composite_1 = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);
-		gd_composite_1.heightHint = 460;
-		gd_composite_1.widthHint = 335;
-		composite_1.setLayoutData(gd_composite_1);
-		composite_1.setBounds(0, 0, 64, 64);
-		formToolkit.adapt(composite_1);
-		formToolkit.paintBordersFor(composite_1);
+		new Label(statusFilterComposite, SWT.NONE);
+				new Label(statusFilterComposite, SWT.NONE);
+						new Label(statusFilterComposite, SWT.NONE);
+				
+						
+						Composite statusActiveComposite = new Composite(statusFilterComposite, SWT.NONE);
+						statusActiveComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
+						GridData gd_statusActiveComposite = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);
+						gd_statusActiveComposite.heightHint = 460;
+						gd_statusActiveComposite.widthHint = 335;
+						statusActiveComposite.setLayoutData(gd_statusActiveComposite);
+						statusActiveComposite.setBounds(0, 0, 64, 64);
+						formToolkit.adapt(statusActiveComposite);
+						formToolkit.paintBordersFor(statusActiveComposite);
+						
+						ListViewer statusActiveListViewer = new ListViewer(statusActiveComposite, SWT.BORDER | SWT.V_SCROLL);
+						List statusActiveList = statusActiveListViewer.getList();
 		statusSashForm.setWeights(new int[] {1, 1});
 		
 		CTabItem tbtmNewItem = new CTabItem(tabFolder, SWT.NONE);
@@ -127,184 +135,175 @@ public class ApplicationWindow {
 		Composite filterComposite = new Composite(tabFolder, SWT.NONE);
 		tbtmNewItem.setControl(filterComposite);
 		formToolkit.paintBordersFor(filterComposite);
-		filterComposite.setLayout(new swing2swt.layout.BorderLayout(0, 0));
+		filterComposite.setLayout(new GridLayout(1, false));
 		
-		Composite filterButtonComposite_SOUTH = new Composite(filterComposite, SWT.NONE);
-		filterButtonComposite_SOUTH.setLayoutData(swing2swt.layout.BorderLayout.SOUTH);
-		formToolkit.adapt(filterButtonComposite_SOUTH);
-		formToolkit.paintBordersFor(filterButtonComposite_SOUTH);
-		filterButtonComposite_SOUTH.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		Composite filterComposite_1 = new Composite(filterComposite, SWT.NONE);
+		GridData gd_filterComposite_1 = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
+		gd_filterComposite_1.widthHint = 768;
+		gd_filterComposite_1.heightHint = 474;
+		filterComposite_1.setLayoutData(gd_filterComposite_1);
+		formToolkit.adapt(filterComposite_1);
+		formToolkit.paintBordersFor(filterComposite_1);
+		filterComposite_1.setLayout(new GridLayout(3, false));
 		
-		Button btnCreateFilter = new Button(filterButtonComposite_SOUTH, SWT.NONE);
-		formToolkit.adapt(btnCreateFilter, true, true);
-		btnCreateFilter.setText("Create");
+		Composite filterActiveComposite = new Composite(filterComposite_1, SWT.NONE);
+		GridData gd_filterActiveComposite = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
+		gd_filterActiveComposite.heightHint = 465;
+		gd_filterActiveComposite.widthHint = 333;
 		
-		Button btnEditFilter = new Button(filterButtonComposite_SOUTH, SWT.NONE);
-		formToolkit.adapt(btnEditFilter, true, true);
-		btnEditFilter.setText("Edit");
+		filterActiveComposite.setLayoutData(gd_filterActiveComposite);
+		formToolkit.adapt(filterActiveComposite);
+		formToolkit.paintBordersFor(filterActiveComposite);
+		filterActiveComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		Button btnDeleteFilter = new Button(filterButtonComposite_SOUTH, SWT.NONE);
-		formToolkit.adapt(btnDeleteFilter, true, true);
-		btnDeleteFilter.setText("Delete");
+		ListViewer filterActiveListViewer = new ListViewer(filterActiveComposite, SWT.BORDER | SWT.V_SCROLL);
+		List filterActiveList = filterActiveListViewer.getList();
 		
-		Button btnImport = new Button(filterButtonComposite_SOUTH, SWT.NONE);
-		formToolkit.adapt(btnImport, true, true);
-		btnImport.setText("Import");
+		Composite filterBtnComposite = new Composite(filterComposite_1, SWT.NONE);
+		filterBtnComposite.setLayout(new FillLayout(SWT.VERTICAL));
+		GridData gd_filterBtnComposite = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
+		gd_filterBtnComposite.heightHint = 465;
+		gd_filterBtnComposite.widthHint = 85;
+		filterBtnComposite.setLayoutData(gd_filterBtnComposite);
+		formToolkit.adapt(filterBtnComposite);
+		formToolkit.paintBordersFor(filterBtnComposite);
 		
-		Button btnExport = new Button(filterButtonComposite_SOUTH, SWT.NONE);
-		formToolkit.adapt(btnExport, true, true);
-		btnExport.setText("Export");
+		Composite filterBtnComposite_NORTH = new Composite(filterBtnComposite, SWT.NONE);
+		formToolkit.adapt(filterBtnComposite_NORTH);
+		formToolkit.paintBordersFor(filterBtnComposite_NORTH);
 		
-		Composite filterActiveComposite_WEST = new Composite(filterComposite, SWT.NONE);
-		filterActiveComposite_WEST.setLayoutData(swing2swt.layout.BorderLayout.WEST);
-		formToolkit.adapt(filterActiveComposite_WEST);
-		formToolkit.paintBordersFor(filterActiveComposite_WEST);
-		filterActiveComposite_WEST.setLayout(new GridLayout(1, false));
+		Composite filterBtnComposite_CENTER = new Composite(filterBtnComposite, SWT.NONE);
+		formToolkit.adapt(filterBtnComposite_CENTER);
+		formToolkit.paintBordersFor(filterBtnComposite_CENTER);
+		filterBtnComposite_CENTER.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		List filterActiveList = new List(filterActiveComposite_WEST, SWT.BORDER);
-		GridData gd_filterActiveList = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-		gd_filterActiveList.widthHint = 310;
-		gd_filterActiveList.heightHint = 460;
-		filterActiveList.setLayoutData(gd_filterActiveList);
-		formToolkit.adapt(filterActiveList, true, true);
+		Button btnAdd = new Button(filterBtnComposite_CENTER, SWT.NONE);
+		formToolkit.adapt(btnAdd, true, true);
+		btnAdd.setText("ADD");
 		
-		Label lblActiveFilters = new Label(filterActiveComposite_WEST, SWT.NONE);
-		lblActiveFilters.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
-		formToolkit.adapt(lblActiveFilters, true, true);
-		lblActiveFilters.setText("Active Filters");
+		Button btnRemove = new Button(filterBtnComposite_CENTER, SWT.NONE);
+		formToolkit.adapt(btnRemove, true, true);
+		btnRemove.setText("REMOVE");
 		
-		Composite filterInactiveComposite_EAST = new Composite(filterComposite, SWT.NONE);
-		filterInactiveComposite_EAST.setLayoutData(swing2swt.layout.BorderLayout.EAST);
-		formToolkit.adapt(filterInactiveComposite_EAST);
-		formToolkit.paintBordersFor(filterInactiveComposite_EAST);
-		filterInactiveComposite_EAST.setLayout(new GridLayout(1, false));
+		Composite filterBtnComposite_SOUTH = new Composite(filterBtnComposite, SWT.NONE);
+		formToolkit.adapt(filterBtnComposite_SOUTH);
+		formToolkit.paintBordersFor(filterBtnComposite_SOUTH);
 		
-		List filterInactiveList = new List(filterInactiveComposite_EAST, SWT.BORDER);
-		GridData gd_filterInactiveList = new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1);
-		gd_filterInactiveList.widthHint = 310;
-		gd_filterInactiveList.heightHint = 460;
-		filterInactiveList.setLayoutData(gd_filterInactiveList);
-		formToolkit.adapt(filterInactiveList, true, true);
+		Composite filterInactiveComposite = new Composite(filterComposite_1, SWT.NONE);
+		GridData gd_filterInactiveComposite = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
+		gd_filterInactiveComposite.heightHint = 465;
+		gd_filterInactiveComposite.widthHint = 333;
+		filterInactiveComposite.setLayoutData(gd_filterInactiveComposite);
+		formToolkit.adapt(filterInactiveComposite);
+		formToolkit.paintBordersFor(filterInactiveComposite);
+		filterInactiveComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		Label lblNewLabel = new Label(filterInactiveComposite_EAST, SWT.NONE);
-		lblNewLabel.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
-		formToolkit.adapt(lblNewLabel, true, true);
-		lblNewLabel.setText("Inactive Filters");
+		ListViewer filterInactiveListViewer = new ListViewer(filterInactiveComposite, SWT.BORDER | SWT.V_SCROLL);
+		List filterInactiveList = filterInactiveListViewer.getList();
+					
+		Composite filterBtnBarComposite = new Composite(filterComposite, SWT.NONE);
+		filterBtnBarComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
+		GridData gd_filterBtnBarComposite = new GridData(SWT.LEFT, SWT.BOTTOM, true, true, 1, 1);
+		gd_filterBtnBarComposite.widthHint = 771;
+		gd_filterBtnBarComposite.heightHint = 28;
+		filterBtnBarComposite.setLayoutData(gd_filterBtnBarComposite);
+		formToolkit.adapt(filterBtnBarComposite);
+		formToolkit.paintBordersFor(filterBtnBarComposite);
 		
-		Composite filterAddRemoveComposite_CENTER = new Composite(filterComposite, SWT.NONE);
-		filterAddRemoveComposite_CENTER.setLayoutData(swing2swt.layout.BorderLayout.CENTER);
-		formToolkit.adapt(filterAddRemoveComposite_CENTER);
-		formToolkit.paintBordersFor(filterAddRemoveComposite_CENTER);
-		filterAddRemoveComposite_CENTER.setLayout(new GridLayout(2, false));
+		Button btnCreate = new Button(filterBtnBarComposite, SWT.NONE);
+		formToolkit.adapt(btnCreate, true, true);
+		btnCreate.setText("Create");
 		
+		Button btnEdit = new Button(filterBtnBarComposite, SWT.NONE);
+		formToolkit.adapt(btnEdit, true, true);
+		btnEdit.setText("Edit");
 		
-		Button btnAddToActive = new Button(filterAddRemoveComposite_CENTER, SWT.CENTER);
-		GridData gd_btnAddToActive = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);
-		gd_btnAddToActive.widthHint = 59;
-		btnAddToActive.setLayoutData(gd_btnAddToActive);
-		formToolkit.adapt(btnAddToActive, true, true);
-		btnAddToActive.setText("Add");
-		new Label(filterAddRemoveComposite_CENTER, SWT.NONE);
-		new Label(filterAddRemoveComposite_CENTER, SWT.NONE);
-		new Label(filterAddRemoveComposite_CENTER, SWT.NONE);
-		new Label(filterAddRemoveComposite_CENTER, SWT.NONE);
-		new Label(filterAddRemoveComposite_CENTER, SWT.NONE);
-		
-		Button btnRemoveFromActive = new Button(filterAddRemoveComposite_CENTER, SWT.NONE);
-		GridData gd_btnRemoveFromActive = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-		gd_btnRemoveFromActive.widthHint = 62;
-		btnRemoveFromActive.setLayoutData(gd_btnRemoveFromActive);
-		formToolkit.adapt(btnRemoveFromActive, true, true);
-		btnRemoveFromActive.setText("Remove");
-		
-		CTabItem tbtmSettings = new CTabItem(tabFolder, SWT.NONE);
-		tbtmSettings.setText("Settings");
-		
-		Composite settingsComposite = new Composite(tabFolder, SWT.NONE);
-		tbtmSettings.setControl(settingsComposite);
-		formToolkit.paintBordersFor(settingsComposite);
+		Button btnDelete = new Button(filterBtnBarComposite, SWT.NONE);
+		formToolkit.adapt(btnDelete, true, true);
+		btnDelete.setText("Delete");
 		
 		CTabItem tbtmAdministrator = new CTabItem(tabFolder, SWT.NONE);
 		tbtmAdministrator.setText("Administrator");
 		
-		Composite administratorComposite = new Composite(tabFolder, SWT.NONE);
-		tbtmAdministrator.setControl(administratorComposite);
-		administratorComposite.setLayout(new GridLayout(1, false));
+		Composite admComposite = new Composite(tabFolder, SWT.NONE);
+		tbtmAdministrator.setControl(admComposite);
+		formToolkit.paintBordersFor(admComposite);
+		admComposite.setLayout(new GridLayout(1, false));
 		
-		Composite admUserAccountComposite = new Composite(administratorComposite, SWT.NONE);
-		admUserAccountComposite.setLayout(new GridLayout(13, false));
-		GridData gd_admUserAccountComposite = new GridData(SWT.LEFT, SWT.CENTER, true, true, 1, 21);
-		gd_admUserAccountComposite.heightHint = 486;
-		gd_admUserAccountComposite.widthHint = 767;
-		admUserAccountComposite.setLayoutData(gd_admUserAccountComposite);
-		formToolkit.adapt(admUserAccountComposite);
-		formToolkit.paintBordersFor(admUserAccountComposite);
+		Composite admTableTreeComposite = new Composite(admComposite, SWT.NONE);
+		GridData gd_admTableTreeComposite = new GridData(SWT.LEFT, SWT.CENTER, true, true, 1, 1);
+		gd_admTableTreeComposite.widthHint = 767;
+		gd_admTableTreeComposite.heightHint = 477;
+		admTableTreeComposite.setLayoutData(gd_admTableTreeComposite);
+		formToolkit.adapt(admTableTreeComposite);
+		formToolkit.paintBordersFor(admTableTreeComposite);
+		admTableTreeComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		Composite composite = new Composite(admUserAccountComposite, SWT.NONE);
-		composite.setLayout(new GridLayout(2, false));
-		GridData gd_composite = new GridData(SWT.LEFT, SWT.TOP, true, true, 11, 1);
-		gd_composite.heightHint = 417;
-		gd_composite.widthHint = 313;
-		composite.setLayoutData(gd_composite);
-		formToolkit.adapt(composite);
-		formToolkit.paintBordersFor(composite);
+		TreeViewer admTableTreeViewer = new TreeViewer(admTableTreeComposite, SWT.BORDER);
+		Tree admTableTree = admTableTreeViewer.getTree();
+		formToolkit.paintBordersFor(admTableTree);
 		
-		List list = new List(composite, SWT.BORDER);
-		GridData gd_list = new GridData(SWT.LEFT, SWT.TOP, true, true, 2, 1);
-		gd_list.widthHint = 305;
-		gd_list.heightHint = 373;
-		list.setLayoutData(gd_list);
-		formToolkit.adapt(list, true, true);
+		Composite admBtnBarComposite = formToolkit.createComposite(admComposite, SWT.NONE);
+		GridData gd_admBtnBarComposite = new GridData(SWT.LEFT, SWT.TOP, true, false, 1, 1);
+		gd_admBtnBarComposite.widthHint = 769;
+		gd_admBtnBarComposite.heightHint = 28;
+		admBtnBarComposite.setLayoutData(gd_admBtnBarComposite);
+		formToolkit.paintBordersFor(admBtnBarComposite);
+		admBtnBarComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		CLabel lblUserGroupsAnd = new CLabel(composite, SWT.NONE);
-		lblUserGroupsAnd.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 2, 1));
-		formToolkit.adapt(lblUserGroupsAnd);
-		formToolkit.paintBordersFor(lblUserGroupsAnd);
-		lblUserGroupsAnd.setText("User Groups and Accounts");
+		Button admBtnCreate = new Button(admBtnBarComposite, SWT.NONE);
+		formToolkit.adapt(admBtnCreate, true, true);
+		admBtnCreate.setText("Create");
 		
-		Composite composite_2 = new Composite(admUserAccountComposite, SWT.NONE);
-		GridData gd_composite_2 = new GridData(SWT.LEFT, SWT.TOP, false, true, 1, 1);
-		gd_composite_2.heightHint = 420;
-		gd_composite_2.widthHint = 96;
-		composite_2.setLayoutData(gd_composite_2);
-		formToolkit.adapt(composite_2);
-		formToolkit.paintBordersFor(composite_2);
+		Button admBtnEdit = new Button(admBtnBarComposite, SWT.NONE);
+		formToolkit.adapt(admBtnEdit, true, true);
+		admBtnEdit.setText("Edit");
 		
-		Button admEditBtn = new Button(composite_2, SWT.NONE);
-		admEditBtn.setBounds(10, 29, 75, 25);
-		formToolkit.adapt(admEditBtn, true, true);
-		admEditBtn.setText("Edit");
+		Button admBtnDelete = new Button(admBtnBarComposite, SWT.NONE);
+		formToolkit.adapt(admBtnDelete, true, true);
+		admBtnDelete.setText("Delete");
 		
-		Composite composite_3 = new Composite(admUserAccountComposite, SWT.NONE);
-		composite_3.setLayout(new GridLayout(1, false));
-		GridData gd_composite_3 = new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1);
-		gd_composite_3.heightHint = 416;
-		gd_composite_3.widthHint = 338;
-		composite_3.setLayoutData(gd_composite_3);
-		formToolkit.adapt(composite_3);
-		formToolkit.paintBordersFor(composite_3);
+		Menu menu = new Menu(shlButterfly, SWT.BAR);
+		shlButterfly.setMenuBar(menu);
 		
-		ListViewer listViewer = new ListViewer(composite_3, SWT.BORDER | SWT.V_SCROLL);
-		List list_1 = listViewer.getList();
-		GridData gd_list_1 = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
-		gd_list_1.widthHint = 317;
-		gd_list_1.heightHint = 376;
-		list_1.setLayoutData(gd_list_1);
+		MenuItem mntmMain = new MenuItem(menu, SWT.CASCADE);
+		mntmMain.setText("Main");
 		
-		CLabel lblUserAccountAnd = new CLabel(composite_3, SWT.NONE);
-		lblUserAccountAnd.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
-		formToolkit.adapt(lblUserAccountAnd);
-		formToolkit.paintBordersFor(lblUserAccountAnd);
-		lblUserAccountAnd.setText("User Account and Group Settings");
+		Menu menu_main = new Menu(mntmMain);
+		mntmMain.setMenu(menu_main);
 		
-		Composite admSettingsComposite = new Composite(administratorComposite, SWT.NONE);
-		GridData gd_admSettingsComposite = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-		gd_admSettingsComposite.heightHint = 96;
-		gd_admSettingsComposite.widthHint = 768;
-		admSettingsComposite.setLayoutData(gd_admSettingsComposite);
-		admSettingsComposite.setBounds(0, 0, 64, 64);
-		formToolkit.adapt(admSettingsComposite);
-		formToolkit.paintBordersFor(admSettingsComposite);
+		MenuItem mntmImport = new MenuItem(menu_main, SWT.NONE);
+		mntmImport.setText("Import");
+		
+		MenuItem mntmExport = new MenuItem(menu_main, SWT.NONE);
+		mntmExport.setText("Export");
+		
+		MenuItem mntmNewItem = new MenuItem(menu_main, SWT.NONE);
+		mntmNewItem.setText("Logout");
+		
+		MenuItem mntmSettings = new MenuItem(menu, SWT.CASCADE);
+		mntmSettings.setText("Settings");
+		
+		Menu menu_settings = new Menu(mntmSettings);
+		mntmSettings.setMenu(menu_settings);
+		
+		MenuItem mntmChangePassword = new MenuItem(menu_settings, SWT.NONE);
+		mntmChangePassword.setText("Change Password");
+		
+		MenuItem mntmHelp = new MenuItem(menu, SWT.CASCADE);
+		mntmHelp.setText("Help");
+		
+		Menu menu_1 = new Menu(mntmHelp);
+		mntmHelp.setMenu(menu_1);
+		
+		MenuItem mntmAbout = new MenuItem(menu_1, SWT.NONE);
+		mntmAbout.setText("About");
+		
+		MenuItem mntmBrowserSetup = new MenuItem(menu_1, SWT.NONE);
+		mntmBrowserSetup.setText("Browser Setup");
+		
+		MenuItem mntmFilterExample = new MenuItem(menu_1, SWT.NONE);
+		mntmFilterExample.setText("Filter Example");
 
 	}
 }

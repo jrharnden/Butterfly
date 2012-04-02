@@ -1,4 +1,4 @@
-import gui.view.LoginWindow;
+import gui.view.LoginShell;
 
 
 public class Backbone {
@@ -8,7 +8,7 @@ public class Backbone {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-			LoginWindow lw = new LoginWindow();
+			LoginShell lw = new LoginShell();
 			lw.open();
 	}
 
