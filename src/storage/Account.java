@@ -31,6 +31,9 @@ public class Account implements Serializable{
 	public void changeGroup(String newGroup){
 		group = newGroup;
 	}
+	public void addFilter(Filter f){
+		filters.addFilter(f);
+	}
 	public void setPermissions(boolean[] permission){
 		for(int i = 0; i < permission.length;++i){
 			permissions[i] = permission[i] && permissions[i];

@@ -1,4 +1,10 @@
 package storage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -13,8 +19,8 @@ public class Accounts implements Serializable {
 	public void addAccount(Account a){
 		accounts.add(a);
 	}
-	public void removeAccount(Account a){
-		accounts.remove(a);
+	public boolean removeAccount(Account a){
+		return accounts.remove(a);
 	}
 	public Account getAccount(Account a){
 		try{
@@ -32,7 +38,14 @@ public class Accounts implements Serializable {
 		}
 		return null;
 	}
-	public String getHash(String password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+	/**
+	 * Hashes a String password
+	 * @param password text password to be hashed
+	 * @return Hex String of hashed password
+	 * @throws NoSuchAlgorithmException
+	 * @throws UnsupportedEncodingException
+	 */
+	public String hashPass(String password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
 	       MessageDigest digest = MessageDigest.getInstance("SHA-512");
 	       digest.update(password.getBytes());
 	       byte[] hash = digest.digest();
@@ -44,6 +57,66 @@ public class Accounts implements Serializable {
 	    	}
 	    	return hexString.toString();
 	 }
+	public boolean saveAccounts(Accounts a){
+		ObjectOutputStream objOut = null;
+		FileOutputStream fileOut = null;
+		File f = null;
+		try {
+			fileOut = new FileOutputStream("./data.dat");
+			objOut = new ObjectOutputStream(fileOut);
+			
+			objOut.writeObject(a);
+			objOut.close();
+			f = new File("./data.dat");
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+	}
+	public Accounts loadAccounts(){
+		ObjectInputStream objIn = null;
+		FileInputStream fileIn = null;
+		try {
+			fileIn = new FileInputStream("./data.dat");
+			objIn = new ObjectInputStream(fileIn);
+			
+			Accounts a;
+			try {
+				a = (Accounts) objIn.readObject();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+				return null;
+			}
+			objIn.close();
+			return a;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	/**
+	 * Exports filters to a text file
+	 * @param a Account for which the filters are to be exported from 
+	 * @return true if successful
+	 */
+	public boolean exportFilters(Account a){
+		return false;
+		
+	}
+	/**
+	 * Imports filters from a text file into an account
+	 * @param a Account to import the filters into
+	 * @param f File where the filters are stored
+	 * @return true if succesful
+	 */
+	public Filters importFilters(Account a, File f){
+		return null;
+	}
+	 
+
+
 	
 	 
 }
