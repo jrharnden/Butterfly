@@ -5,6 +5,7 @@ import java.util.List;
 
 
 public class Filters implements Serializable {
+	private static final long serialVersionUID = 4898437231279754736L;
 	private ArrayList<Filter> filters;
 	public Filters(){
 		filters = new ArrayList<Filter>();

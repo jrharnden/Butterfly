@@ -16,11 +16,40 @@ public class Accounts implements Serializable {
 	private static final long serialVersionUID = -6591287821163963006L;
 	private ArrayList<Account> accounts = new ArrayList<Account>();
 	
-	public void addAccount(Account a){
-		accounts.add(a);
+	public boolean addAccount(Account a){
+		if(!containsAccount(a.getName())){
+			accounts.add(a);
+			return true;
+		}
+		return false;
 	}
 	public boolean removeAccount(Account a){
 		return accounts.remove(a);
+	}
+	/**
+	 * Checks if an account with the same name and password exists
+	 * @param name Name of the account
+	 * @param hashPass hashed password of the account
+	 * @return true if it exists
+	 */
+	public boolean containsAccount(String name, String hashPass){
+		for(Account a: accounts){
+			if(a.getName().equals(name) && a.getPassHash().equals(hashPass))
+				return true;
+		}
+		return false;
+	}
+	/**
+	 * Checks if an account with the same name exists
+	 * @param name Name of the account
+	 * @return true if exists
+	 */
+	public boolean containsAccount(String name){
+		for(Account a: accounts){
+			if(a.getName().equals(name))
+				return true;
+		}
+		return false;
 	}
 	public Account getAccount(Account a){
 		try{
@@ -109,7 +138,7 @@ public class Accounts implements Serializable {
 	 * Imports filters from a text file into an account
 	 * @param a Account to import the filters into
 	 * @param f File where the filters are stored
-	 * @return true if succesful
+	 * @return true if successful
 	 */
 	public Filters importFilters(Account a, File f){
 		return null;
