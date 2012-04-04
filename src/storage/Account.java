@@ -1,5 +1,6 @@
 package storage;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 
 public class Account implements Serializable{
@@ -7,11 +8,12 @@ public class Account implements Serializable{
 	private static final long serialVersionUID = -218624877012403429L;
 	private String accName, passHash, group;
 	private Boolean[] permissions;
-	private Filters filters;
+	private ArrayList<Filter> filters;
 	public Account(String name, String pass, String gr){
 		accName = name;
 		passHash = pass;
 		group = gr;
+		filters = new ArrayList<Filter>();
 	}
 	public String getName(){
 		return accName;
@@ -21,6 +23,9 @@ public class Account implements Serializable{
 	}
 	public String getGroup(){
 		return group;
+	}
+	public ArrayList<Filter> getFilters(){
+		return filters;
 	}
 	public void changeName(String newName){
 		accName = newName;
@@ -32,7 +37,7 @@ public class Account implements Serializable{
 		group = newGroup;
 	}
 	public void addFilter(Filter f){
-		filters.addFilter(f);
+		filters.add(f);
 	}
 	public void setPermissions(boolean[] permission){
 		for(int i = 0; i < permission.length;++i){
