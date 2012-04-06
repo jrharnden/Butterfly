@@ -1,12 +1,10 @@
 package gui.view;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CBanner;
-import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
@@ -15,34 +13,46 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 
 
-public class LoginShell {
+public class LoginShell extends Dialog {
+	
 	private Text txtUsername;
 	private Text txtPassword;
-	/**
-	 * Launch the application.
-	 * @param args
-	 */
-
-	public LoginShell() {
+	protected Object result;
+	protected Shell shell;
+	
+	public LoginShell(Shell parent){
+		super(parent);
 	}
-		
-
+	
+	public Object open() {
+		createContents();
+		shell.open();
+		shell.layout();
+		Display display = getParent().getDisplay();
+		while (!shell.isDisposed()) {
+			if (!display.readAndDispatch()) {
+				display.sleep();
+			}
+		}
+		return result;
+	}
+	
 	/**
-	 * Create contents of the shell.
-	 * @wbp.parser.entryPoint
+	 * Create the Shell
+	 * @param display
 	 */
-	public void open(){
-		Display display = Display.getDefault();
-		Shell shlButterflyLogIn = new Shell(SWT.ON_TOP | SWT.CLOSE | SWT.TITLE);
-		shlButterflyLogIn.setSize(450, 300);
-		//shlButterflyLogIn.setRedraw(false);
-		shlButterflyLogIn.setText("Butterfly Log In");
-		shlButterflyLogIn.setLayout(new FormLayout());
+	private void createContents() {
+		shell = new Shell(getParent(), SWT.ON_TOP | SWT.CLOSE | SWT.TITLE);
+		shell.setSize(450, 300);
+		shell.setText("Butterfly Log In");
+		shell.setLayout(new FormLayout());
 		
-		Composite loginComposite = new Composite(shlButterflyLogIn, SWT.NO_REDRAW_RESIZE | SWT.EMBEDDED);
+		Composite loginComposite = new Composite(shell, SWT.NONE);
 		FormData fd_loginComposite = new FormData();
 		fd_loginComposite.top = new FormAttachment(0);
 		fd_loginComposite.left = new FormAttachment(0);
@@ -89,20 +99,32 @@ public class LoginShell {
 		gd_sashForm.heightHint = 53;
 		sashForm.setLayoutData(gd_sashForm);
 		
+		/*
+		 * Submit button
+		 * Open entering the correct user name and pass should load the correct user profile
+		 * for the program.
+		 * 
+		 * @Event Load user profile in application
+		 */
 		Button btnSubmit = new Button(sashForm, SWT.NONE);
 		btnSubmit.setText("Submit");
 		
+		btnSubmit.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				System.out.println("called!");
+				
+			}
+		});
+		
+		/*
+		 * Cancel Button
+		 * Closes out of the login window which should in turn exit out of the main application
+		 *
+		 * @Event Close window	
+		 */
 		Button btnCancel = new Button(sashForm, SWT.NONE);
 		btnCancel.setText("Cancel");
 		sashForm.setWeights(new int[] {1, 1});
-		
-		shlButterflyLogIn.open();
-		shlButterflyLogIn.layout();
-		while (!shlButterflyLogIn.isDisposed()) {
-			if (!display.readAndDispatch()) {
-				display.sleep();
-
-			}
 		}
+		
 	}
-}

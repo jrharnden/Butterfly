@@ -29,9 +29,10 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ListViewer;
 
-public class ApplicationWindow {
+public class ApplicationWindow{
 
 	protected Shell shlButterfly;
+	protected Display display;
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 
 	/**
@@ -41,6 +42,9 @@ public class ApplicationWindow {
 	public static void main(String[] args) {
 		try {
 			ApplicationWindow window = new ApplicationWindow();
+			final Shell shell = new Shell();
+			window.filterEdit();
+			//window.authenticate(shell);
 			window.open();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -304,6 +308,26 @@ public class ApplicationWindow {
 		
 		MenuItem mntmFilterExample = new MenuItem(menu_1, SWT.NONE);
 		mntmFilterExample.setText("Filter Example");
-
 	}
+	
+	/**
+	 * Launches Login window
+	 * @param shell
+	 * @return boolean
+	 */
+	private boolean authenticate(Shell shell) {
+		LoginShell login = new LoginShell(shell);
+		login.open();
+		return true;
+	}
+	
+	private boolean filterEdit() {
+		Display display = Display.getDefault();
+		FilterShell filterEdit = new FilterShell(display);
+		filterEdit.open();
+		return true;
+	}
+	
+	
+	
 }

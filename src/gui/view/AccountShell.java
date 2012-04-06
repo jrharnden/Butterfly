@@ -108,9 +108,4 @@ public class AccountShell extends Shell {
 		setSize(450, 250);
 
 	}
-
-	@Override
-	protected void checkSubclass() {
-		// Disable the check that prevents subclassing of SWT components
-	}
 }

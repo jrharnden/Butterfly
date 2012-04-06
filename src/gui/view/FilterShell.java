@@ -1,9 +1,11 @@
 package gui.view;
 
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Widget;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Label;
@@ -18,37 +20,39 @@ import javax.swing.JRootPane;
 import javax.swing.JTextArea;
 import javax.swing.DropMode;
 
-public class FilterShell extends Shell {
-
+public class FilterShell{
+	protected Shell shell;
+	protected Object result;
+	
+	
 	/**
-	 * Launch the application.
-	 * @param args
+	 * @wbp.parser.entryPoint
 	 */
-	public static void main(String args[]) {
-		try {
-			Display display = Display.getDefault();
-			FilterShell shell = new FilterShell(display);
-			shell.open();
-			shell.layout();
-			while (!shell.isDisposed()) {
-				if (!display.readAndDispatch()) {
-					display.sleep();
-				}
+	public Object open() {
+		shell.open();
+		shell.layout();
+		Display display = Display.getDefault();
+		while (!shell.isDisposed()) {
+			if (!display.readAndDispatch()) {
+				display.sleep();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
+	return result;
 	}
+	
 
 	/**
 	 * Create the shell.
 	 * @param display
+	 * @wbp.parser.entryPoint
 	 */
 	public FilterShell(Display display) {
-		super(display, SWT.SHELL_TRIM);
-		setLayout(new FillLayout(SWT.HORIZONTAL));
+		shell = new Shell(display, SWT.ON_TOP | SWT.CLOSE | SWT.TITLE);
+		shell.setSize(786, 510);
+		shell.setText("Edit Filters");
+		shell.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		Composite filterEditComposite = new Composite(this, SWT.NONE);
+		Composite filterEditComposite = new Composite(shell, SWT.NONE);
 		filterEditComposite.setLayout(new GridLayout(1, false));
 		
 		Composite filterEditAreaComposite = new Composite(filterEditComposite, SWT.NONE);
@@ -86,20 +90,5 @@ public class FilterShell extends Shell {
 		
 		Button btnNewButton_1 = new Button(filterEditBtnComposite, SWT.NONE);
 		btnNewButton_1.setText("Cancel");
-		createContents();
-	}
-
-	/**
-	 * Create contents of the shell.
-	 */
-	protected void createContents() {
-		setText("Filter Edit");
-		setSize(786, 510);
-
-	}
-
-	@Override
-	protected void checkSubclass() {
-		// Disable the check that prevents subclassing of SWT components
 	}
 }
