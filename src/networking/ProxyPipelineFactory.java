@@ -3,6 +3,7 @@ import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.Channels;
 import org.jboss.netty.channel.socket.ClientSocketChannelFactory;
+import org.jboss.netty.handler.codec.http.HttpContentCompressor;
 import org.jboss.netty.handler.codec.http.HttpRequestDecoder;
 import org.jboss.netty.handler.codec.http.HttpRequestEncoder;
 import org.jboss.netty.handler.codec.http.HttpResponseEncoder;
@@ -21,6 +22,8 @@ public class ProxyPipelineFactory implements ChannelPipelineFactory {
 		ChannelPipeline p =  Channels.pipeline();
 		p.addLast("decoder", new HttpRequestDecoder());
 		p.addLast("encoder", new HttpResponseEncoder());
+		p.addLast("compressor", new HttpContentCompressor());
+		p.addLast("filter", new FilterRequestHandler());
 		p.addLast("handler", new ProxyClientHandler(cf));
 		return p;
 	}

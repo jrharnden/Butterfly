@@ -17,6 +17,9 @@ import org.jboss.netty.channel.socket.ClientSocketChannelFactory;
 import org.jboss.netty.handler.codec.http.DefaultHttpRequest;
 import org.jboss.netty.handler.codec.http.DefaultHttpResponse;
 import org.jboss.netty.handler.codec.http.HttpChunkAggregator;
+import org.jboss.netty.handler.codec.http.HttpContentCompressor;
+import org.jboss.netty.handler.codec.http.HttpContentDecompressor;
+import org.jboss.netty.handler.codec.http.HttpMethod;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpRequestDecoder;
 import org.jboss.netty.handler.codec.http.HttpRequestEncoder;
@@ -25,6 +28,7 @@ import org.jboss.netty.handler.codec.http.HttpResponseDecoder;
 
 public class ProxyClientHandler extends SimpleChannelUpstreamHandler{
 	private static final int DEFAULT_HOST_PORT = 80;
+	private static final int DEFAULT_SSL_PORT = 443;
 	/****************************************************************
 	 * Fields
 	 ****************************************************************/
@@ -60,30 +64,45 @@ public class ProxyClientHandler extends SimpleChannelUpstreamHandler{
 		
 		if (this.hostChannel == null) {
 			String host = msg.getHeader("Host");
+			int port = DEFAULT_HOST_PORT;
+			String[] host_parsed = host.split(":");
+			if (host_parsed.length > 1) {
+				port = Integer.parseInt(host_parsed[1]);
+				host = host_parsed[0];
+			}
 			this.clientbs.getPipeline().addLast("decoder", new HttpResponseDecoder());
 			this.clientbs.getPipeline().addLast("encoder", new HttpRequestEncoder());
+			this.clientbs.getPipeline().addLast("inflater", new HttpContentDecompressor());
 			this.clientbs.getPipeline().addLast("aggregator", new HttpChunkAggregator(1048576));
+			this.clientbs.getPipeline().addLast("filter", new FilterResponseHandler());
 			this.clientbs.getPipeline().addLast("handler", new ProxyHostHandler(clientChannel));
-			ChannelFuture cf = this.clientbs.connect(new InetSocketAddress(host, DEFAULT_HOST_PORT));
-			this.hostChannel = cf.getChannel();
-			cf.addListener(new ChannelFutureListener() {
-				@Override
-				public void operationComplete(ChannelFuture f)throws Exception {
-					if (f.isSuccess()) {
-						clientChannel.setReadable(true);
-						synchronized (trafficLock) {
-							hostChannel.write(msg);
-							if (!hostChannel.isWritable()) {
-								clientChannel.setReadable(false);
+			ChannelFuture cf = null;
+			if (msg.getMethod().compareTo(HttpMethod.CONNECT)==0) {
+				cf = this.clientbs.connect(new InetSocketAddress(host, DEFAULT_SSL_PORT));
+			} else {
+				cf = this.clientbs.connect(new InetSocketAddress(host, port));
+			}
+			if (cf != null) {
+				this.hostChannel = cf.getChannel();
+				cf.addListener(new ChannelFutureListener() {
+					@Override
+					public void operationComplete(ChannelFuture f)throws Exception {
+						if (f.isSuccess()) {
+							clientChannel.setReadable(true);
+							synchronized (trafficLock) {
+								hostChannel.write(msg);
+								if (!hostChannel.isWritable()) {
+									clientChannel.setReadable(false);
+								}
 							}
+							ProxyLog.write(clientChannel, hostChannel, msg);
 						}
-						ProxyLog.write(clientChannel, hostChannel, msg);
+						else {
+							clientChannel.close();
+						}
 					}
-					else {
-						clientChannel.close();
-					}
-				}
-			});
+				});
+			}
 		}
 		else {
 			synchronized (this.trafficLock) {
