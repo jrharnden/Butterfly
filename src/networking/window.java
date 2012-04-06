@@ -1,7 +1,10 @@
 package networking;
 import java.awt.EventQueue;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -10,7 +13,20 @@ import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.SwingConstants;
-//TODO A list of open connections in the window would be SUPER helpful
+
+import org.jboss.netty.bootstrap.ServerBootstrap;
+import org.jboss.netty.channel.Channel;
+import org.jboss.netty.channel.ChannelPipelineFactory;
+import org.jboss.netty.channel.group.ChannelGroup;
+import org.jboss.netty.channel.group.ChannelGroupFuture;
+import org.jboss.netty.channel.group.DefaultChannelGroup;
+import org.jboss.netty.channel.socket.ClientSocketChannelFactory;
+import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
+import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
 /**
  * window
  * Dummy window to start the demo
@@ -19,14 +35,15 @@ import javax.swing.SwingConstants;
  *
  */
 public class window {
-
+	static final ChannelGroup allChannels = new DefaultChannelGroup("Proxy-Server");
+	
 	private JFrame frame;
 	protected JTextField txtPort;
 	protected Thread proxyThread;
-	private ProxyNetwork proxy;
-	ConcurrentLinkedQueue<ProxyDatagram> toProxy, toFilter;
 	protected JButton btnListen;
 	protected Thread filterThread;
+	protected NioClientSocketChannelFactory cf;
+	protected ServerBootstrap sb;
 
 	/**
 	 * Launch the application.
@@ -57,11 +74,8 @@ public class window {
 	 * @throws IOException 
 	 */
 	private void initialize() throws IOException {
-		toProxy = new ConcurrentLinkedQueue<ProxyDatagram>();
-		toFilter = new ConcurrentLinkedQueue<ProxyDatagram>();
-		proxy = new ProxyNetwork(toProxy,toFilter);
 		frame = new JFrame();
-		frame.setBounds(100, 100, 321, 78);
+		frame.setBounds(100, 100, 314, 78);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
@@ -78,34 +92,27 @@ public class window {
 		
 		btnListen = new JButton("Listen");
 		btnListen.addMouseListener(new MouseAdapter() {
+
 			@SuppressWarnings("deprecation")
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				if (btnListen.getText().equals("Listen")&&!proxy.isRunning()) {
+				if (sb==null) {
+					Executor executor = Executors.newCachedThreadPool();
+					sb = new ServerBootstrap(new NioServerSocketChannelFactory(executor, executor));
+					cf = new NioClientSocketChannelFactory(executor, executor);
+					sb.setPipelineFactory(new ProxyPipelineFactory(cf)); 
+			        Channel channel = sb.bind(new InetSocketAddress(Integer.parseInt(txtPort.getText())));
+			        allChannels.add(channel);
 					btnListen.setText("Stop");
-					proxy.setPort(Integer.parseInt(txtPort.getText()));
-					try {
-						proxyThread = new Thread(new ProxyNetwork(toProxy, toFilter, Integer.parseInt(txtPort.getText())),"Network Subsystem");
-						filterThread = new Thread(new FilterSystem(toFilter, toProxy),"Filter System");
-					} catch (NumberFormatException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					proxyThread.start();
-					filterThread.start();
+				} else {
+			        ChannelGroupFuture future = allChannels.close();
+			        future.awaitUninterruptibly();
+			        cf.releaseExternalResources();
+			        sb = null;
+			        cf = null;
+			        btnListen.setText("Listen");
 				}
-				else if (btnListen.getText().equals("Stop")){
-					filterThread.stop();
-					filterThread = null;
-					proxyThread.stop();
-					proxyThread = null;
-					toFilter.clear();
-					toProxy.clear();
-					btnListen.setText("Listen");
-				}
+				
 			}
 		});
 		btnListen.setBounds(205, 7, 89, 23);

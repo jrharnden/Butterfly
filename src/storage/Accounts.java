@@ -1,7 +1,12 @@
 package storage;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -74,17 +79,23 @@ public class Accounts implements Serializable {
 	 * @throws NoSuchAlgorithmException
 	 * @throws UnsupportedEncodingException
 	 */
-	public String hashPass(String password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
-	       MessageDigest digest = MessageDigest.getInstance("SHA-512");
-	       digest.update(password.getBytes());
-	       byte[] hash = digest.digest();
-	       StringBuffer hexString = new StringBuffer();
-	    	for (int i=0;i<hash.length;i++) {
-	    		String hex=Integer.toHexString(0xff & hash[i]);
-	   	     	if(hex.length()==1) hexString.append('0');
-	   	     	hexString.append(hex);
-	    	}
-	    	return hexString.toString();
+	public String hashPass(String password){
+	       MessageDigest digest;
+		try {
+			digest = MessageDigest.getInstance("SHA-512");
+			digest.update(password.getBytes());
+		       byte[] hash = digest.digest();
+		       StringBuffer hexString = new StringBuffer();
+		    	for (int i=0;i<hash.length;i++) {
+		    		String hex=Integer.toHexString(0xff & hash[i]);
+		   	     	if(hex.length()==1) hexString.append('0');
+		   	     	hexString.append(hex);
+		    	}
+		    	return hexString.toString();
+		} catch (NoSuchAlgorithmException e) {
+			return null;
+		}
+	       
 	 }
 	public boolean saveAccounts(Accounts a){
 		ObjectOutputStream objOut = null;
@@ -128,9 +139,24 @@ public class Accounts implements Serializable {
 	/**
 	 * Exports filters to a text file
 	 * @param a Account for which the filters are to be exported from 
+	 * @param f File that the filters will be exported to
 	 * @return true if successful
 	 */
-	public boolean exportFilters(Account a){
+	public boolean exportFilters(Account a, File f){
+		BufferedWriter fwr;
+		try{
+			fwr = new BufferedWriter(new FileWriter(f));
+			ArrayList<Filter> fil = a.getFilters();
+			for(Filter filt: fil){
+				String s = filt.toString();
+				fwr.write(s);
+				fwr.newLine();
+			}
+		}
+		catch(IOException e){
+			System.err.println(e.getMessage());
+			//TODO: Something meaningful
+		}
 		return false;
 		
 	}
@@ -140,8 +166,33 @@ public class Accounts implements Serializable {
 	 * @param f File where the filters are stored
 	 * @return true if successful
 	 */
-	public Filters importFilters(Account a, File f){
-		return null;
+	public void importFilters(Account a, File f){
+		BufferedReader br;
+		try {
+			
+			br = new BufferedReader(new FileReader(f));
+			String fstr;
+			while((fstr = br.readLine()) != null){
+				String[] filt= fstr.split(":");
+				if(filt.length==2){ 
+					a.addFilter(new Filter(filt[0],filt[1]));
+				}
+				else{
+					System.err.println("Malformed regex read");
+				}
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch(NullPointerException e){
+			if(a == null)
+			System.err.println("Account was null");
+		}
+		
 	}
 	 
 
