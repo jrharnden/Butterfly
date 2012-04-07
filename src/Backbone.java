@@ -1,4 +1,7 @@
-import gui.view.LoginShell;
+import org.eclipse.swt.widgets.Shell;
+
+import gui.view.*;
+import storage.*;
 
 
 public class Backbone {
@@ -8,8 +11,11 @@ public class Backbone {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-			LoginShell lw = new LoginShell();
-			lw.open();
+			Shell shell = new Shell();
+			LoginShell lw = new LoginShell(shell);
+			ApplicationWindow ap = new ApplicationWindow();
+			lw.open(ap);
+			ap.open();
 	}
 
 }

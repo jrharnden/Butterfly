@@ -1,5 +1,8 @@
 package gui.view;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
@@ -17,6 +20,8 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 
+import storage.*;
+
 
 public class LoginShell extends Dialog {
 	
@@ -24,12 +29,13 @@ public class LoginShell extends Dialog {
 	private Text txtPassword;
 	protected Object result;
 	protected Shell shell;
-	
+	private ApplicationWindow ap;
 	public LoginShell(Shell parent){
 		super(parent);
 	}
 	
-	public Object open() {
+	public Object open(ApplicationWindow a) {
+		ap = a;
 		createContents();
 		shell.open();
 		shell.layout();
@@ -81,7 +87,6 @@ public class LoginShell extends Dialog {
 		
 		txtUsername = new Text(composite_1, SWT.BORDER);
 		txtUsername.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
 		Label lblPassword = new Label(composite_1, SWT.NONE);
 		lblPassword.setAlignment(SWT.CENTER);
 		GridData gd_lblPassword = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
@@ -111,7 +116,25 @@ public class LoginShell extends Dialog {
 		
 		btnSubmit.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				System.out.println("called!");
+				Accounts accounts = new Accounts();
+				accounts.loadAccounts();
+				String username = (String) txtUsername.getText();
+				String pass = (String) txtPassword.getText();
+				
+				
+				if(pass == null || username == null) throw new UnsupportedOperationException();
+				
+					if(accounts.containsAccount(username, accounts.hashPass(pass))){
+						System.out.println("LOGIN SUCCESS!");
+						try {
+							ap.setAccount(accounts.getAccount(username, accounts.hashPass(pass)));
+						} catch (NoSuchAlgorithmException
+								| UnsupportedEncodingException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						shell.close();
+					}else{System.err.println("LOGIN FAILED!");}
 				
 			}
 		});
@@ -125,6 +148,12 @@ public class LoginShell extends Dialog {
 		Button btnCancel = new Button(sashForm, SWT.NONE);
 		btnCancel.setText("Cancel");
 		sashForm.setWeights(new int[] {1, 1});
+		btnCancel.addSelectionListener(new SelectionAdapter(){
+			public void widgetSelected(SelectionEvent e){
+				System.exit(0);
+			}
+		});
 		}
+	
 		
 	}
