@@ -35,8 +35,8 @@ import java.awt.event.ActionEvent;
  *
  */
 public class window {
-	static final ChannelGroup allChannels = new DefaultChannelGroup("Proxy-Server");
-	
+	static ChannelGroup allChannels = new DefaultChannelGroup("Proxy-Server");
+	private Channel channel;
 	private JFrame frame;
 	protected JTextField txtPort;
 	protected Thread proxyThread;
@@ -101,13 +101,13 @@ public class window {
 					sb = new ServerBootstrap(new NioServerSocketChannelFactory(executor, executor));
 					cf = new NioClientSocketChannelFactory(executor, executor);
 					sb.setPipelineFactory(new ProxyPipelineFactory(cf)); 
-			        Channel channel = sb.bind(new InetSocketAddress(Integer.parseInt(txtPort.getText())));
+			        channel = sb.bind(new InetSocketAddress(Integer.parseInt(txtPort.getText())));
 			        allChannels.add(channel);
 					btnListen.setText("Stop");
 				} else {
 			        ChannelGroupFuture future = allChannels.close();
-			        future.awaitUninterruptibly();
-			        cf.releaseExternalResources();
+			        //future.awaitUninterruptibly();
+			        //cf.releaseExternalResources();
 			        sb = null;
 			        cf = null;
 			        btnListen.setText("Listen");
@@ -118,4 +118,5 @@ public class window {
 		btnListen.setBounds(205, 7, 89, 23);
 		frame.getContentPane().add(btnListen);
 	}
+	
 }
