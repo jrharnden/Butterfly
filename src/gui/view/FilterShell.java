@@ -23,15 +23,23 @@ import javax.swing.DropMode;
 public class FilterShell{
 	protected Shell shell;
 	protected Object result;
+	protected Display display;
+	
+	//TODO implement method to set the text of the text area upon editing a filter
+	//TODO imp1ement method to save the text of the text area to a filter 
 	
 	
+	public FilterShell(Display d){
+		display = d;
+	}
 	/**
+	 * Open the Filter Shell
 	 * @wbp.parser.entryPoint
 	 */
 	public Object open() {
+		createContents();
 		shell.open();
 		shell.layout();
-		Display display = Display.getDefault();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
@@ -46,7 +54,7 @@ public class FilterShell{
 	 * @param display
 	 * @wbp.parser.entryPoint
 	 */
-	public FilterShell(Display display) {
+	protected void createContents() {
 		shell = new Shell(display, SWT.ON_TOP | SWT.CLOSE | SWT.TITLE);
 		shell.setSize(786, 510);
 		shell.setText("Edit Filters");
@@ -55,6 +63,7 @@ public class FilterShell{
 		Composite filterEditComposite = new Composite(shell, SWT.NONE);
 		filterEditComposite.setLayout(new GridLayout(1, false));
 		
+		//Text area edit pane
 		Composite filterEditAreaComposite = new Composite(filterEditComposite, SWT.NONE);
 		filterEditAreaComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
 		GridData gd_filterEditAreaComposite = new GridData(SWT.LEFT, SWT.CENTER, true, true, 1, 1);
@@ -74,21 +83,24 @@ public class FilterShell{
 		panel.add(rootPane);
 		rootPane.getContentPane().setLayout(new java.awt.GridLayout(0, 1, 0, 0));
 		
-		JTextArea filterEditTextArea = new JTextArea();
-		filterEditTextArea.setDropMode(DropMode.ON);
-		rootPane.getContentPane().add(filterEditTextArea);
+			//Jtextarea edit pane 
+			JTextArea filterEditTextArea = new JTextArea();
+			rootPane.getContentPane().add(filterEditTextArea);
 		
+		//Bottom button bar composite
 		Composite filterEditBtnComposite = new Composite(filterEditComposite, SWT.NONE);
 		filterEditBtnComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
 		GridData gd_filterEditBtnComposite = new GridData(SWT.LEFT, SWT.CENTER, true, true, 1, 1);
 		gd_filterEditBtnComposite.widthHint = 761;
 		gd_filterEditBtnComposite.heightHint = 30;
 		filterEditBtnComposite.setLayoutData(gd_filterEditBtnComposite);
-		
-		Button btnNewButton = new Button(filterEditBtnComposite, SWT.NONE);
-		btnNewButton.setText("Submit");
-		
-		Button btnNewButton_1 = new Button(filterEditBtnComposite, SWT.NONE);
-		btnNewButton_1.setText("Cancel");
+			
+			//submit button
+			Button btnNewButton = new Button(filterEditBtnComposite, SWT.NONE);
+			btnNewButton.setText("Submit");
+			
+			//cancel button
+			Button btnNewButton_1 = new Button(filterEditBtnComposite, SWT.NONE);
+			btnNewButton_1.setText("Cancel");
 	}
 }

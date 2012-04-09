@@ -34,6 +34,11 @@ public class LoginShell extends Dialog {
 		super(parent);
 	}
 	
+	/**
+	 * Entry point to open the shell
+	 * @param a
+	 * @return
+	 */
 	public Object open(ApplicationWindow a) {
 		ap = a;
 		createContents();
@@ -52,7 +57,7 @@ public class LoginShell extends Dialog {
 	 * Create the Shell
 	 * @param display
 	 */
-	private void createContents() {
+	protected void createContents() {
 		shell = new Shell(getParent(), SWT.ON_TOP | SWT.CLOSE | SWT.TITLE);
 		shell.setSize(450, 300);
 		shell.setText("Butterfly Log In");

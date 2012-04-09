@@ -19,12 +19,34 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 
 public class EditShell {
+	protected Shell shell;
+	protected Object result;
+	protected Display display;
+	
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
+	
 	/**
 	 * Launch the application.
 	 * @param args
 	 */
-	public EditShell() {
+	public EditShell(Display d) {
+		display = d;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public Object open(){
+		createContents();
+		shell.open();
+		shell.layout();
+		while (!shell.isDisposed()) {
+			if (!display.readAndDispatch()) {
+				display.sleep();
+			}
+		}
+		return result;
 	}
 
 
@@ -33,13 +55,12 @@ public class EditShell {
 	 * @wbp.parser.entryPoint
 	 */
 	protected void createContents() {
-		Display display = Display.getDefault();
-		Shell UserAccountShell = new Shell(SWT.ON_TOP | SWT.CLOSE | SWT.TITLE);
-		UserAccountShell.setText("Filter Edit");
-		UserAccountShell.setSize(786, 510);
-		UserAccountShell.setLayout(new FormLayout());
+		shell = new Shell(display, SWT.ON_TOP | SWT.CLOSE | SWT.TITLE);
+		shell.setText("Filter Edit");
+		shell.setSize(786, 510);
+		shell.setLayout(new FormLayout());
 		
-		Composite filterComposite = new Composite(UserAccountShell, SWT.NONE);
+		Composite filterComposite = new Composite(shell, SWT.NONE);
 		filterComposite.setLayoutData(new FormData());
 		formToolkit.paintBordersFor(filterComposite);
 		filterComposite.setLayout(new GridLayout(1, false));
@@ -53,6 +74,7 @@ public class EditShell {
 		formToolkit.paintBordersFor(filterComposite_1);
 		filterComposite_1.setLayout(new GridLayout(3, false));
 		
+		//Active Filer Composite
 		Composite filterActiveComposite = new Composite(filterComposite_1, SWT.NONE);
 		GridData gd_filterActiveComposite = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
 		gd_filterActiveComposite.heightHint = 465;
@@ -62,10 +84,12 @@ public class EditShell {
 		formToolkit.adapt(filterActiveComposite);
 		formToolkit.paintBordersFor(filterActiveComposite);
 		filterActiveComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
+			
+			//Active List
+			ListViewer filterActiveListViewer = new ListViewer(filterActiveComposite, SWT.BORDER | SWT.V_SCROLL);
+			List filterActiveList = filterActiveListViewer.getList();
 		
-		ListViewer filterActiveListViewer = new ListViewer(filterActiveComposite, SWT.BORDER | SWT.V_SCROLL);
-		List filterActiveList = filterActiveListViewer.getList();
-		
+		//Button composite
 		Composite filterBtnComposite = new Composite(filterComposite_1, SWT.NONE);
 		filterBtnComposite.setLayout(new FillLayout(SWT.VERTICAL));
 		GridData gd_filterBtnComposite = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
@@ -75,37 +99,45 @@ public class EditShell {
 		formToolkit.adapt(filterBtnComposite);
 		formToolkit.paintBordersFor(filterBtnComposite);
 		
+		//North button composite
 		Composite filterBtnComposite_NORTH = new Composite(filterBtnComposite, SWT.NONE);
 		formToolkit.adapt(filterBtnComposite_NORTH);
 		formToolkit.paintBordersFor(filterBtnComposite_NORTH);
 		filterBtnComposite_NORTH.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		Button btnSelectNew = new Button(filterBtnComposite_NORTH, SWT.NONE);
-		formToolkit.adapt(btnSelectNew, true, true);
-		btnSelectNew.setText("Select New");
+			//Select new import/export file, or new user/group
+			Button btnSelectNew = new Button(filterBtnComposite_NORTH, SWT.NONE);
+			formToolkit.adapt(btnSelectNew, true, true);
+			btnSelectNew.setText("Select New");
 		
+		//Center Button Composite
 		Composite filterBtnComposite_CENTER = new Composite(filterBtnComposite, SWT.NONE);
 		formToolkit.adapt(filterBtnComposite_CENTER);
 		formToolkit.paintBordersFor(filterBtnComposite_CENTER);
 		filterBtnComposite_CENTER.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		Button btnAdd = new Button(filterBtnComposite_CENTER, SWT.NONE);
-		formToolkit.adapt(btnAdd, true, true);
-		btnAdd.setText("ADD");
+			//Add items from inactive to active <
+			Button btnAdd = new Button(filterBtnComposite_CENTER, SWT.NONE);
+			formToolkit.adapt(btnAdd, true, true);
+			btnAdd.setText("ADD");
+			
+			//Remove items from active to inactive >
+			Button btnRemove = new Button(filterBtnComposite_CENTER, SWT.NONE);
+			formToolkit.adapt(btnRemove, true, true);
+			btnRemove.setText("REMOVE");
 		
-		Button btnRemove = new Button(filterBtnComposite_CENTER, SWT.NONE);
-		formToolkit.adapt(btnRemove, true, true);
-		btnRemove.setText("REMOVE");
-		
+		//South Button Composite
 		Composite filterBtnComposite_SOUTH = new Composite(filterBtnComposite, SWT.NONE);
 		formToolkit.adapt(filterBtnComposite_SOUTH);
 		formToolkit.paintBordersFor(filterBtnComposite_SOUTH);
 		filterBtnComposite_SOUTH.setLayout(new FillLayout(SWT.HORIZONTAL));
+			
+			//Submit active/inactive filters
+			Button btnNewButton = new Button(filterBtnComposite_SOUTH, SWT.NONE);
+			formToolkit.adapt(btnNewButton, true, true);
+			btnNewButton.setText("Submit");
 		
-		Button btnNewButton = new Button(filterBtnComposite_SOUTH, SWT.NONE);
-		formToolkit.adapt(btnNewButton, true, true);
-		btnNewButton.setText("Submit");
-		
+		//Inactive filter composite
 		Composite filterInactiveComposite = new Composite(filterComposite_1, SWT.NONE);
 		GridData gd_filterInactiveComposite = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
 		gd_filterInactiveComposite.heightHint = 465;
@@ -115,15 +147,8 @@ public class EditShell {
 		formToolkit.paintBordersFor(filterInactiveComposite);
 		filterInactiveComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		ListViewer filterInactiveListViewer = new ListViewer(filterInactiveComposite, SWT.BORDER | SWT.V_SCROLL);
-		List filterInactiveList = filterInactiveListViewer.getList();
-		
-		UserAccountShell.open();
-		UserAccountShell.layout();
-		while (!UserAccountShell.isDisposed()) {
-			if (!display.readAndDispatch()) {
-				display.sleep();
-			}
-		}
+			//Inactive filter list
+			ListViewer filterInactiveListViewer = new ListViewer(filterInactiveComposite, SWT.BORDER | SWT.V_SCROLL);
+			List filterInactiveList = filterInactiveListViewer.getList();
 	}
 }

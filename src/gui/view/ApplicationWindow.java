@@ -21,6 +21,8 @@ import javax.swing.JTextArea;
 import org.eclipse.swt.widgets.List;
 import swing2swt.layout.FlowLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -36,6 +38,62 @@ public class ApplicationWindow{
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 	private Account account;
 
+	
+	/**
+	 * Launches Login window
+	 * @param shell
+	 * @return boolean
+	 */
+	private boolean authenticate(Shell shell) {
+		LoginShell login = new LoginShell(shell);
+		login.open(this);
+		return true;
+	}
+	
+	/**
+	 * Launches filterEdit window
+	 * @return
+	 */
+	private boolean filterEdit() {
+		Display display = Display.getDefault();
+		FilterShell filterEdit = new FilterShell(display);
+		filterEdit.open();
+		return true;
+	}
+	
+	/**
+	 * Open filter import/export/user/group filter window
+	 * @return
+	 */
+	private boolean editShell(){
+		Display display = Display.getDefault();
+		EditShell eShell = new EditShell(display);
+		eShell.open();
+		return true;
+	}
+
+	/**
+	 * Launches Create Account window
+	 * @param shell
+	 * @return
+	 */
+	private boolean accountShell(Shell shell){
+		AccountShell aShell = new AccountShell(shell);
+		aShell.open(this);
+		return true;
+		
+	}
+	/**
+	 * 
+	 * @param a
+	 */
+	public void setAccount(Account a){
+		account = a;
+	}
+	
+	
+	
+	
 	/**
 	 * Launch the application.
 	 * @param args
@@ -44,8 +102,8 @@ public class ApplicationWindow{
 		try {
 			ApplicationWindow window = new ApplicationWindow();
 			final Shell shell = new Shell();
-			window.filterEdit();
-			window.authenticate(shell);
+			//window.filterEdit();
+			//window.authenticate(shell);
 			window.open();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -73,12 +131,16 @@ public class ApplicationWindow{
 	protected void createContents() {
 		shlButterfly = new Shell();
 		shlButterfly.setSize(800, 600);
-		shlButterfly.setText("Butterfly - Logged in as "+ account.getName());
+		//shlButterfly.setText("Butterfly - Logged in as "+ account.getName());
 		shlButterfly.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 		CTabFolder tabFolder = new CTabFolder(shlButterfly, SWT.BORDER);
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 		
+		
+		//-----------------------------------------------------------------
+		// Status Menu Item
+		//-----------------------------------------------------------------
 		CTabItem tbtmStatus = new CTabItem(tabFolder, SWT.NONE);
 		tbtmStatus.setText("Status");
 		
@@ -88,6 +150,7 @@ public class ApplicationWindow{
 		
 		SashForm statusSashForm = new SashForm(statusComposite, SWT.NONE);
 		
+		//Logging composite
 		Composite statusLogComposite_AWT = new Composite(statusSashForm, SWT.NONE);
 		statusLogComposite_AWT.setLayout(new GridLayout(2, false));
 		new Label(statusLogComposite_AWT, SWT.NONE);
@@ -109,31 +172,37 @@ public class ApplicationWindow{
 		JRootPane statusLogRootPane_AWT = new JRootPane();
 		satusLogPanel_AWT.add(statusLogRootPane_AWT);
 		statusLogRootPane_AWT.getContentPane().setLayout(new java.awt.GridLayout(1, 0, 0, 0));
-		
-		JTextArea logTextArea_AWT = new JTextArea();
-		statusLogRootPane_AWT.getContentPane().add(logTextArea_AWT);
+			
+			//Logging text area
+			JTextArea logTextArea_AWT = new JTextArea();
+			statusLogRootPane_AWT.getContentPane().add(logTextArea_AWT);
 		
 		Composite statusFilterComposite = new Composite(statusSashForm, SWT.NONE);
 		statusFilterComposite.setLayout(new GridLayout(2, false));
 		new Label(statusFilterComposite, SWT.NONE);
-				new Label(statusFilterComposite, SWT.NONE);
-						new Label(statusFilterComposite, SWT.NONE);
-				
-						
-						Composite statusActiveComposite = new Composite(statusFilterComposite, SWT.NONE);
-						statusActiveComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
-						GridData gd_statusActiveComposite = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);
-						gd_statusActiveComposite.heightHint = 460;
-						gd_statusActiveComposite.widthHint = 335;
-						statusActiveComposite.setLayoutData(gd_statusActiveComposite);
-						statusActiveComposite.setBounds(0, 0, 64, 64);
-						formToolkit.adapt(statusActiveComposite);
-						formToolkit.paintBordersFor(statusActiveComposite);
-						
-						ListViewer statusActiveListViewer = new ListViewer(statusActiveComposite, SWT.BORDER | SWT.V_SCROLL);
-						List statusActiveList = statusActiveListViewer.getList();
-		statusSashForm.setWeights(new int[] {1, 1});
+		new Label(statusFilterComposite, SWT.NONE);
+		new Label(statusFilterComposite, SWT.NONE);
+
+		//Active List Composite
+		Composite statusActiveComposite = new Composite(statusFilterComposite, SWT.NONE);
+		statusActiveComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
+		GridData gd_statusActiveComposite = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);
+		gd_statusActiveComposite.heightHint = 460;
+		gd_statusActiveComposite.widthHint = 335;
+		statusActiveComposite.setLayoutData(gd_statusActiveComposite);
+		statusActiveComposite.setBounds(0, 0, 64, 64);
+		formToolkit.adapt(statusActiveComposite);
+		formToolkit.paintBordersFor(statusActiveComposite);
 		
+			//Active List Viewer
+			ListViewer statusActiveListViewer = new ListViewer(statusActiveComposite, SWT.BORDER | SWT.V_SCROLL);
+			List statusActiveList = statusActiveListViewer.getList();
+			statusSashForm.setWeights(new int[] {1, 1});
+		
+		
+		//-----------------------------------------------------------------
+		// Filters menu item
+		//-----------------------------------------------------------------
 		CTabItem tbtmNewItem = new CTabItem(tabFolder, SWT.NONE);
 		tbtmNewItem.setText("Filters");
 		
@@ -151,6 +220,7 @@ public class ApplicationWindow{
 		formToolkit.paintBordersFor(filterComposite_1);
 		filterComposite_1.setLayout(new GridLayout(3, false));
 		
+		//Active Filter composite
 		Composite filterActiveComposite = new Composite(filterComposite_1, SWT.NONE);
 		GridData gd_filterActiveComposite = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
 		gd_filterActiveComposite.heightHint = 465;
@@ -161,9 +231,11 @@ public class ApplicationWindow{
 		formToolkit.paintBordersFor(filterActiveComposite);
 		filterActiveComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		ListViewer filterActiveListViewer = new ListViewer(filterActiveComposite, SWT.BORDER | SWT.V_SCROLL);
-		List filterActiveList = filterActiveListViewer.getList();
+			// Active filter list viewer
+			ListViewer filterActiveListViewer = new ListViewer(filterActiveComposite, SWT.BORDER | SWT.V_SCROLL);
+			List filterActiveList = filterActiveListViewer.getList();
 		
+		//Filter middle button bar
 		Composite filterBtnComposite = new Composite(filterComposite_1, SWT.NONE);
 		filterBtnComposite.setLayout(new FillLayout(SWT.VERTICAL));
 		GridData gd_filterBtnComposite = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
@@ -182,18 +254,21 @@ public class ApplicationWindow{
 		formToolkit.paintBordersFor(filterBtnComposite_CENTER);
 		filterBtnComposite_CENTER.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		Button btnAdd = new Button(filterBtnComposite_CENTER, SWT.NONE);
-		formToolkit.adapt(btnAdd, true, true);
-		btnAdd.setText("ADD");
-		
-		Button btnRemove = new Button(filterBtnComposite_CENTER, SWT.NONE);
-		formToolkit.adapt(btnRemove, true, true);
-		btnRemove.setText("REMOVE");
+			//Add from inactive to active
+			Button btnAdd = new Button(filterBtnComposite_CENTER, SWT.NONE);
+			formToolkit.adapt(btnAdd, true, true);
+			btnAdd.setText("ADD");
+			
+			//Remove from active to inactive
+			Button btnRemove = new Button(filterBtnComposite_CENTER, SWT.NONE);
+			formToolkit.adapt(btnRemove, true, true);
+			btnRemove.setText("REMOVE");
 		
 		Composite filterBtnComposite_SOUTH = new Composite(filterBtnComposite, SWT.NONE);
 		formToolkit.adapt(filterBtnComposite_SOUTH);
 		formToolkit.paintBordersFor(filterBtnComposite_SOUTH);
 		
+		//Inactive filter composite
 		Composite filterInactiveComposite = new Composite(filterComposite_1, SWT.NONE);
 		GridData gd_filterInactiveComposite = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
 		gd_filterInactiveComposite.heightHint = 465;
@@ -203,9 +278,11 @@ public class ApplicationWindow{
 		formToolkit.paintBordersFor(filterInactiveComposite);
 		filterInactiveComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		ListViewer filterInactiveListViewer = new ListViewer(filterInactiveComposite, SWT.BORDER | SWT.V_SCROLL);
-		List filterInactiveList = filterInactiveListViewer.getList();
-					
+			//Inactive List viewer
+			ListViewer filterInactiveListViewer = new ListViewer(filterInactiveComposite, SWT.BORDER | SWT.V_SCROLL);
+			List filterInactiveList = filterInactiveListViewer.getList();
+		
+		//Filter Button Bar
 		Composite filterBtnBarComposite = new Composite(filterComposite, SWT.NONE);
 		filterBtnBarComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
 		GridData gd_filterBtnBarComposite = new GridData(SWT.LEFT, SWT.BOTTOM, true, true, 1, 1);
@@ -215,18 +292,47 @@ public class ApplicationWindow{
 		formToolkit.adapt(filterBtnBarComposite);
 		formToolkit.paintBordersFor(filterBtnBarComposite);
 		
-		Button btnCreate = new Button(filterBtnBarComposite, SWT.NONE);
-		formToolkit.adapt(btnCreate, true, true);
-		btnCreate.setText("Create");
+			//Create filter
+			Button btnCreate = new Button(filterBtnBarComposite, SWT.NONE);
+			formToolkit.adapt(btnCreate, true, true);
+			btnCreate.setText("Create");
+			
+			//Create filter button listener. Open blank text area.
+			btnCreate.addListener(SWT.Selection, new Listener(){
+				public void handleEvent(Event e){
+					switch (e.type){
+					case SWT.Selection:
+						filterEdit();
+					}
+				}
+			}
+			);
+			
+			
+			//Edit filter
+			Button btnEdit = new Button(filterBtnBarComposite, SWT.NONE);
+			formToolkit.adapt(btnEdit, true, true);
+			btnEdit.setText("Edit");
+			
+			//Create filter button listener. Open text area with highlighted filters text.
+			btnEdit.addListener(SWT.Selection, new Listener(){
+				public void handleEvent(Event e){
+					switch (e.type){
+					case SWT.Selection:
+						filterEdit();
+					}
+				}
+			}
+			);
+			
+			//Delete filter
+			Button btnDelete = new Button(filterBtnBarComposite, SWT.NONE);
+			formToolkit.adapt(btnDelete, true, true);
+			btnDelete.setText("Delete");
 		
-		Button btnEdit = new Button(filterBtnBarComposite, SWT.NONE);
-		formToolkit.adapt(btnEdit, true, true);
-		btnEdit.setText("Edit");
-		
-		Button btnDelete = new Button(filterBtnBarComposite, SWT.NONE);
-		formToolkit.adapt(btnDelete, true, true);
-		btnDelete.setText("Delete");
-		
+		//-----------------------------------------------------------------
+		//Administrator Tab
+		//-----------------------------------------------------------------
 		CTabItem tbtmAdministrator = new CTabItem(tabFolder, SWT.NONE);
 		tbtmAdministrator.setText("Administrator");
 		
@@ -235,6 +341,7 @@ public class ApplicationWindow{
 		formToolkit.paintBordersFor(admComposite);
 		admComposite.setLayout(new GridLayout(1, false));
 		
+		//Administrator Table Tree
 		Composite admTableTreeComposite = new Composite(admComposite, SWT.NONE);
 		GridData gd_admTableTreeComposite = new GridData(SWT.LEFT, SWT.CENTER, true, true, 1, 1);
 		gd_admTableTreeComposite.widthHint = 767;
@@ -244,10 +351,12 @@ public class ApplicationWindow{
 		formToolkit.paintBordersFor(admTableTreeComposite);
 		admTableTreeComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		TreeViewer admTableTreeViewer = new TreeViewer(admTableTreeComposite, SWT.BORDER);
-		Tree admTableTree = admTableTreeViewer.getTree();
-		formToolkit.paintBordersFor(admTableTree);
+			// Tree viewer
+			TreeViewer admTableTreeViewer = new TreeViewer(admTableTreeComposite, SWT.BORDER);
+			Tree admTableTree = admTableTreeViewer.getTree();
+			formToolkit.paintBordersFor(admTableTree);
 		
+		// Administrator button bar
 		Composite admBtnBarComposite = formToolkit.createComposite(admComposite, SWT.NONE);
 		GridData gd_admBtnBarComposite = new GridData(SWT.LEFT, SWT.TOP, true, false, 1, 1);
 		gd_admBtnBarComposite.widthHint = 769;
@@ -256,80 +365,131 @@ public class ApplicationWindow{
 		formToolkit.paintBordersFor(admBtnBarComposite);
 		admBtnBarComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		Button admBtnCreate = new Button(admBtnBarComposite, SWT.NONE);
-		formToolkit.adapt(admBtnCreate, true, true);
-		admBtnCreate.setText("Create");
+			//Create an Account
+			Button admBtnCreate = new Button(admBtnBarComposite, SWT.NONE);
+			formToolkit.adapt(admBtnCreate, true, true);
+			admBtnCreate.setText("Create");
+			
+			admBtnCreate.addListener(SWT.Selection, new Listener(){
+				public void handleEvent(Event e){
+					switch (e.type){
+					case SWT.Selection:
+						Shell accShell = new Shell(display);
+						accountShell(accShell);
+					}
+				}
+			}
+			);
+			
+			//Edit User Groups/Accounts
+			Button admBtnEdit = new Button(admBtnBarComposite, SWT.NONE);
+			formToolkit.adapt(admBtnEdit, true, true);
+			admBtnEdit.setText("Edit");
 		
-		Button admBtnEdit = new Button(admBtnBarComposite, SWT.NONE);
-		formToolkit.adapt(admBtnEdit, true, true);
-		admBtnEdit.setText("Edit");
+			admBtnEdit.addListener(SWT.Selection, new Listener(){
+				public void handleEvent(Event e){
+					switch (e.type){
+					case SWT.Selection:
+						editShell();
+					}
+				}
+			}
+			);
+			
+			//Delete User Groups/Accounts
+			Button admBtnDelete = new Button(admBtnBarComposite, SWT.NONE);
+			formToolkit.adapt(admBtnDelete, true, true);
+			admBtnDelete.setText("Delete");
 		
-		Button admBtnDelete = new Button(admBtnBarComposite, SWT.NONE);
-		formToolkit.adapt(admBtnDelete, true, true);
-		admBtnDelete.setText("Delete");
 		
+		//-----------------------------------------------------------------
+		//Main menu bar
+		//-----------------------------------------------------------------
 		Menu menu = new Menu(shlButterfly, SWT.BAR);
 		shlButterfly.setMenuBar(menu);
 		
+		// Menu Bar Main
 		MenuItem mntmMain = new MenuItem(menu, SWT.CASCADE);
 		mntmMain.setText("Main");
 		
 		Menu menu_main = new Menu(mntmMain);
 		mntmMain.setMenu(menu_main);
 		
-		MenuItem mntmImport = new MenuItem(menu_main, SWT.NONE);
-		mntmImport.setText("Import");
-		
-		MenuItem mntmExport = new MenuItem(menu_main, SWT.NONE);
-		mntmExport.setText("Export");
-		
-		MenuItem mntmNewItem = new MenuItem(menu_main, SWT.NONE);
-		mntmNewItem.setText("Logout");
-		
+			//Import
+			MenuItem mntmImport = new MenuItem(menu_main, SWT.NONE);
+			mntmImport.setText("Import");
+			mntmImport.addListener(SWT.Selection, new Listener(){
+				public void handleEvent(Event e){
+					switch (e.type){
+					case SWT.Selection:
+						editShell();
+					}
+				}
+			}
+			);
+			//Export
+			MenuItem mntmExport = new MenuItem(menu_main, SWT.NONE);
+			mntmExport.setText("Export");
+			
+			mntmExport.addListener(SWT.Selection, new Listener(){
+				public void handleEvent(Event e){
+					switch (e.type){
+					case SWT.Selection:
+						editShell();
+					}
+				}
+			}
+			);
+			
+			//Logout
+			MenuItem mntmNewItem = new MenuItem(menu_main, SWT.NONE);
+			mntmNewItem.setText("Logout");
+			
+			mntmNewItem.addListener(SWT.Selection, new Listener(){
+				public void handleEvent(Event e){
+					switch (e.type){
+					case SWT.Selection:
+						editShell();
+					}
+				}
+			}
+			);
+			
+		// Menu Bar Settings	
 		MenuItem mntmSettings = new MenuItem(menu, SWT.CASCADE);
 		mntmSettings.setText("Settings");
 		
 		Menu menu_settings = new Menu(mntmSettings);
 		mntmSettings.setMenu(menu_settings);
 		
-		MenuItem mntmChangePassword = new MenuItem(menu_settings, SWT.NONE);
-		mntmChangePassword.setText("Change Password");
+				//Change Password
+				MenuItem mntmChangePassword = new MenuItem(menu_settings, SWT.NONE);
+				mntmChangePassword.setText("Change Password");
+				
+				//Logging - Check enabled
+				MenuItem mntmEnableLogging = new MenuItem(menu_settings, SWT.CHECK);
+				mntmEnableLogging.setSelection(true);
+				mntmEnableLogging.setText("Enable Logging");
 		
+		// Menu Bar Help
 		MenuItem mntmHelp = new MenuItem(menu, SWT.CASCADE);
 		mntmHelp.setText("Help");
 		
 		Menu menu_1 = new Menu(mntmHelp);
 		mntmHelp.setMenu(menu_1);
 		
-		MenuItem mntmAbout = new MenuItem(menu_1, SWT.NONE);
-		mntmAbout.setText("About");
-		
-		MenuItem mntmBrowserSetup = new MenuItem(menu_1, SWT.NONE);
-		mntmBrowserSetup.setText("Browser Setup");
-		
-		MenuItem mntmFilterExample = new MenuItem(menu_1, SWT.NONE);
-		mntmFilterExample.setText("Filter Example");
+			//About 
+			MenuItem mntmAbout = new MenuItem(menu_1, SWT.NONE);
+			mntmAbout.setText("About");
+			
+			//Browser Setup
+			MenuItem mntmBrowserSetup = new MenuItem(menu_1, SWT.NONE);
+			mntmBrowserSetup.setText("Browser Setup");
+			
+			//Filter Example
+			MenuItem mntmFilterExample = new MenuItem(menu_1, SWT.NONE);
+			mntmFilterExample.setText("Filter Example");
+		//-----------------------------------------------------------------
 	}
-	
-	/**
-	 * Launches Login window
-	 * @param shell
-	 * @return boolean
-	 */
-	private boolean authenticate(Shell shell) {
-		LoginShell login = new LoginShell(shell);
-		login.open(this);
-		return true;
-	}
-	
-	private boolean filterEdit() {
-		Display display = Display.getDefault();
-		FilterShell filterEdit = new FilterShell(display);
-		filterEdit.open();
-		return true;
-	}
-	public void setAccount(Account a){account = a;}
-	
-	
-	
+
 }
