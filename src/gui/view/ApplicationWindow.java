@@ -39,6 +39,8 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ListViewer;
 import org.jboss.netty.bootstrap.ServerBootstrap;
@@ -92,9 +94,10 @@ public class ApplicationWindow{
 	 * Open filter import/export/user/group filter window
 	 * @return
 	 */
-	private boolean editShell(){
+	private boolean editShell(Account a){
 		Display display = Display.getDefault();
 		EditShell eShell = new EditShell(display);
+		eShell.account = a;
 		eShell.open();
 		return true;
 	}
@@ -141,7 +144,7 @@ public class ApplicationWindow{
 	 * Open the window.
 	 */
 	public void open() {
-		if (sb==null) {
+		/*if (sb==null) {
 			Executor executor = Executors.newCachedThreadPool();
 			sb = new ServerBootstrap(new NioServerSocketChannelFactory(executor, executor));
 			cf = new NioClientSocketChannelFactory(executor, executor);
@@ -154,7 +157,7 @@ public class ApplicationWindow{
 	        //cf.releaseExternalResources();
 	        sb = null;
 	        cf = null;
-		}
+		}*/
 		Display display = Display.getDefault();
 		createContents();
 		shlButterfly.open();
@@ -273,7 +276,7 @@ public class ApplicationWindow{
 		filterActiveComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 			// Active filter list viewer
-			ListViewer filterActiveListViewer = new ListViewer(filterActiveComposite, SWT.BORDER | SWT.V_SCROLL);
+			final ListViewer filterActiveListViewer = new ListViewer(filterActiveComposite, SWT.BORDER | SWT.V_SCROLL);
 			List filterActiveList = filterActiveListViewer.getList();
 			ArrayList<Filter> f = account.getFilters();
 			for(Filter fil: f){
@@ -302,7 +305,7 @@ public class ApplicationWindow{
 			Button btnAdd = new Button(filterBtnComposite_CENTER, SWT.NONE);
 			formToolkit.adapt(btnAdd, true, true);
 			btnAdd.setText("ADD");
-			
+
 			//Remove from active to inactive
 			Button btnRemove = new Button(filterBtnComposite_CENTER, SWT.NONE);
 			formToolkit.adapt(btnRemove, true, true);
@@ -324,9 +327,9 @@ public class ApplicationWindow{
 		filterInactiveComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 			//Inactive List viewer
-			ListViewer filterInactiveListViewer = new ListViewer(filterInactiveComposite, SWT.BORDER | SWT.V_SCROLL);
+			final ListViewer filterInactiveListViewer = new ListViewer(filterInactiveComposite, SWT.BORDER | SWT.V_SCROLL);
 			List filterInactiveList = filterInactiveListViewer.getList();
-		
+			filterInactiveList.add("this is a filter");
 		//Filter Button Bar
 		Composite filterBtnBarComposite = new Composite(filterComposite, SWT.NONE);
 		filterBtnBarComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
@@ -341,6 +344,26 @@ public class ApplicationWindow{
 			Button btnCreate = new Button(filterBtnBarComposite, SWT.NONE);
 			formToolkit.adapt(btnCreate, true, true);
 			btnCreate.setText("Create");
+			
+			//Add Filter from inactive to active list
+			//TODO: make this work correctly
+			btnAdd.addListener(SWT.Selection, new Listener(){
+
+				@Override
+				public void handleEvent(Event event) {
+					switch(event.type){
+					case SWT.Selection:
+						List al = filterActiveListViewer.getList();
+						List il = filterInactiveListViewer.getList();
+						
+						String filter = il.getSelection()[0];
+						System.err.println(filter);
+						il.remove(filter);
+						al.add(filter);
+					}
+				}
+				
+			});
 			
 			//Create filter button listener. Open blank text area.
 			btnCreate.addListener(SWT.Selection, new Listener(){
@@ -388,7 +411,7 @@ public class ApplicationWindow{
 		admComposite.setLayout(new GridLayout(1, false));
 		
 		//Administrator Table Tree
-		Composite admTableTreeComposite = new Composite(admComposite, SWT.NONE);
+	/*	Composite admTableTreeComposite = new Composite(admComposite, SWT.NONE);
 		GridData gd_admTableTreeComposite = new GridData(SWT.LEFT, SWT.CENTER, true, true, 1, 1);
 		gd_admTableTreeComposite.widthHint = 767;
 		gd_admTableTreeComposite.heightHint = 477;
@@ -396,12 +419,45 @@ public class ApplicationWindow{
 		formToolkit.adapt(admTableTreeComposite);
 		formToolkit.paintBordersFor(admTableTreeComposite);
 		admTableTreeComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
-		
+
 			// Tree viewer
 			TreeViewer admTableTreeViewer = new TreeViewer(admTableTreeComposite, SWT.BORDER);
 			Tree admTableTree = admTableTreeViewer.getTree();
 			formToolkit.paintBordersFor(admTableTree);
-		
+			*/
+		//TODO: All of this code is basically a hack until I can get TreeViewer to work
+			Composite admTableTreeComposite = new Composite(admComposite, SWT.NONE);
+			GridData gd_admTableTreeComposite = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
+			gd_admTableTreeComposite.heightHint = 477;
+			gd_admTableTreeComposite.widthHint = 767;
+			
+			admTableTreeComposite.setLayoutData(gd_admTableTreeComposite);
+			formToolkit.adapt(admTableTreeComposite);
+			formToolkit.paintBordersFor(admTableTreeComposite);
+			admTableTreeComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
+				// Acccount viewer
+				ListViewer AccountListViewer = new ListViewer(admTableTreeComposite, SWT.BORDER | SWT.V_SCROLL);
+				final List AccountList = AccountListViewer.getList();
+				Accounts a = new Accounts();
+				a.loadAccounts(); 
+				//TODO: terrible way of doing this
+				AccountList.add("Administrator");
+				for(Account acc: a){
+					if(acc.getGroup().equals("Administrator"))
+						AccountList.add("\t"+acc.getName());
+					
+				}
+				AccountList.add("Power Users");
+				for(Account acc: a){
+					if(acc.getGroup().equals("Power"))
+						AccountList.add("\t"+acc.getName());
+				}
+				AccountList.add("Standard Users");
+				for(Account acc: a){
+					if(acc.getGroup().equals("Standard"))
+							AccountList.add("\t"+acc.getName());
+						
+				}
 		// Administrator button bar
 		Composite admBtnBarComposite = formToolkit.createComposite(admComposite, SWT.NONE);
 		GridData gd_admBtnBarComposite = new GridData(SWT.LEFT, SWT.TOP, true, false, 1, 1);
@@ -436,7 +492,11 @@ public class ApplicationWindow{
 				public void handleEvent(Event e){
 					switch (e.type){
 					case SWT.Selection:
-						editShell();
+						Accounts acc = new Accounts();
+						acc.loadAccounts();
+						Account a =acc.getAccount(AccountList.getSelection()[0].trim());
+						if(a == null) System.err.println(AccountList.getSelection()[0]);
+						editShell(a);
 					}
 				}
 			}
@@ -468,7 +528,7 @@ public class ApplicationWindow{
 				public void handleEvent(Event e){
 					switch (e.type){
 					case SWT.Selection:
-						editShell();
+						editShell(account);
 					}
 				}
 			}
@@ -481,7 +541,7 @@ public class ApplicationWindow{
 				public void handleEvent(Event e){
 					switch (e.type){
 					case SWT.Selection:
-						editShell();
+						editShell(account);
 					}
 				}
 			}
@@ -495,7 +555,7 @@ public class ApplicationWindow{
 				public void handleEvent(Event e){
 					switch (e.type){
 					case SWT.Selection:
-						editShell();
+						editShell(account);
 					}
 				}
 			}

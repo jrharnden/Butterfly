@@ -8,7 +8,12 @@ public class TestDriver {
 		Accounts accounts = new Accounts();
 		accounts.addAccount(new Account("Admin", accounts.hashPass("admin"),"Administrator"));
 		accounts.addAccount(new Account("User", accounts.hashPass("qwerty"), "Standard"));
-		
+		accounts.addAccount(new Account("NotSoRandomAccountName", accounts.hashPass("z"), "Power"));
+		accounts.addAccount(new Account("RandomAccountName", accounts.hashPass("x"), "Standard"));
+		accounts.addAccount(new Account("SuperRandomAccountName", accounts.hashPass("t"), "Administrator"));
+		accounts.addAccount(new Account("AccountName", accounts.hashPass("u"), "Power"));
+		accounts.addAccount(new Account("User1", accounts.hashPass("g"), "Standard"));
+
 		try {
 			Account user = accounts.getAccount("User",accounts.hashPass("qwerty"));
 			user.addFilter(new Filter("Kill Nosey JavaScripts", "*(.(referrer|plugins|cookie|colorDepth|pixelDepth|external)|history.length)*", "<!-- Killed Nosey JavaScript -->"));
@@ -21,7 +26,7 @@ public class TestDriver {
 			admin.addFilter(new Filter("Kill Nosey JavaScripts", "*(.(referrer|plugins|cookie|colorDepth|pixelDepth|external)|history.length)*", "<!-- Killed Nosey JavaScript -->"));
 			admin.addFilter(new Filter("Disable JavaScript (and meta) cookies", ".cookie(*[(;)=])\1|http-equiv=\"Set-Cookie", ".Cracker\1"));
 			admin.addFilter(new Filter("Kill alert/confirm boxes"," (<!DOCTYPE*> |)\1","$STOP()\1\r\n<!--//--><script> "));
-		} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

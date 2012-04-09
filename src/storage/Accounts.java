@@ -74,6 +74,13 @@ public class Accounts implements Serializable,Iterable<Account> {
 		}
 		return null;
 	}
+	public Account getAccount(String username){
+		for(Account a: accounts){
+			if(a.getName().equals(username))
+				return a;
+		}
+		return null;
+	}
 	/**
 	 * Hashes a String password
 	 * @param password text password to be hashed
@@ -204,6 +211,7 @@ public class Accounts implements Serializable,Iterable<Account> {
 		// TODO Auto-generated method stub
 		return accounts.iterator();
 	}
+	
 	 
 
 

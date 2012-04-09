@@ -1,5 +1,7 @@
 package gui.view;
 
+import java.util.ArrayList;
+
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -12,6 +14,8 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
+import storage.Account;
+import storage.Filter;
 import swing2swt.layout.FlowLayout;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormLayout;
@@ -22,7 +26,7 @@ public class EditShell {
 	protected Shell shell;
 	protected Object result;
 	protected Display display;
-	
+	protected Account account;
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 	
 	/**
@@ -38,6 +42,7 @@ public class EditShell {
 	 * @return
 	 */
 	public Object open(){
+		
 		createContents();
 		shell.open();
 		shell.layout();
@@ -88,6 +93,10 @@ public class EditShell {
 			//Active List
 			ListViewer filterActiveListViewer = new ListViewer(filterActiveComposite, SWT.BORDER | SWT.V_SCROLL);
 			List filterActiveList = filterActiveListViewer.getList();
+			ArrayList<Filter> f = account.getFilters();
+			for(Filter fil: f){
+				filterActiveList.add(fil.toString());
+			}
 		
 		//Button composite
 		Composite filterBtnComposite = new Composite(filterComposite_1, SWT.NONE);
