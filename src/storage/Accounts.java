@@ -157,7 +157,7 @@ public class Accounts implements Serializable,Iterable<Account> {
 		BufferedWriter fwr;
 		try{
 			fwr = new BufferedWriter(new FileWriter(f));
-			ArrayList<Filter> fil = a.getFilters();
+			ArrayList<Filter> fil = a.getActiveFilters();
 			for(Filter filt: fil){
 				String s = filt.toString();
 				fwr.write(s);

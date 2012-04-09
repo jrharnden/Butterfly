@@ -26,6 +26,7 @@ public class TestDriver {
 			admin.addFilter(new Filter("Kill Nosey JavaScripts", "*(.(referrer|plugins|cookie|colorDepth|pixelDepth|external)|history.length)*", "<!-- Killed Nosey JavaScript -->"));
 			admin.addFilter(new Filter("Disable JavaScript (and meta) cookies", ".cookie(*[(;)=])\1|http-equiv=\"Set-Cookie", ".Cracker\1"));
 			admin.addFilter(new Filter("Kill alert/confirm boxes"," (<!DOCTYPE*> |)\1","$STOP()\1\r\n<!--//--><script> "));
+			admin.addInactiveFilter(new Filter("Dummy Inactive Filter"," (<!DOCTYPE*> |)\1","$STOP()\1\r\n<!--//--><script> "));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

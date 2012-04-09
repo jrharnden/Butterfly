@@ -50,6 +50,7 @@ public class AccountShell extends Dialog {
 	protected void createContents(){
 		shell = new Shell(getParent(), SWT.ON_TOP | SWT.CLOSE | SWT.TITLE);
 		shell.setSize(450, 300);
+		shell.setLocation(200,200);
 		shell.setText("Create Account");
 		shell.setLayout(new FillLayout(SWT.HORIZONTAL));
 

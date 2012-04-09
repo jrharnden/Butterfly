@@ -58,15 +58,10 @@ public class ApplicationWindow{
 	protected Display display;
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 	private Account account;
-	static ChannelGroup allChannels = new DefaultChannelGroup("Proxy-Server");
-	private Channel channel;
+	private Accounts accounts;
 	private JFrame frame;
 	protected JTextField txtPort;
-	protected Thread proxyThread;
-	protected JButton btnListen;
-	protected Thread filterThread;
-	protected NioClientSocketChannelFactory cf;
-	protected ServerBootstrap sb;
+	
 	
 	/**
 	 * Launches Login window
@@ -144,20 +139,7 @@ public class ApplicationWindow{
 	 * Open the window.
 	 */
 	public void open() {
-		/*if (sb==null) {
-			Executor executor = Executors.newCachedThreadPool();
-			sb = new ServerBootstrap(new NioServerSocketChannelFactory(executor, executor));
-			cf = new NioClientSocketChannelFactory(executor, executor);
-			sb.setPipelineFactory(new ProxyPipelineFactory(cf)); 
-	        channel = sb.bind(new InetSocketAddress(8080));
-	        allChannels.add(channel);
-		} else {
-	        ChannelGroupFuture future = allChannels.close();
-	        //future.awaitUninterruptibly();
-	        //cf.releaseExternalResources();
-	        sb = null;
-	        cf = null;
-		}*/
+		
 		Display display = Display.getDefault();
 		createContents();
 		shlButterfly.open();
@@ -278,7 +260,7 @@ public class ApplicationWindow{
 			// Active filter list viewer
 			final ListViewer filterActiveListViewer = new ListViewer(filterActiveComposite, SWT.BORDER | SWT.V_SCROLL);
 			List filterActiveList = filterActiveListViewer.getList();
-			ArrayList<Filter> f = account.getFilters();
+			ArrayList<Filter> f = account.getActiveFilters();
 			for(Filter fil: f){
 				filterActiveList.add(fil.toString());
 			}
@@ -329,7 +311,10 @@ public class ApplicationWindow{
 			//Inactive List viewer
 			final ListViewer filterInactiveListViewer = new ListViewer(filterInactiveComposite, SWT.BORDER | SWT.V_SCROLL);
 			List filterInactiveList = filterInactiveListViewer.getList();
-			filterInactiveList.add("this is a filter");
+			ArrayList<Filter> fml = account.getInactiveFilters();
+			for(Filter fil: fml){
+				filterInactiveList.add(fil.toString());
+			}
 		//Filter Button Bar
 		Composite filterBtnBarComposite = new Composite(filterComposite, SWT.NONE);
 		filterBtnBarComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
@@ -355,11 +340,44 @@ public class ApplicationWindow{
 					case SWT.Selection:
 						List al = filterActiveListViewer.getList();
 						List il = filterInactiveListViewer.getList();
-						
+						try{
 						String filter = il.getSelection()[0];
-						System.err.println(filter);
+						String[] fil = filter.split(":");
+						String filterName = fil[0];
+						Filter removedFilter = account.removeInactiveFilter(filterName);
+						account.addFilter(removedFilter);
+						accounts.saveAccounts();
 						il.remove(filter);
 						al.add(filter);
+						}catch(ArrayIndexOutOfBoundsException e){
+							System.err.println("Didn't select anything");
+						}
+					}
+				}
+				
+			});
+			
+			btnRemove.addListener(SWT.Selection, new Listener(){
+
+				@Override
+				public void handleEvent(Event event) {
+					switch(event.type){
+					case SWT.Selection:
+						try{
+						List al = filterActiveListViewer.getList();
+						List il = filterInactiveListViewer.getList();
+						
+						String filter = al.getSelection()[0];
+						String[] fil = filter.split(":");
+						String filterName = fil[0];
+						Filter removedFilter = account.removeActiveFilter(filterName);
+						account.addInactiveFilter(removedFilter);
+						accounts.saveAccounts();
+						al.remove(filter);
+						il.add(filter);
+						}catch(ArrayIndexOutOfBoundsException e){
+							System.err.println("Didn't select anything");
+						}
 					}
 				}
 				
@@ -597,7 +615,9 @@ public class ApplicationWindow{
 			mntmFilterExample.setText("Filter Example");
 		//-----------------------------------------------------------------
 	}
-
+	public void setAccounts(Accounts a){
+		accounts = a;
+	}
 	
 
 }

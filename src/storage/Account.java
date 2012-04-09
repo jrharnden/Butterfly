@@ -8,14 +8,16 @@ public class Account implements Serializable{
 	private static final long serialVersionUID = -218624877012403429L;
 	private String accName, passHash, group;
 	private Boolean[] permissions;
-	private ArrayList<Filter> filters;
+	private ArrayList<Filter> activeFilters;
+	private ArrayList<Filter> inactiveFilters;
 	public Account(String name, String pass, String gr){
 		accName = name;
 		passHash = pass;
 		if(!(gr == null))
 			group = gr;
 		else group = "";
-		filters = new ArrayList<Filter>();
+		activeFilters = new ArrayList<Filter>();
+		inactiveFilters = new ArrayList<Filter>();
 	}
 	public String getName(){
 		return accName;
@@ -26,8 +28,11 @@ public class Account implements Serializable{
 	public String getGroup(){
 		return group;
 	}
-	public ArrayList<Filter> getFilters(){
-		return filters;
+	public ArrayList<Filter> getActiveFilters(){
+		return activeFilters;
+	}
+	public ArrayList<Filter> getInactiveFilters(){
+		return inactiveFilters;
 	}
 	public void changeName(String newName){
 		accName = newName;
@@ -42,7 +47,28 @@ public class Account implements Serializable{
 		
 	}
 	public void addFilter(Filter f){
-		filters.add(f);
+		activeFilters.add(f);
+	}
+	public void addInactiveFilter(Filter f){
+		inactiveFilters.add(f);
+	}
+	public Filter removeActiveFilter(String filterName){
+		for(Filter f: activeFilters){
+			if(f.getName().equals(filterName)){
+				activeFilters.remove(f);
+				return f;
+			}
+		}
+		return null;
+	}
+	public Filter removeInactiveFilter(String filterName){
+		for(Filter f: inactiveFilters){
+			if(f.getName().equals(filterName)){
+				inactiveFilters.remove(f);
+				return f;
+			}
+		}
+		return null;
 	}
 	public void setPermissions(boolean[] permission){
 		for(int i = 0; i < permission.length;++i){

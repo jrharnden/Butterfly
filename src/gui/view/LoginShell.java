@@ -133,6 +133,7 @@ public class LoginShell extends Dialog {
 						System.out.println("LOGIN SUCCESS!");
 						try {
 							ap.setAccount(accounts.getAccount(username, accounts.hashPass(pass)));
+							ap.setAccounts(accounts);
 						} catch (NoSuchAlgorithmException e1){
 						
 							e1.printStackTrace();

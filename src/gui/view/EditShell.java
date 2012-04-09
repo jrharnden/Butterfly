@@ -93,7 +93,7 @@ public class EditShell {
 			//Active List
 			ListViewer filterActiveListViewer = new ListViewer(filterActiveComposite, SWT.BORDER | SWT.V_SCROLL);
 			List filterActiveList = filterActiveListViewer.getList();
-			ArrayList<Filter> f = account.getFilters();
+			ArrayList<Filter> f = account.getActiveFilters();
 			for(Filter fil: f){
 				filterActiveList.add(fil.toString());
 			}
