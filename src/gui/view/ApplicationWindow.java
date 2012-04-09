@@ -1,5 +1,7 @@
 package gui.view;
 
+import networking.ProxyPipelineFactory;
+
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.custom.CTabFolder;
@@ -12,7 +14,16 @@ import java.awt.Frame;
 import org.eclipse.swt.awt.SWT_AWT;
 import java.awt.Panel;
 import java.awt.BorderLayout;
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JRootPane;
+import javax.swing.JTextField;
+
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.layout.GridLayout;
@@ -30,6 +41,14 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ListViewer;
+import org.jboss.netty.bootstrap.ServerBootstrap;
+import org.jboss.netty.channel.Channel;
+import org.jboss.netty.channel.group.ChannelGroup;
+import org.jboss.netty.channel.group.ChannelGroupFuture;
+import org.jboss.netty.channel.group.DefaultChannelGroup;
+import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
+import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
+
 import storage.*;
 public class ApplicationWindow{
 
@@ -37,7 +56,15 @@ public class ApplicationWindow{
 	protected Display display;
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 	private Account account;
-
+	static ChannelGroup allChannels = new DefaultChannelGroup("Proxy-Server");
+	private Channel channel;
+	private JFrame frame;
+	protected JTextField txtPort;
+	protected Thread proxyThread;
+	protected JButton btnListen;
+	protected Thread filterThread;
+	protected NioClientSocketChannelFactory cf;
+	protected ServerBootstrap sb;
 	
 	/**
 	 * Launches Login window
@@ -114,6 +141,20 @@ public class ApplicationWindow{
 	 * Open the window.
 	 */
 	public void open() {
+		if (sb==null) {
+			Executor executor = Executors.newCachedThreadPool();
+			sb = new ServerBootstrap(new NioServerSocketChannelFactory(executor, executor));
+			cf = new NioClientSocketChannelFactory(executor, executor);
+			sb.setPipelineFactory(new ProxyPipelineFactory(cf)); 
+	        channel = sb.bind(new InetSocketAddress(8080));
+	        allChannels.add(channel);
+		} else {
+	        ChannelGroupFuture future = allChannels.close();
+	        //future.awaitUninterruptibly();
+	        //cf.releaseExternalResources();
+	        sb = null;
+	        cf = null;
+		}
 		Display display = Display.getDefault();
 		createContents();
 		shlButterfly.open();
@@ -131,7 +172,7 @@ public class ApplicationWindow{
 	protected void createContents() {
 		shlButterfly = new Shell();
 		shlButterfly.setSize(800, 600);
-		//shlButterfly.setText("Butterfly - Logged in as "+ account.getName());
+		shlButterfly.setText("Butterfly - Logged in as "+ account.getName());
 		shlButterfly.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 		CTabFolder tabFolder = new CTabFolder(shlButterfly, SWT.BORDER);
@@ -234,7 +275,10 @@ public class ApplicationWindow{
 			// Active filter list viewer
 			ListViewer filterActiveListViewer = new ListViewer(filterActiveComposite, SWT.BORDER | SWT.V_SCROLL);
 			List filterActiveList = filterActiveListViewer.getList();
-		
+			ArrayList<Filter> f = account.getFilters();
+			for(Filter fil: f){
+				filterActiveList.add(fil.toString());
+			}
 		//Filter middle button bar
 		Composite filterBtnComposite = new Composite(filterComposite_1, SWT.NONE);
 		filterBtnComposite.setLayout(new FillLayout(SWT.VERTICAL));
@@ -263,6 +307,7 @@ public class ApplicationWindow{
 			Button btnRemove = new Button(filterBtnComposite_CENTER, SWT.NONE);
 			formToolkit.adapt(btnRemove, true, true);
 			btnRemove.setText("REMOVE");
+		
 		
 		Composite filterBtnComposite_SOUTH = new Composite(filterBtnComposite, SWT.NONE);
 		formToolkit.adapt(filterBtnComposite_SOUTH);
@@ -333,6 +378,7 @@ public class ApplicationWindow{
 		//-----------------------------------------------------------------
 		//Administrator Tab
 		//-----------------------------------------------------------------
+		if(account.getGroup().equals("Administrator")){
 		CTabItem tbtmAdministrator = new CTabItem(tabFolder, SWT.NONE);
 		tbtmAdministrator.setText("Administrator");
 		
@@ -401,7 +447,7 @@ public class ApplicationWindow{
 			formToolkit.adapt(admBtnDelete, true, true);
 			admBtnDelete.setText("Delete");
 		
-		
+		}
 		//-----------------------------------------------------------------
 		//Main menu bar
 		//-----------------------------------------------------------------
@@ -491,5 +537,7 @@ public class ApplicationWindow{
 			mntmFilterExample.setText("Filter Example");
 		//-----------------------------------------------------------------
 	}
+
+	
 
 }

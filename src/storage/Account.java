@@ -12,7 +12,9 @@ public class Account implements Serializable{
 	public Account(String name, String pass, String gr){
 		accName = name;
 		passHash = pass;
-		group = gr;
+		if(!(gr == null))
+			group = gr;
+		else group = "";
 		filters = new ArrayList<Filter>();
 	}
 	public String getName(){
@@ -34,7 +36,10 @@ public class Account implements Serializable{
 		passHash = newPass;
 	}
 	public void changeGroup(String newGroup){
-		group = newGroup;
+		if(!(newGroup == null))
+			group = newGroup;
+		else group = "";
+		
 	}
 	public void addFilter(Filter f){
 		filters.add(f);

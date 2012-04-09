@@ -133,10 +133,12 @@ public class LoginShell extends Dialog {
 						System.out.println("LOGIN SUCCESS!");
 						try {
 							ap.setAccount(accounts.getAccount(username, accounts.hashPass(pass)));
-						} catch (NoSuchAlgorithmException
-								| UnsupportedEncodingException e1) {
-							// TODO This only works in java 7, suggest fixing if not auto generated
+						} catch (NoSuchAlgorithmException e1){
+						
 							e1.printStackTrace();
+						}
+						catch( UnsupportedEncodingException e2) {
+							e2.printStackTrace();
 						}
 						shell.close();
 					}else{System.err.println("LOGIN FAILED!");}
