@@ -178,8 +178,9 @@ public class Accounts implements Serializable,Iterable<Account> {
 			String fstr;
 			while((fstr = br.readLine()) != null){
 				String[] filt= fstr.split(":");
-				if(filt.length==2){ 
-					a.addFilter(new Filter(filt[0],filt[1]));
+				if(filt.length==3){ 
+					//TODO I had to add what we were replacing the regex with, don't know if I broke this
+					a.addFilter(new Filter(filt[0],filt[1],filt[2]));
 				}
 				else{
 					System.err.println("Malformed regex read");

@@ -135,7 +135,7 @@ public class LoginShell extends Dialog {
 							ap.setAccount(accounts.getAccount(username, accounts.hashPass(pass)));
 						} catch (NoSuchAlgorithmException
 								| UnsupportedEncodingException e1) {
-							// TODO Auto-generated catch block
+							// TODO This only works in java 7, suggest fixing if not auto generated
 							e1.printStackTrace();
 						}
 						shell.close();
