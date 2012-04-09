@@ -12,6 +12,7 @@ import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
+import org.jboss.netty.channel.SimpleChannelHandler;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 import org.jboss.netty.channel.socket.ClientSocketChannelFactory;
 import org.jboss.netty.handler.codec.http.DefaultHttpRequest;
@@ -26,7 +27,7 @@ import org.jboss.netty.handler.codec.http.HttpRequestEncoder;
 import org.jboss.netty.handler.codec.http.HttpResponseDecoder;
 
 
-public class ProxyClientHandler extends SimpleChannelUpstreamHandler{
+public class ProxyClientHandler extends SimpleChannelHandler{
 	private static final int DEFAULT_HOST_PORT = 80;
 	private static final int DEFAULT_SSL_PORT = 443;
 	/****************************************************************
@@ -49,15 +50,14 @@ public class ProxyClientHandler extends SimpleChannelUpstreamHandler{
 	/****************************************************************
 	 * Public Methods
 	 ****************************************************************/
+	
 	@Override
-	public void channelOpen(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
-		final Channel clientChannel = e.getChannel();
-		//clientChannel.setReadable();
-		
+	public void channelOpen(ChannelHandlerContext ctx ,ChannelStateEvent e) throws Exception {
+		window.allChannels.add(e.getChannel());
 	}
 	
 	@Override
-	public void messageReceived(ChannelHandlerContext ctx, final MessageEvent e) throws Exception{
+	public void messageReceived(ChannelHandlerContext ctx, final MessageEvent e) throws Exception {
 		final Channel clientChannel = e.getChannel();
 		final HttpRequest msg = (DefaultHttpRequest) e.getMessage();
 		clientChannel.setReadable(false);
@@ -76,15 +76,15 @@ public class ProxyClientHandler extends SimpleChannelUpstreamHandler{
 			this.clientbs.getPipeline().addLast("aggregator", new HttpChunkAggregator(1048576));
 			this.clientbs.getPipeline().addLast("filter", new FilterResponseHandler());
 			this.clientbs.getPipeline().addLast("handler", new ProxyHostHandler(clientChannel));
-			ChannelFuture cf = null;
+			ChannelFuture f = null;
 			if (msg.getMethod().compareTo(HttpMethod.CONNECT)==0) {
-				cf = this.clientbs.connect(new InetSocketAddress(host, DEFAULT_SSL_PORT));
+				f = this.clientbs.connect(new InetSocketAddress(host, DEFAULT_SSL_PORT));
 			} else {
-				cf = this.clientbs.connect(new InetSocketAddress(host, port));
+				f = this.clientbs.connect(new InetSocketAddress(host, port));
 			}
-			if (cf != null) {
-				this.hostChannel = cf.getChannel();
-				cf.addListener(new ChannelFutureListener() {
+			if (f != null) {
+				this.hostChannel = f.getChannel();
+				f.addListener(new ChannelFutureListener() {
 					@Override
 					public void operationComplete(ChannelFuture f)throws Exception {
 						if (f.isSuccess()) {
@@ -98,6 +98,7 @@ public class ProxyClientHandler extends SimpleChannelUpstreamHandler{
 							ProxyLog.write(clientChannel, hostChannel, msg);
 						}
 						else {
+							//window.allChannels.remove(e.getChannel());
 							clientChannel.close();
 						}
 					}
@@ -127,15 +128,34 @@ public class ProxyClientHandler extends SimpleChannelUpstreamHandler{
 	
 	@Override
 	public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception{
+		//window.allChannels.remove(e.getChannel());
+		if (this.hostChannel != null) {
+			ProxyClientHandler.closeOnFlush(this.hostChannel);
+		}
+		ctx.sendUpstream(e);
+	}
+	
+	@Override
+	public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception{
+		e.getCause().printStackTrace();
+		//window.allChannels.remove(e.getChannel());
+		ProxyClientHandler.closeOnFlush(e.getChannel());
+	}
+	
+	@Override
+	public void closeRequested(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
+		//window.allChannels.remove(e.getChannel());
 		if (this.hostChannel != null) {
 			ProxyClientHandler.closeOnFlush(this.hostChannel);
 		}
 	}
 	
 	@Override
-	public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception{
-		e.getCause().printStackTrace();
-		ProxyClientHandler.closeOnFlush(e.getChannel());
+	public void disconnectRequested(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
+		//window.allChannels.remove(e.getChannel());
+		if (this.hostChannel != null) {
+			ProxyClientHandler.closeOnFlush(this.hostChannel);
+		}
 	}
 	
 	/****************************************************************
@@ -143,6 +163,7 @@ public class ProxyClientHandler extends SimpleChannelUpstreamHandler{
 	 ****************************************************************/
 	static void closeOnFlush(Channel ch) {
 		if (ch.isConnected()) {
+			//window.allChannels.remove(ch);
 			ch.write(ChannelBuffers.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
 		}
 	}
@@ -150,7 +171,7 @@ public class ProxyClientHandler extends SimpleChannelUpstreamHandler{
 	/****************************************************************
 	 * ProxyServerHandler Class
 	 ****************************************************************/
-	private class ProxyHostHandler extends SimpleChannelUpstreamHandler {
+	private class ProxyHostHandler extends SimpleChannelHandler {
 		/******************************************************************
 		 * Fields
 		 ******************************************************************/
@@ -166,6 +187,11 @@ public class ProxyClientHandler extends SimpleChannelUpstreamHandler{
 		/******************************************************************
 		 * Public Methods 
 		 ******************************************************************/
+		@Override
+		public void channelOpen(ChannelHandlerContext ctx ,ChannelStateEvent e) throws Exception {
+			window.allChannels.add(e.getChannel());
+		}
+		
 		@Override
 		public void messageReceived(ChannelHandlerContext ctx, final MessageEvent e) throws Exception{
 			DefaultHttpResponse msg = (DefaultHttpResponse) e.getMessage();
@@ -189,12 +215,27 @@ public class ProxyClientHandler extends SimpleChannelUpstreamHandler{
 		
 		@Override
 		public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
+			window.allChannels.remove(e.getChannel());
 			ProxyClientHandler.closeOnFlush(this.clientChannel);
+			ctx.sendUpstream(e);
 		}
 		
 		@Override
 		public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
 			e.getCause().printStackTrace();
+			//window.allChannels.remove(e.getChannel());
+			ProxyClientHandler.closeOnFlush(this.clientChannel);
+		}
+		
+		@Override
+		public void closeRequested(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
+			//window.allChannels.remove(e.getChannel());
+			ProxyClientHandler.closeOnFlush(this.clientChannel);
+		}
+		
+		@Override
+		public void disconnectRequested(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
+			//window.allChannels.remove(e.getChannel());
 			ProxyClientHandler.closeOnFlush(this.clientChannel);
 		}
 		/******************************************************************
