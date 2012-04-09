@@ -15,9 +15,10 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 
-public class Accounts implements Serializable {
+public class Accounts implements Serializable,Iterable<Account> {
 	private static final long serialVersionUID = -6591287821163963006L;
 	private ArrayList<Account> accounts = new ArrayList<Account>();
 	
@@ -42,6 +43,7 @@ public class Accounts implements Serializable {
 			if(a.getName().equals(name) && a.getPassHash().equals(hashPass))
 				return true;
 		}
+		System.err.println("Couldn't find "+name + " "+ hashPass);
 		return false;
 	}
 	/**
@@ -97,7 +99,7 @@ public class Accounts implements Serializable {
 		}
 	       
 	 }
-	public boolean saveAccounts(Accounts a){
+	public boolean saveAccounts(){
 		ObjectOutputStream objOut = null;
 		FileOutputStream fileOut = null;
 		File f = null;
@@ -105,7 +107,7 @@ public class Accounts implements Serializable {
 			fileOut = new FileOutputStream("./data.dat");
 			objOut = new ObjectOutputStream(fileOut);
 			
-			objOut.writeObject(a);
+			objOut.writeObject(accounts);
 			objOut.close();
 			f = new File("./data.dat");
 			return true;
@@ -115,25 +117,27 @@ public class Accounts implements Serializable {
 		}
 		
 	}
-	public Accounts loadAccounts(){
+	@SuppressWarnings("unchecked")
+	public boolean loadAccounts(){
 		ObjectInputStream objIn = null;
 		FileInputStream fileIn = null;
 		try {
 			fileIn = new FileInputStream("./data.dat");
 			objIn = new ObjectInputStream(fileIn);
 			
-			Accounts a;
+			
 			try {
-				a = (Accounts) objIn.readObject();
+				accounts = (ArrayList<Account>) objIn.readObject();
+				for(Account ac: accounts) System.out.println(ac.toString());
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
-				return null;
+				return false;
 			}
 			objIn.close();
-			return a;
+			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
-			return null;
+			return false;
 		}
 	}
 	/**
@@ -193,6 +197,11 @@ public class Accounts implements Serializable {
 			System.err.println("Account was null");
 		}
 		
+	}
+	@Override
+	public Iterator<Account> iterator() {
+		// TODO Auto-generated method stub
+		return accounts.iterator();
 	}
 	 
 

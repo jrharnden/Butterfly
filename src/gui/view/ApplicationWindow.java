@@ -28,12 +28,13 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ListViewer;
-
+import storage.*;
 public class ApplicationWindow{
 
 	protected Shell shlButterfly;
 	protected Display display;
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
+	private Account account;
 
 	/**
 	 * Launch the application.
@@ -44,7 +45,7 @@ public class ApplicationWindow{
 			ApplicationWindow window = new ApplicationWindow();
 			final Shell shell = new Shell();
 			window.filterEdit();
-			//window.authenticate(shell);
+			window.authenticate(shell);
 			window.open();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -72,7 +73,7 @@ public class ApplicationWindow{
 	protected void createContents() {
 		shlButterfly = new Shell();
 		shlButterfly.setSize(800, 600);
-		shlButterfly.setText("Butterfly");
+		shlButterfly.setText("Butterfly - Logged in as "+ account.getName());
 		shlButterfly.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 		CTabFolder tabFolder = new CTabFolder(shlButterfly, SWT.BORDER);
@@ -317,7 +318,7 @@ public class ApplicationWindow{
 	 */
 	private boolean authenticate(Shell shell) {
 		LoginShell login = new LoginShell(shell);
-		login.open();
+		login.open(this);
 		return true;
 	}
 	
@@ -327,6 +328,7 @@ public class ApplicationWindow{
 		filterEdit.open();
 		return true;
 	}
+	public void setAccount(Account a){account = a;}
 	
 	
 	

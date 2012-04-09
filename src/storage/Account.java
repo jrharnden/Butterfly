@@ -48,11 +48,15 @@ public class Account implements Serializable{
 	public boolean equals(Object o){
 		try{
 			Account acc = (Account) o;
-			return acc.getName().equals(accName) && acc.getPassHash().equals(passHash) &&acc.getGroup().equals(group);
+			return acc.getName().equals(accName) && acc.getPassHash().equals(passHash);
 		}catch(ClassCastException e){
 			return false;
 		}
 		
+	}
+	@Override
+	public String toString(){
+		return accName+":"+passHash+":"+group;
 	}
 	
 }
