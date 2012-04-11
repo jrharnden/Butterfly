@@ -39,32 +39,42 @@ public class ProxyLog {
 	 * Public Methods
 	 ********************************************************/
 	
-	public static void write(Channel client, Channel host, HttpRequest msg) throws IOException {
+	public static void write(Channel client, Channel host, HttpRequest msg) {
 		File file = new File("/");
 		//file.mkdirs();
 		file = new File("/connection.txt");
-		if (!file.exists()) {
-			file.createNewFile();
+		try {
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			FileWriter out = new FileWriter(file, true);
+			out.write(client.getRemoteAddress().toString() + " to " + host.getRemoteAddress().toString() + "\r\n---------\r\n");
+			out.write(((HttpRequest) msg).toString());
+			out.write("\r\n---End---\r\n\r\n");
+			out.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.err.println("Unable to create or write to file: " + e.getMessage());
 		}
-		FileWriter out = new FileWriter(file, true);
-		out.write(client.getRemoteAddress().toString() + " to " + host.getRemoteAddress().toString() + "\r\n---------\r\n");
-		out.write(((HttpRequest) msg).toString());
-		out.write("\r\n---End---\r\n\r\n");
-		out.close();
 	}
 	
 	public static void write(Channel client, Channel host, HttpResponse msg) throws IOException {
 		File file = new File("C:/proxylog/" + client.getRemoteAddress().toString() + "/" + host.getRemoteAddress().toString());
 		//file.mkdirs();
 		file = new File("/connection.txt");
-		if (!file.exists()) {
-			file.createNewFile();
+		try {
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			FileWriter out = new FileWriter(file, true);
+			out.write(host.getRemoteAddress().toString() + " to " + client.getRemoteAddress().toString() + "\r\n---------\r\n");
+			out.write(((HttpResponse) msg).toString());
+			out.write("\r\n---End---\r\n\r\n");
+			out.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.err.println("Unable to create or write to file: " + e.getMessage());
 		}
-		FileWriter out = new FileWriter(file, true);
-		out.write(host.getRemoteAddress().toString() + " to " + client.getRemoteAddress().toString() + "\r\n---------\r\n");
-		out.write(((HttpResponse) msg).toString());
-		out.write("\r\n---End---\r\n\r\n");
-		out.close();
 	}
 
 

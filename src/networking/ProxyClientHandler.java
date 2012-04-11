@@ -20,6 +20,7 @@ import org.jboss.netty.handler.codec.http.DefaultHttpResponse;
 import org.jboss.netty.handler.codec.http.HttpChunkAggregator;
 import org.jboss.netty.handler.codec.http.HttpContentCompressor;
 import org.jboss.netty.handler.codec.http.HttpContentDecompressor;
+import org.jboss.netty.handler.codec.http.HttpMessage;
 import org.jboss.netty.handler.codec.http.HttpMethod;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpRequestDecoder;
@@ -56,6 +57,7 @@ public class ProxyClientHandler extends SimpleChannelHandler{
 		window.allChannels.add(e.getChannel());
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public void messageReceived(ChannelHandlerContext ctx, final MessageEvent e) throws Exception {
 		final Channel clientChannel = e.getChannel();
@@ -85,36 +87,28 @@ public class ProxyClientHandler extends SimpleChannelHandler{
 			if (f != null) {
 				this.hostChannel = f.getChannel();
 				f.addListener(new ChannelFutureListener() {
+					@SuppressWarnings("deprecation")
 					@Override
 					public void operationComplete(ChannelFuture f)throws Exception {
 						if (f.isSuccess()) {
 							clientChannel.setReadable(true);
-							synchronized (trafficLock) {
-								hostChannel.write(msg);
-								if (!hostChannel.isWritable()) {
-									clientChannel.setReadable(false);
-								}
-							}
+							ProxyClientHandler.write(clientChannel, f.getChannel(), msg, trafficLock, msg.isKeepAlive());
 							ProxyLog.write(clientChannel, hostChannel, msg);
 						}
 						else {
 							//window.allChannels.remove(e.getChannel());
-							clientChannel.close();
+							if (clientChannel.isOpen()) {
+								clientChannel.close();	
+							}
 						}
 					}
 				});
 			}
 		}
 		else {
-			synchronized (this.trafficLock) {
-				this.hostChannel.write(msg);
-				if (!this.hostChannel.isWritable()) {
-					clientChannel.setReadable(false);
-				}
-			}
+			ProxyClientHandler.write(clientChannel, this.hostChannel, msg, trafficLock, msg.isKeepAlive());
 			ProxyLog.write(clientChannel, this.hostChannel, msg);
 		}
-		
 	}
 	
 	@Override
@@ -128,11 +122,11 @@ public class ProxyClientHandler extends SimpleChannelHandler{
 	
 	@Override
 	public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception{
-		//window.allChannels.remove(e.getChannel());
-		if (this.hostChannel != null) {
+		window.allChannels.remove(e.getChannel());
+		synchronized (this.trafficLock) {
+		if (this.hostChannel != null&& this.hostChannel.isOpen()) {
 			ProxyClientHandler.closeOnFlush(this.hostChannel);
-		}
-		ctx.sendUpstream(e);
+		}}
 	}
 	
 	@Override
@@ -143,16 +137,9 @@ public class ProxyClientHandler extends SimpleChannelHandler{
 	}
 	
 	@Override
-	public void closeRequested(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
-		//window.allChannels.remove(e.getChannel());
-		if (this.hostChannel != null) {
-			ProxyClientHandler.closeOnFlush(this.hostChannel);
-		}
-	}
-	
-	@Override
 	public void disconnectRequested(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
 		//window.allChannels.remove(e.getChannel());
+		e.getChannel().write(ChannelBuffers.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
 		if (this.hostChannel != null) {
 			ProxyClientHandler.closeOnFlush(this.hostChannel);
 		}
@@ -166,6 +153,23 @@ public class ProxyClientHandler extends SimpleChannelHandler{
 			//window.allChannels.remove(ch);
 			ch.write(ChannelBuffers.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
 		}
+	}
+	
+	static void write(Channel in, Channel to, HttpMessage msg, Object trafficLock, boolean keepAlive) {
+		if (to.isOpen()) {
+			synchronized (trafficLock) {
+				// check if the message is to stay alive or not
+				if (keepAlive) {
+					to.write(msg);
+				} else {
+					to.write(msg).addListener(ChannelFutureListener.CLOSE);
+				}
+				// check if channel is saturated
+				if (!in.isWritable()&&in.isOpen()) {
+					in.setReadable(false);
+				}
+			}// end synchronized(this.trafficeLock)
+		}// end if (to.isOpen())
 	}
 	
 	/****************************************************************
@@ -192,23 +196,19 @@ public class ProxyClientHandler extends SimpleChannelHandler{
 			window.allChannels.add(e.getChannel());
 		}
 		
+		@SuppressWarnings("deprecation")
 		@Override
 		public void messageReceived(ChannelHandlerContext ctx, final MessageEvent e) throws Exception{
 			DefaultHttpResponse msg = (DefaultHttpResponse) e.getMessage();
-			synchronized(trafficLock) {
-				this.clientChannel.write(msg);
-				ProxyLog.write(this.clientChannel, e.getChannel(), msg);
-				if (!this.clientChannel.isWritable()) {
-					e.getChannel().setReadable(false);
-				}
-			}
+			ProxyClientHandler.write(e.getChannel(), this.clientChannel, msg, trafficLock, msg.isKeepAlive());
+			ProxyLog.write(this.clientChannel, e.getChannel(), msg);
 		}
 		
 		@Override
 		public void channelInterestChanged(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
 			synchronized(trafficLock) {
 				if (e.getChannel().isWritable()) {
-					this.clientChannel.setReadable(false);
+					this.clientChannel.setReadable(true);
 				}
 			}
 		}
@@ -216,8 +216,9 @@ public class ProxyClientHandler extends SimpleChannelHandler{
 		@Override
 		public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
 			window.allChannels.remove(e.getChannel());
-			ProxyClientHandler.closeOnFlush(this.clientChannel);
-			ctx.sendUpstream(e);
+			if (this.clientChannel != null && this.clientChannel.isOpen()) {
+				ProxyClientHandler.closeOnFlush(this.clientChannel);
+			}		
 		}
 		
 		@Override
@@ -228,14 +229,9 @@ public class ProxyClientHandler extends SimpleChannelHandler{
 		}
 		
 		@Override
-		public void closeRequested(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
-			//window.allChannels.remove(e.getChannel());
-			ProxyClientHandler.closeOnFlush(this.clientChannel);
-		}
-		
-		@Override
 		public void disconnectRequested(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
 			//window.allChannels.remove(e.getChannel());
+			e.getChannel().write(ChannelBuffers.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
 			ProxyClientHandler.closeOnFlush(this.clientChannel);
 		}
 		/******************************************************************

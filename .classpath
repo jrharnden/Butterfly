@@ -16,6 +16,6 @@
 	<classpathentry kind="lib" path="lib/org.eclipse.ui.workbench_3.6.1.M20100826-1330.jar"/>
 	<classpathentry kind="lib" path="lib/swing2swt.jar"/>
 	<classpathentry kind="lib" path="lib/swt-grouplayout.jar"/>
-	<classpathentry kind="lib" path="lib/netty-3.2.7.Final.jar"/>
+	<classpathentry kind="lib" path="lib/netty-3.2.7.Final.jar" sourcepath="C:/Users/Zong/git/Butterfly/lib/netty-3.2.7.Final-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

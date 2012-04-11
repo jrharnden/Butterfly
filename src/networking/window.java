@@ -99,6 +99,7 @@ public class window {
 				if (sb==null) {
 					Executor executor = Executors.newCachedThreadPool();
 					sb = new ServerBootstrap(new NioServerSocketChannelFactory(executor, executor));
+					sb.setOption("backlog", 1024);
 					cf = new NioClientSocketChannelFactory(executor, executor);
 					sb.setPipelineFactory(new ProxyPipelineFactory(cf)); 
 			        channel = sb.bind(new InetSocketAddress(Integer.parseInt(txtPort.getText())));
@@ -106,8 +107,8 @@ public class window {
 					btnListen.setText("Stop");
 				} else {
 			        ChannelGroupFuture future = allChannels.close();
-			        //future.awaitUninterruptibly();
-			        //cf.releaseExternalResources();
+			        future.awaitUninterruptibly();
+			        cf.releaseExternalResources();
 			        sb = null;
 			        cf = null;
 			        btnListen.setText("Listen");
