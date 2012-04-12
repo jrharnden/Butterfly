@@ -23,6 +23,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 
 public class EditShell {
+	private String sName = "";
 	protected Shell shell;
 	protected Object result;
 	protected Display display;
@@ -30,13 +31,23 @@ public class EditShell {
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 	
 	/**
-	 * Launch the application.
+	 * Filter edit shell [Active <-> Inactive]
 	 * @param args
 	 */
 	public EditShell(Display d) {
 		display = d;
+		sName = "";
 	}
 	
+	/**
+	 * 
+	 * @param d
+	 * @param s
+	 */
+	public EditShell(Display d, String s){
+		display =d;
+		sName = s;
+	}
 	/**
 	 * 
 	 * @return
@@ -61,7 +72,7 @@ public class EditShell {
 	 */
 	protected void createContents() {
 		shell = new Shell(display, SWT.ON_TOP | SWT.CLOSE | SWT.TITLE);
-		shell.setText("Filter Edit");
+		shell.setText(sName + " Filters");
 		shell.setSize(786, 510);
 		shell.setLayout(new FormLayout());
 		
@@ -117,7 +128,7 @@ public class EditShell {
 			//Select new import/export file, or new user/group
 			Button btnSelectNew = new Button(filterBtnComposite_NORTH, SWT.NONE);
 			formToolkit.adapt(btnSelectNew, true, true);
-			btnSelectNew.setText("Select New");
+			btnSelectNew.setText("Select New" + sName);
 		
 		//Center Button Composite
 		Composite filterBtnComposite_CENTER = new Composite(filterBtnComposite, SWT.NONE);

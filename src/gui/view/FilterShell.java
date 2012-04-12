@@ -1,8 +1,10 @@
 package gui.view;
 
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Widget;
@@ -20,7 +22,8 @@ import javax.swing.JRootPane;
 import javax.swing.JTextArea;
 import javax.swing.DropMode;
 
-public class FilterShell{
+public class FilterShell {
+	private String fName = ""; 
 	protected Shell shell;
 	protected Object result;
 	protected Display display;
@@ -31,6 +34,12 @@ public class FilterShell{
 	
 	public FilterShell(Display d){
 		display = d;
+		fName = "";
+	}
+	
+	public FilterShell(Display d, String s){
+		display = d;
+		fName = s;
 	}
 	/**
 	 * Open the Filter Shell
@@ -57,7 +66,7 @@ public class FilterShell{
 	protected void createContents() {
 		shell = new Shell(display, SWT.ON_TOP | SWT.CLOSE | SWT.TITLE);
 		shell.setSize(786, 510);
-		shell.setText("Edit Filters");
+		shell.setText(fName + " Filters");
 		shell.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 		Composite filterEditComposite = new Composite(shell, SWT.NONE);
@@ -96,11 +105,24 @@ public class FilterShell{
 		filterEditBtnComposite.setLayoutData(gd_filterEditBtnComposite);
 			
 			//submit button
-			Button btnNewButton = new Button(filterEditBtnComposite, SWT.NONE);
-			btnNewButton.setText("Submit");
+			Button btnSubmitButton = new Button(filterEditBtnComposite, SWT.NONE);
+			btnSubmitButton.setText("Submit");
 			
 			//cancel button
-			Button btnNewButton_1 = new Button(filterEditBtnComposite, SWT.NONE);
-			btnNewButton_1.setText("Cancel");
+			Button btnCancelButton = new Button(filterEditBtnComposite, SWT.NONE);
+			btnCancelButton.setText("Cancel");
+			
+			//Create filter button listener. Open text area with highlighted filters text.
+			btnCancelButton.addListener(SWT.Selection, new Listener(){
+				public void handleEvent(Event e){
+					switch (e.type){
+					case SWT.Selection:
+						shell.close();
+						shell.dispose();
+					}
+				}
+			}
+			);
+			
 	}
 }

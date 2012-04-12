@@ -34,7 +34,7 @@ public class Backbone {
 	public static void main(String[] args) {
 			
 			Backbone b = new Backbone();
-			b.startNetworking();
+		//	b.startNetworking();
 			b.startDisplay();
 	}
 	
@@ -60,7 +60,7 @@ public class Backbone {
 		Shell shell = new Shell();
 		LoginShell lw = new LoginShell(shell);
 		ApplicationWindow ap = new ApplicationWindow();
-		lw.open(ap);
+		//lw.open(ap);
 		ap.open();
 	}
 	
