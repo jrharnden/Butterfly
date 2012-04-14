@@ -35,6 +35,7 @@ import java.awt.event.ActionEvent;
  *
  */
 public class window {
+	static ProxyLog log = new ProxyLog("./proxylog");
 	static ChannelGroup allChannels = new DefaultChannelGroup("Proxy-Server");
 	private Channel channel;
 	private JFrame frame;

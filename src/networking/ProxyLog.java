@@ -1,15 +1,19 @@
 package networking;
 
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.SocketChannel;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.zip.GZIPInputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpResponse;
 
@@ -22,59 +26,90 @@ import org.jboss.netty.handler.codec.http.HttpResponse;
  *
  */
 public class ProxyLog {
+	public static final Object fileLock = new Object();
 	/********************************************************
 	 * Fields
 	 ********************************************************/
-	private String root;
+	public static String root = "./proxyLog";
+	private static final DateFormat dateformat = new SimpleDateFormat("MM-dd-YYYY");
 
 
 	/********************************************************
 	 * Constructor
 	 ********************************************************/
 	public ProxyLog(String path) {
-		this.root = path;
+		//this.root = path;
 	}
 
 	/********************************************************
 	 * Public Methods
 	 ********************************************************/
 	
-	public static void write(Channel client, Channel host, HttpRequest msg) {
-		File file = new File("/");
-		//file.mkdirs();
-		file = new File("/connection.txt");
-		try {
-			if (!file.exists()) {
-				file.createNewFile();
+	@SuppressWarnings("deprecation")
+	public static boolean write(Channel client, Channel host, HttpRequest msg) {
+			String hostString = host.getRemoteAddress().toString().split("/")[0];
+			String clientString = client.getRemoteAddress().toString().replaceAll(":", ".");
+			int index = clientString.lastIndexOf(".");
+			clientString = clientString.substring(0, index);
+			Date date = new Date();
+			String path = root + "/" + dateformat.format(date) + "/"  + clientString;
+			try {
+				File file = new File(path);
+				file.mkdirs();
+				if (!file.exists()) {
+					file.createNewFile();
+				}
+				FileWriter out = new FileWriter(new File(path + "/" + hostString + ".txt"), true);
+				out.write("Client writes to host\r\n---------\r\n");
+				out.write(msg.toString());
+				out.write("\r\n---CONTENT---\r\n");
+				out.write(msg.getContent().toString("UTF-8"));
+				out.write("\r\n---End---\r\n\r\n");
+				out.close();
+				
+				return true;
+			} catch (IOException e) {
+				e.printStackTrace();
+				return false;
 			}
-			FileWriter out = new FileWriter(file, true);
-			out.write(client.getRemoteAddress().toString() + " to " + host.getRemoteAddress().toString() + "\r\n---------\r\n");
-			out.write(((HttpRequest) msg).toString());
-			out.write("\r\n---End---\r\n\r\n");
-			out.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.err.println("Unable to create or write to file: " + e.getMessage());
-		}
 	}
 	
-	public static void write(Channel client, Channel host, HttpResponse msg) throws IOException {
-		File file = new File("C:/proxylog/" + client.getRemoteAddress().toString() + "/" + host.getRemoteAddress().toString());
-		//file.mkdirs();
-		file = new File("/connection.txt");
-		try {
-			if (!file.exists()) {
-				file.createNewFile();
+	@SuppressWarnings("deprecation")
+	public static boolean write(Channel client, Channel host, HttpResponse msg) throws IOException {
+			String hostString = host.getRemoteAddress().toString().split("/")[0];
+			String clientString = client.getRemoteAddress().toString().replaceAll(":", ".");
+			int index = clientString.lastIndexOf(".");
+			clientString = clientString.substring(0, index);
+			DateFormat dateformat = new SimpleDateFormat("MM-dd-YYYY");
+			Date date = new Date();
+			String path = root + "/" + dateformat.format(date) + "/"  + clientString;
+			try {
+				File file = new File(path);
+				file.mkdirs();
+				if (!file.exists()) {
+					file.createNewFile();
+				}
+				FileWriter out = new FileWriter(new File(path + "/" + hostString + ".txt"), true);
+				out.write("Host writes to client\r\n---------\r\n");
+				out.write(msg.toString());
+				out.write("\r\n---Content---\r\n");
+				String encoding = msg.getHeader("Content-Encoding");
+				if (encoding.equals("gzip")) {
+					GZIPInputStream gin = new GZIPInputStream(new ByteArrayInputStream(msg.getContent().toByteBuffer().array()));
+					ByteArrayOutputStream gout = new ByteArrayOutputStream();
+					IOUtils.copy(gin, gout);
+					out.write(gout.toString("UTF-8"));
+				} else {
+					out.write(msg.getContent().toString("UTF-8"));
+				}
+				out.write("\r\n---End---\r\n\r\n");
+				out.close();
+				
+				return true;
+			} catch (IOException e) {
+				e.printStackTrace();
+				return false;
 			}
-			FileWriter out = new FileWriter(file, true);
-			out.write(host.getRemoteAddress().toString() + " to " + client.getRemoteAddress().toString() + "\r\n---------\r\n");
-			out.write(((HttpResponse) msg).toString());
-			out.write("\r\n---End---\r\n\r\n");
-			out.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.err.println("Unable to create or write to file: " + e.getMessage());
-		}
 	}
 
 

@@ -87,7 +87,6 @@ public class ProxyClientHandler extends SimpleChannelHandler{
 			if (f != null) {
 				this.hostChannel = f.getChannel();
 				f.addListener(new ChannelFutureListener() {
-					@SuppressWarnings("deprecation")
 					@Override
 					public void operationComplete(ChannelFuture f)throws Exception {
 						if (f.isSuccess()) {

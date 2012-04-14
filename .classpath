@@ -17,5 +17,6 @@
 	<classpathentry kind="lib" path="lib/swing2swt.jar"/>
 	<classpathentry kind="lib" path="lib/swt-grouplayout.jar"/>
 	<classpathentry kind="lib" path="lib/netty-3.2.7.Final.jar" sourcepath="C:/Users/Zong/git/Butterfly/lib/netty-3.2.7.Final-sources.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
