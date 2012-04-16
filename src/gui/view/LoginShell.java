@@ -60,26 +60,27 @@ public class LoginShell extends Dialog {
 	 */
 	protected void createContents() {
 		shell = new Shell(getParent(), SWT.ON_TOP | SWT.CLOSE | SWT.TITLE);
-		shell.setSize(350, 250);
+		shell.setSize(300, 200);
 		shell.setText("Butterfly Log In");
 		shell.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 		Composite loginComposite = new Composite(shell, SWT.NONE);
 		loginComposite.setLayout(new GridLayout(1, false));
 		
+		// Login composite
 		Composite composite_1 = new Composite(loginComposite, SWT.NONE);
 		composite_1.setLayout(new GridLayout(2, false));
-		GridData gd_composite_1 = new GridData(SWT.LEFT, SWT.CENTER, true, true, 1, 1);
+		GridData gd_composite_1 = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
 		gd_composite_1.heightHint = 173;
-		gd_composite_1.widthHint = 334;
+		gd_composite_1.widthHint = 285;
 		composite_1.setLayoutData(gd_composite_1);
-		new Label(composite_1, SWT.NONE);
-		new Label(composite_1, SWT.NONE);
 		
+		//Login label
 		Label lblNewLabel = new Label(composite_1, SWT.NONE);
 		lblNewLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
 		lblNewLabel.setText("Please log in:");
 		
+		//Username composite/label
 		Label lblUsername = new Label(composite_1, SWT.NONE);
 		lblUsername.setAlignment(SWT.CENTER);
 		GridData gd_lblUsername = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);
@@ -87,8 +88,11 @@ public class LoginShell extends Dialog {
 		lblUsername.setLayoutData(gd_lblUsername);
 		lblUsername.setText("Username:");
 		
-		txtUsername = new Text(composite_1, SWT.BORDER);
-		txtUsername.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+			//Username text field
+			txtUsername = new Text(composite_1, SWT.BORDER);
+			txtUsername.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		//Password composite/
 		Label lblPassword = new Label(composite_1, SWT.NONE);
 		lblPassword.setAlignment(SWT.CENTER);
 		GridData gd_lblPassword = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
@@ -99,11 +103,24 @@ public class LoginShell extends Dialog {
 		txtPassword = new Text(composite_1, SWT.BORDER | SWT.PASSWORD);
 		txtPassword.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
+		//Error Composite
+		Composite errComposite = new Composite(loginComposite, SWT.NONE);
+		errComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
+		GridData gd_errComposite = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_errComposite.heightHint = 22;
+		gd_errComposite.widthHint = 284;
+		errComposite.setLayoutData(gd_errComposite);
+		
+			//Error label
+			final Label lblErrorLabel = new Label(errComposite, SWT.NONE);
+			lblErrorLabel.setAlignment(SWT.CENTER);
+			lblErrorLabel.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
+			
 		SashForm sashForm = new SashForm(loginComposite, SWT.VERTICAL);
 		sashForm.setOrientation(SWT.HORIZONTAL);
-		GridData gd_sashForm = new GridData(SWT.RIGHT, SWT.TOP, false, false, 1, 1);
-		gd_sashForm.widthHint = 338;
-		gd_sashForm.heightHint = 36;
+		GridData gd_sashForm = new GridData(SWT.LEFT, SWT.TOP, true, false, 1, 1);
+		gd_sashForm.widthHint = 287;
+		gd_sashForm.heightHint = 30;
 		sashForm.setLayoutData(gd_sashForm);
 		
 		
@@ -123,10 +140,10 @@ public class LoginShell extends Dialog {
 				accounts.loadAccounts();
 				String username = (String) txtUsername.getText();
 				String pass = (String) txtPassword.getText();
+				String errEmpty = "Error: Enter nonblank  username/password";
+				String errInvalid = "Error: Invalid username/password";
 				
-				
-				if(pass == null || username == null) throw new UnsupportedOperationException();
-				
+				if(!pass.isEmpty() || !username.isEmpty()) {
 					if(accounts.containsAccount(username, accounts.hashPass(pass))){
 						System.out.println("LOGIN SUCCESS!");
 						try {
@@ -141,9 +158,15 @@ public class LoginShell extends Dialog {
 						}
 						shell.close();
 						shell.dispose();
-					}else{System.err.println("LOGIN FAILED!");}
-				
+					}	else	{
+							lblErrorLabel.setText(errInvalid);
+							System.err.println("LOGIN FAILED!");
+					}
+				}	else {
+					lblErrorLabel.setText(errEmpty);
+				}
 			}
+				
 		});
 		
 		/*
@@ -161,6 +184,4 @@ public class LoginShell extends Dialog {
 			}
 		});
 		}
-	
-		
 	}

@@ -12,6 +12,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.custom.SashForm;
 import java.awt.Frame;
 import org.eclipse.swt.awt.SWT_AWT;
+
+import java.awt.Color;
 import java.awt.Panel;
 import java.awt.BorderLayout;
 import java.net.InetSocketAddress;
@@ -19,6 +21,7 @@ import java.util.ArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JRootPane;
@@ -29,6 +32,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.GridData;
 import javax.swing.JTextArea;
+import javax.swing.border.Border;
+
 import org.eclipse.swt.widgets.List;
 import swing2swt.layout.FlowLayout;
 import org.eclipse.swt.widgets.Button;
@@ -134,6 +139,7 @@ public class ApplicationWindow{
 
 	/**
 	 * Open the window.
+	 * @wbp.parser.entryPoint
 	 */
 	public void open() {
 		Display display = Display.getDefault();
@@ -153,7 +159,7 @@ public class ApplicationWindow{
 	 * Create contents of the window.
 	 */
 	protected void createContents() {
-		shlButterfly = new Shell();
+		shlButterfly = new Shell(SWT.ON_TOP | SWT.CLOSE | SWT.TITLE | SWT.MIN);
 		shlButterfly.setSize(800, 600);
 		shlButterfly.setText("Butterfly - Logged in as "+ account.getName());
 		shlButterfly.setLayout(new FillLayout(SWT.HORIZONTAL));
@@ -199,8 +205,13 @@ public class ApplicationWindow{
 			
 			//Logging text area
 			JTextArea logTextArea_AWT = new JTextArea();
+			//Create Black border
+			Border border;
+			border = BorderFactory.createLineBorder(Color.black);
+			
 			statusLogRootPane_AWT.getContentPane().add(logTextArea_AWT);
-		
+			logTextArea_AWT.setBorder(border);
+			
 		Composite statusFilterComposite = new Composite(statusSashForm, SWT.NONE);
 		statusFilterComposite.setLayout(new GridLayout(2, false));
 		new Label(statusFilterComposite, SWT.NONE);
