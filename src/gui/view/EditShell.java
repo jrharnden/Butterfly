@@ -1,6 +1,9 @@
 package gui.view;
 
+import java.io.File;
 import java.util.ArrayList;
+
+import javax.swing.JFileChooser;
 
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
@@ -9,6 +12,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
@@ -21,22 +25,41 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Event;
+
 
 public class EditShell {
+	private String sName = "";
+	JFileChooser chooser;
 	protected Shell shell;
 	protected Object result;
 	protected Display display;
 	protected Account account;
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
+	private Text textHandle;
 	
 	/**
-	 * Launch the application.
+	 * Filter edit shell [Active <-> Inactive]
 	 * @param args
 	 */
 	public EditShell(Display d) {
 		display = d;
+		sName = "";
 	}
 	
+	/**
+	 * 
+	 * @param d
+	 * @param s
+	 */
+	public EditShell(Display d, String s){
+		display =d;
+		sName = s;
+	}
 	/**
 	 * 
 	 * @return
@@ -61,19 +84,17 @@ public class EditShell {
 	 */
 	protected void createContents() {
 		shell = new Shell(display, SWT.ON_TOP | SWT.CLOSE | SWT.TITLE);
-		shell.setText("Filter Edit");
-		shell.setSize(786, 510);
-		shell.setLayout(new FormLayout());
+		shell.setText(sName + " Filters");
+		shell.setSize(786, 600);
+		shell.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 		Composite filterComposite = new Composite(shell, SWT.NONE);
-		filterComposite.setLayoutData(new FormData());
 		formToolkit.paintBordersFor(filterComposite);
 		filterComposite.setLayout(new GridLayout(1, false));
 		
 		Composite filterComposite_1 = new Composite(filterComposite, SWT.NONE);
 		GridData gd_filterComposite_1 = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
-		gd_filterComposite_1.widthHint = 768;
-		gd_filterComposite_1.heightHint = 474;
+		gd_filterComposite_1.heightHint = 525;
 		filterComposite_1.setLayoutData(gd_filterComposite_1);
 		formToolkit.adapt(filterComposite_1);
 		formToolkit.paintBordersFor(filterComposite_1);
@@ -82,7 +103,7 @@ public class EditShell {
 		//Active Filer Composite
 		Composite filterActiveComposite = new Composite(filterComposite_1, SWT.NONE);
 		GridData gd_filterActiveComposite = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
-		gd_filterActiveComposite.heightHint = 465;
+		gd_filterActiveComposite.heightHint = 511;
 		gd_filterActiveComposite.widthHint = 333;
 		
 		filterActiveComposite.setLayoutData(gd_filterActiveComposite);
@@ -102,7 +123,7 @@ public class EditShell {
 		Composite filterBtnComposite = new Composite(filterComposite_1, SWT.NONE);
 		filterBtnComposite.setLayout(new FillLayout(SWT.VERTICAL));
 		GridData gd_filterBtnComposite = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
-		gd_filterBtnComposite.heightHint = 465;
+		gd_filterBtnComposite.heightHint = 510;
 		gd_filterBtnComposite.widthHint = 85;
 		filterBtnComposite.setLayoutData(gd_filterBtnComposite);
 		formToolkit.adapt(filterBtnComposite);
@@ -113,11 +134,6 @@ public class EditShell {
 		formToolkit.adapt(filterBtnComposite_NORTH);
 		formToolkit.paintBordersFor(filterBtnComposite_NORTH);
 		filterBtnComposite_NORTH.setLayout(new FillLayout(SWT.HORIZONTAL));
-		
-			//Select new import/export file, or new user/group
-			Button btnSelectNew = new Button(filterBtnComposite_NORTH, SWT.NONE);
-			formToolkit.adapt(btnSelectNew, true, true);
-			btnSelectNew.setText("Select New");
 		
 		//Center Button Composite
 		Composite filterBtnComposite_CENTER = new Composite(filterBtnComposite, SWT.NONE);
@@ -140,16 +156,11 @@ public class EditShell {
 		formToolkit.adapt(filterBtnComposite_SOUTH);
 		formToolkit.paintBordersFor(filterBtnComposite_SOUTH);
 		filterBtnComposite_SOUTH.setLayout(new FillLayout(SWT.HORIZONTAL));
-			
-			//Submit active/inactive filters
-			Button btnNewButton = new Button(filterBtnComposite_SOUTH, SWT.NONE);
-			formToolkit.adapt(btnNewButton, true, true);
-			btnNewButton.setText("Submit");
 		
 		//Inactive filter composite
 		Composite filterInactiveComposite = new Composite(filterComposite_1, SWT.NONE);
 		GridData gd_filterInactiveComposite = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
-		gd_filterInactiveComposite.heightHint = 465;
+		gd_filterInactiveComposite.heightHint = 511;
 		gd_filterInactiveComposite.widthHint = 333;
 		filterInactiveComposite.setLayoutData(gd_filterInactiveComposite);
 		formToolkit.adapt(filterInactiveComposite);
@@ -159,5 +170,91 @@ public class EditShell {
 			//Inactive filter list
 			ListViewer filterInactiveListViewer = new ListViewer(filterInactiveComposite, SWT.BORDER | SWT.V_SCROLL);
 			List filterInactiveList = filterInactiveListViewer.getList();
+			
+			Composite btnBarComposite = new Composite(filterComposite, SWT.NONE);
+			btnBarComposite.setLayout(new GridLayout(4, false));
+			GridData gd_btnBarComposite = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
+			gd_btnBarComposite.heightHint = 37;
+			gd_btnBarComposite.widthHint = 771;
+			btnBarComposite.setLayoutData(gd_btnBarComposite);
+			btnBarComposite.setBounds(0, 0, 64, 64);
+			formToolkit.adapt(btnBarComposite);
+			formToolkit.paintBordersFor(btnBarComposite);
+			
+			// Import/Export Button
+			Button btnImport = new Button(btnBarComposite, SWT.NONE);
+			GridData gd_btnImport = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+			gd_btnImport.widthHint = 75;
+			btnImport.setLayoutData(gd_btnImport);
+			btnImport.setText(sName);
+			formToolkit.adapt(btnImport, true, true);
+			
+			btnImport.addListener(SWT.Selection, new Listener(){
+				public void handleEvent(Event e){
+					switch (e.type){
+					case SWT.Selection:
+						FileDialog dialog = new FileDialog(shell, SWT.NULL);
+						String path = dialog.open();
+						if (path != null) {
+						  File file = new File(path);
+						  if (file.isFile())
+							  displayFiles(new String[] { file.toString()});
+						  else
+							  displayFiles(file.list());
+						}
+					}
+				}
+			});
+			
+				//File handle for import/export
+				textHandle = new Text(btnBarComposite, SWT.BORDER);
+				GridData gd_textHandle = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+				gd_textHandle.widthHint = 371;
+				textHandle.setLayoutData(gd_textHandle);
+				formToolkit.adapt(textHandle, true, true);
+			
+			//Save the changes
+			Button btnSave = new Button(btnBarComposite, SWT.NONE);
+			GridData gd_btnSave = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+			gd_btnSave.widthHint = 75;
+			btnSave.setLayoutData(gd_btnSave);
+			formToolkit.adapt(btnSave, true, true);
+			btnSave.setText("Save");
+			
+			btnSave.addListener(SWT.Selection, new Listener(){
+				public void handleEvent(Event e){
+					switch (e.type){
+					case SWT.Selection:
+						//TODO add save functionality for backend filter save
+						System.out.println("You wish you could save");
+					}
+				}
+			});
+			//Cancel the changes
+			Button btnCancel = new Button(btnBarComposite, SWT.NONE);
+			GridData gd_btnCancel = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+			gd_btnCancel.widthHint = 75;
+			btnCancel.setLayoutData(gd_btnCancel);
+			formToolkit.adapt(btnCancel, true, true);
+			btnCancel.setText("Cancel");
+			
+			btnCancel.addListener(SWT.Selection, new Listener(){
+				public void handleEvent(Event e){  
+					switch(e.type) {
+						case SWT.Selection:
+							shell.close();
+							shell.dispose();
+						
+					}
+				}
+			});
+			
 	}
+	
+	 private void displayFiles(String[] files) {
+		 for (int i = 0; files != null && i < files.length; i++) {
+			 textHandle.setText(files[i]);
+			 textHandle.setEditable(false);
+		 }
+	 }
 }

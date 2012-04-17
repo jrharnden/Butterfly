@@ -12,6 +12,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.custom.SashForm;
 import java.awt.Frame;
 import org.eclipse.swt.awt.SWT_AWT;
+
+import java.awt.Color;
 import java.awt.Panel;
 import java.awt.BorderLayout;
 import java.net.InetSocketAddress;
@@ -19,6 +21,7 @@ import java.util.ArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JRootPane;
@@ -29,6 +32,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.GridData;
 import javax.swing.JTextArea;
+import javax.swing.border.Border;
+
 import org.eclipse.swt.widgets.List;
 import swing2swt.layout.FlowLayout;
 import org.eclipse.swt.widgets.Button;
@@ -54,14 +59,21 @@ import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 import storage.*;
 public class ApplicationWindow{
 
+	//final static variables
+	final static String EXPORT = "Export";
+	final static String IMPORT = "Import";
+	
+	final static String CREATE = "Create";
+	final static String EDIT = "Edit";
+	
+	//Constructor variables
 	protected Shell shlButterfly;
 	protected Display display;
-	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 	private Account account;
 	private Accounts accounts;
 	private JFrame frame;
 	protected JTextField txtPort;
-	
+	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 	
 	/**
 	 * Launches Login window
@@ -75,12 +87,13 @@ public class ApplicationWindow{
 	}
 	
 	/**
-	 * Launches filterEdit window
-	 * @return
+	 * Create the filter editing window. 
+	 * @param s type of window (create/edit)
+	 * @return boolean true upon close
 	 */
-	private boolean filterEdit() {
+	private boolean filterEdit(String s) {
 		Display display = Display.getDefault();
-		FilterShell filterEdit = new FilterShell(display);
+		FilterShell filterEdit = new FilterShell(display, s);
 		filterEdit.open();
 		return true;
 	}
@@ -89,11 +102,18 @@ public class ApplicationWindow{
 	 * Open filter import/export/user/group filter window
 	 * @return
 	 */
-	private boolean editShell(Account a){
+	private boolean editShell(Account a, String s){
 		Display display = Display.getDefault();
-		EditShell eShell = new EditShell(display);
+		EditShell eShell = new EditShell(display, s);
 		eShell.account = a;
+		
+		//Disable the main window
+		shlButterfly.setEnabled(false);
+		// open new window
 		eShell.open();
+		//Re-Enable and make the window active
+		shlButterfly.setEnabled(true);
+		shlButterfly.setActive();
 		return true;
 	}
 
@@ -116,31 +136,15 @@ public class ApplicationWindow{
 		account = a;
 	}
 	
-	
-	
-	
-	/**
-	 * Launch the application.
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		try {
-			ApplicationWindow window = new ApplicationWindow();
-			final Shell shell = new Shell();
-			//window.filterEdit();
-			//window.authenticate(shell);
-			window.open();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * Open the window.
+	 * @wbp.parser.entryPoint
 	 */
 	public void open() {
-		
 		Display display = Display.getDefault();
+		final Shell shell = new Shell();
+		authenticate(shell);
 		createContents();
 		shlButterfly.open();
 		shlButterfly.layout();
@@ -155,7 +159,7 @@ public class ApplicationWindow{
 	 * Create contents of the window.
 	 */
 	protected void createContents() {
-		shlButterfly = new Shell();
+		shlButterfly = new Shell(SWT.ON_TOP | SWT.CLOSE | SWT.TITLE | SWT.MIN);
 		shlButterfly.setSize(800, 600);
 		shlButterfly.setText("Butterfly - Logged in as "+ account.getName());
 		shlButterfly.setLayout(new FillLayout(SWT.HORIZONTAL));
@@ -201,8 +205,13 @@ public class ApplicationWindow{
 			
 			//Logging text area
 			JTextArea logTextArea_AWT = new JTextArea();
+			//Create Black border
+			Border border;
+			border = BorderFactory.createLineBorder(Color.black);
+			
 			statusLogRootPane_AWT.getContentPane().add(logTextArea_AWT);
-		
+			logTextArea_AWT.setBorder(border);
+			
 		Composite statusFilterComposite = new Composite(statusSashForm, SWT.NONE);
 		statusFilterComposite.setLayout(new GridLayout(2, false));
 		new Label(statusFilterComposite, SWT.NONE);
@@ -264,6 +273,7 @@ public class ApplicationWindow{
 			for(Filter fil: f){
 				filterActiveList.add(fil.toString());
 			}
+			
 		//Filter middle button bar
 		Composite filterBtnComposite = new Composite(filterComposite_1, SWT.NONE);
 		filterBtnComposite.setLayout(new FillLayout(SWT.VERTICAL));
@@ -328,7 +338,7 @@ public class ApplicationWindow{
 			//Create filter
 			Button btnCreate = new Button(filterBtnBarComposite, SWT.NONE);
 			formToolkit.adapt(btnCreate, true, true);
-			btnCreate.setText("Create");
+			btnCreate.setText(CREATE);
 			
 			//Add Filter from inactive to active list
 			//TODO: make this work correctly
@@ -341,14 +351,14 @@ public class ApplicationWindow{
 						List al = filterActiveListViewer.getList();
 						List il = filterInactiveListViewer.getList();
 						try{
-						String filter = il.getSelection()[0];
-						String[] fil = filter.split(":");
-						String filterName = fil[0];
-						Filter removedFilter = account.removeInactiveFilter(filterName);
-						account.addFilter(removedFilter);
-						accounts.saveAccounts();
-						il.remove(filter);
-						al.add(filter);
+							String filter = il.getSelection()[0];
+							String[] fil = filter.split(":");
+							String filterName = fil[0];
+							Filter removedFilter = account.removeInactiveFilter(filterName);
+							account.addFilter(removedFilter);
+							accounts.saveAccounts();
+							il.remove(filter);
+							al.add(filter);
 						}catch(ArrayIndexOutOfBoundsException e){
 							System.err.println("Didn't select anything");
 						}
@@ -364,17 +374,17 @@ public class ApplicationWindow{
 					switch(event.type){
 					case SWT.Selection:
 						try{
-						List al = filterActiveListViewer.getList();
-						List il = filterInactiveListViewer.getList();
-						
-						String filter = al.getSelection()[0];
-						String[] fil = filter.split(":");
-						String filterName = fil[0];
-						Filter removedFilter = account.removeActiveFilter(filterName);
-						account.addInactiveFilter(removedFilter);
-						accounts.saveAccounts();
-						al.remove(filter);
-						il.add(filter);
+							List al = filterActiveListViewer.getList();
+							List il = filterInactiveListViewer.getList();
+							
+							String filter = al.getSelection()[0];
+							String[] fil = filter.split(":");
+							String filterName = fil[0];
+							Filter removedFilter = account.removeActiveFilter(filterName);
+							account.addInactiveFilter(removedFilter);
+							accounts.saveAccounts();
+							al.remove(filter);
+							il.add(filter);
 						}catch(ArrayIndexOutOfBoundsException e){
 							System.err.println("Didn't select anything");
 						}
@@ -388,7 +398,7 @@ public class ApplicationWindow{
 				public void handleEvent(Event e){
 					switch (e.type){
 					case SWT.Selection:
-						filterEdit();
+						filterEdit(CREATE);
 					}
 				}
 			}
@@ -398,14 +408,14 @@ public class ApplicationWindow{
 			//Edit filter
 			Button btnEdit = new Button(filterBtnBarComposite, SWT.NONE);
 			formToolkit.adapt(btnEdit, true, true);
-			btnEdit.setText("Edit");
+			btnEdit.setText(EDIT);
 			
 			//Create filter button listener. Open text area with highlighted filters text.
 			btnEdit.addListener(SWT.Selection, new Listener(){
 				public void handleEvent(Event e){
 					switch (e.type){
 					case SWT.Selection:
-						filterEdit();
+						filterEdit(EDIT);
 					}
 				}
 			}
@@ -488,7 +498,7 @@ public class ApplicationWindow{
 			//Create an Account
 			Button admBtnCreate = new Button(admBtnBarComposite, SWT.NONE);
 			formToolkit.adapt(admBtnCreate, true, true);
-			admBtnCreate.setText("Create");
+			admBtnCreate.setText(CREATE);
 			
 			admBtnCreate.addListener(SWT.Selection, new Listener(){
 				public void handleEvent(Event e){
@@ -501,10 +511,11 @@ public class ApplicationWindow{
 			}
 			);
 			
+			//TODO implement user group edit/accounts
 			//Edit User Groups/Accounts
 			Button admBtnEdit = new Button(admBtnBarComposite, SWT.NONE);
 			formToolkit.adapt(admBtnEdit, true, true);
-			admBtnEdit.setText("Edit");
+			admBtnEdit.setText(EDIT);
 		
 			admBtnEdit.addListener(SWT.Selection, new Listener(){
 				public void handleEvent(Event e){
@@ -514,7 +525,7 @@ public class ApplicationWindow{
 						acc.loadAccounts();
 						Account a =acc.getAccount(AccountList.getSelection()[0].trim());
 						if(a == null) System.err.println(AccountList.getSelection()[0]);
-						editShell(a);
+							editShell(a,"Administrator");
 					}
 				}
 			}
@@ -541,25 +552,26 @@ public class ApplicationWindow{
 		
 			//Import
 			MenuItem mntmImport = new MenuItem(menu_main, SWT.NONE);
-			mntmImport.setText("Import");
+			mntmImport.setText(IMPORT);
 			mntmImport.addListener(SWT.Selection, new Listener(){
 				public void handleEvent(Event e){
 					switch (e.type){
 					case SWT.Selection:
-						editShell(account);
+						editShell(account, IMPORT);
 					}
 				}
 			}
 			);
+			
 			//Export
 			MenuItem mntmExport = new MenuItem(menu_main, SWT.NONE);
-			mntmExport.setText("Export");
+			mntmExport.setText(EXPORT);
 			
 			mntmExport.addListener(SWT.Selection, new Listener(){
 				public void handleEvent(Event e){
 					switch (e.type){
 					case SWT.Selection:
-						editShell(account);
+						editShell(account, EXPORT);
 					}
 				}
 			}
@@ -573,7 +585,7 @@ public class ApplicationWindow{
 				public void handleEvent(Event e){
 					switch (e.type){
 					case SWT.Selection:
-						editShell(account);
+						
 					}
 				}
 			}

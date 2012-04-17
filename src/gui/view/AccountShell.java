@@ -1,18 +1,36 @@
 package gui.view;
 
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
+
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Event;
+import storage.Account;
+import storage.Accounts;
 
 public class AccountShell extends Dialog {
+	
+	//Static variables
+	private static final int POWER = 0;
+	private static final int STANDARD = 1;
+	private static final int ACCNUM = 2;
+	
+	
+	
+	private Label errorLabel;
+	private String userGroup = "";
+	Button[] userGroupRadio = new Button[ACCNUM];
 	private Text accUserNameText;
 	private Text accPassText;
 	private Text accPassConfirmText;
@@ -47,6 +65,36 @@ public class AccountShell extends Dialog {
 		return result;
 	}
 	
+	/**
+	 * Takes in account credentials and checks to make sure they are set. Compares the values of the
+	 * passwords to ensure that they are the same. If the criteria aren't met it sets a label error
+	 * message which is displayed on the window.
+	 * @param userName
+	 * @param pass
+	 * @param passConf
+	 * @param userGroup
+	 * @return
+	 */
+	private boolean validate(String userName, String pass, String passConf, String userGroup){
+		String errBlankPass = "Error: Please fill out the password fields";
+		String errMismatchPass = "Error: Passwords do no match";
+		String errBlankAccount = "Error: Please enter an Account Name";
+		String errBlankUserGroup = "Error: Please select a User Group";
+		boolean set = false;
+		if (userName.isEmpty()) {
+			errorLabel.setText(errBlankAccount);
+		} else if (pass.isEmpty() || passConf.isEmpty()){
+			errorLabel.setText(errBlankPass);
+		} else if (userGroup.isEmpty()){
+			errorLabel.setText(errBlankUserGroup);
+		} else if (pass.equals(passConf)) {
+				set = true;
+		} else {
+				errorLabel.setText(errMismatchPass);
+		}
+		return set;
+	}	
+	
 	protected void createContents(){
 		shell = new Shell(getParent(), SWT.ON_TOP | SWT.CLOSE | SWT.TITLE);
 		shell.setSize(450, 300);
@@ -61,7 +109,7 @@ public class AccountShell extends Dialog {
 		Composite accNamePassComposite = new Composite(accComposite, SWT.NONE);
 		GridData gd_accNamePassComposite = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
 		gd_accNamePassComposite.heightHint = 125;
-		gd_accNamePassComposite.widthHint = 429;
+		gd_accNamePassComposite.widthHint = 436;
 		accNamePassComposite.setLayoutData(gd_accNamePassComposite);
 		accNamePassComposite.setLayout(new GridLayout(2, false));
 		
@@ -91,7 +139,7 @@ public class AccountShell extends Dialog {
 		//Password confirm
 		Label lblConfirmpassword = new Label(accNamePassComposite, SWT.NONE);
 		lblConfirmpassword.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblConfirmpassword.setText("ConfirmPassword:");
+		lblConfirmpassword.setText("Confirm Password:");
 		
 			// Password confirm data
 			accPassConfirmText = new Text(accNamePassComposite, SWT.BORDER | SWT.PASSWORD);
@@ -99,9 +147,9 @@ public class AccountShell extends Dialog {
 		
 		//User Group information composite
 		Composite accUserGroupComposite = new Composite(accComposite, SWT.NONE);
-		GridData gd_accUserGroupComposite = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		GridData gd_accUserGroupComposite = new GridData(SWT.LEFT, SWT.CENTER, true, true, 1, 1);
 		gd_accUserGroupComposite.heightHint = 74;
-		gd_accUserGroupComposite.widthHint = 428;
+		gd_accUserGroupComposite.widthHint = 435;
 		accUserGroupComposite.setLayoutData(gd_accUserGroupComposite);
 		accUserGroupComposite.setLayout(new GridLayout(2, false));
 		
@@ -112,13 +160,78 @@ public class AccountShell extends Dialog {
 		new Label(accUserGroupComposite, SWT.NONE);
 		
 			//Power User
-			Button btnPowerUser = new Button(accUserGroupComposite, SWT.RADIO);
-			btnPowerUser.setText("Power User");
+			userGroupRadio[POWER] = new Button(accUserGroupComposite, SWT.RADIO);
+			userGroupRadio[POWER].setText("Power User");
 			new Label(accUserGroupComposite, SWT.NONE);
-		
+			
 			//Standard User
-			Button btnStandardUser = new Button(accUserGroupComposite, SWT.RADIO);
-			btnStandardUser.setText("Standard User");
+			userGroupRadio[STANDARD] = new Button(accUserGroupComposite, SWT.RADIO);
+			userGroupRadio[STANDARD].setText("Standard User");
+			
+		//Error Label composite
+		Composite accErrorComposite = new Composite(accComposite, SWT.NONE);
+		accErrorComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
+		GridData gd_accErrorComposite = new GridData(SWT.LEFT, SWT.BOTTOM, false, false, 1, 1);
+		gd_accErrorComposite.widthHint = 435;
+		gd_accErrorComposite.heightHint = 22;
+		accErrorComposite.setLayoutData(gd_accErrorComposite);
+		
+			//Error Label
+			errorLabel = new Label(accErrorComposite, SWT.NONE);
+			errorLabel.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
+			
+		//Account button bar	
+		Composite accBtnBar = new Composite(accComposite, SWT.NONE);
+		accBtnBar.setLayout(new FillLayout(SWT.HORIZONTAL));
+		GridData gd_accBtnBar = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_accBtnBar.widthHint = 436;
+		gd_accBtnBar.heightHint = 30;
+		accBtnBar.setLayoutData(gd_accBtnBar);
+		
+			//Create the new account
+			Button accBtnSave = new Button(accBtnBar, SWT.NONE);
+			accBtnSave.setText("Save");
+			
+			accBtnSave.addListener(SWT.Selection, new Listener(){
+				public void handleEvent(Event e){  
+					String username = accUserNameText.getText();
+					String pass = accPassText.getText();
+					String confPass = accPassConfirmText.getText();
+					
+					//Iterate through the user groups and check for which one was selected
+					//Set UserGroup to the buttons name (ie Power User/Standard User)
+					for (int i=0; i < ACCNUM; i++){
+						if (userGroupRadio[i].getSelection()) {
+							userGroup = userGroupRadio[i].getText();
+						}
+					}
+					
+					//TODO validate account name doesn't already exist
+					if (validate(username, pass, confPass, userGroup))	{
+						Account newAcc= new Account(username, pass, userGroup);
+						Accounts a = new Accounts();
+						a.addAccount(newAcc);
+						shell.close();
+						shell.dispose();
+					}
+				}
+			}
+			);
+			
+			//Cancel Button
+			Button accBtnCancel = new Button(accBtnBar, SWT.NONE);
+			accBtnCancel.setText("Cancel");
+			
+			//close the shell upon cancel
+			accBtnCancel.addListener(SWT.Selection, new Listener(){
+				public void handleEvent(Event e){
+					switch (e.type){
+					case SWT.Selection:
+						shell.close();
+						shell.dispose();
+					}
+				}
+			}
+			);
 	}
-
 }
