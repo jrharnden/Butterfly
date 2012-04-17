@@ -94,7 +94,7 @@ public class ProxyLog {
 				out.write(msg.toString());
 				out.write("\r\n---Content---\r\n");
 				String encoding = msg.getHeader("Content-Encoding");
-				if (encoding.equals("gzip")) {
+				if (encoding != null&&encoding.equals("gzip")) {
 					GZIPInputStream gin = new GZIPInputStream(new ByteArrayInputStream(msg.getContent().toByteBuffer().array()));
 					ByteArrayOutputStream gout = new ByteArrayOutputStream();
 					IOUtils.copy(gin, gout);

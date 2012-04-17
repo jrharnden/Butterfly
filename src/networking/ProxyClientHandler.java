@@ -25,6 +25,7 @@ import org.jboss.netty.handler.codec.http.HttpMethod;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpRequestDecoder;
 import org.jboss.netty.handler.codec.http.HttpRequestEncoder;
+import org.jboss.netty.handler.codec.http.HttpResponse;
 import org.jboss.netty.handler.codec.http.HttpResponseDecoder;
 
 
@@ -54,7 +55,7 @@ public class ProxyClientHandler extends SimpleChannelHandler{
 	
 	@Override
 	public void channelOpen(ChannelHandlerContext ctx ,ChannelStateEvent e) throws Exception {
-		window.allChannels.add(e.getChannel());
+		ProxyServer.allChannels.add(e.getChannel());
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -90,7 +91,9 @@ public class ProxyClientHandler extends SimpleChannelHandler{
 					@Override
 					public void operationComplete(ChannelFuture f)throws Exception {
 						if (f.isSuccess()) {
+							window.addConnection(clientChannel.getRemoteAddress().toString(), hostChannel.getRemoteAddress().toString());
 							clientChannel.setReadable(true);
+							window.ConnectionUpdate(clientChannel.getRemoteAddress().toString(), hostChannel.getRemoteAddress().toString(), window.READ_FROM_CLIENT);
 							ProxyClientHandler.write(clientChannel, f.getChannel(), msg, trafficLock, msg.isKeepAlive());
 							ProxyLog.write(clientChannel, hostChannel, msg);
 						}
@@ -105,6 +108,7 @@ public class ProxyClientHandler extends SimpleChannelHandler{
 			}
 		}
 		else {
+			window.ConnectionUpdate(clientChannel.getRemoteAddress().toString(), hostChannel.getRemoteAddress().toString(), window.READ_FROM_CLIENT);
 			ProxyClientHandler.write(clientChannel, this.hostChannel, msg, trafficLock, msg.isKeepAlive());
 			ProxyLog.write(clientChannel, this.hostChannel, msg);
 		}
@@ -121,7 +125,7 @@ public class ProxyClientHandler extends SimpleChannelHandler{
 	
 	@Override
 	public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception{
-		window.allChannels.remove(e.getChannel());
+		ProxyServer.allChannels.remove(e.getChannel());
 		synchronized (this.trafficLock) {
 		if (this.hostChannel != null&& this.hostChannel.isOpen()) {
 			ProxyClientHandler.closeOnFlush(this.hostChannel);
@@ -151,6 +155,7 @@ public class ProxyClientHandler extends SimpleChannelHandler{
 		if (ch.isConnected()) {
 			//window.allChannels.remove(ch);
 			ch.write(ChannelBuffers.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
+			window.removeConnection(ch.getRemoteAddress().toString(), null);
 		}
 	}
 	
@@ -158,6 +163,12 @@ public class ProxyClientHandler extends SimpleChannelHandler{
 		if (to.isOpen()) {
 			synchronized (trafficLock) {
 				// check if the message is to stay alive or not
+				if (msg instanceof HttpRequest) {
+					window.ConnectionUpdate(in.getRemoteAddress().toString(), to.getRemoteAddress().toString(), window.WRITE_TO_CLIENT);
+				}
+				else if (msg instanceof HttpResponse) {
+					window.ConnectionUpdate(in.getRemoteAddress().toString(), to.getRemoteAddress().toString(), window.WRITE_TO_HOST);
+				}
 				if (keepAlive) {
 					to.write(msg);
 				} else {
@@ -192,12 +203,13 @@ public class ProxyClientHandler extends SimpleChannelHandler{
 		 ******************************************************************/
 		@Override
 		public void channelOpen(ChannelHandlerContext ctx ,ChannelStateEvent e) throws Exception {
-			window.allChannels.add(e.getChannel());
+			ProxyServer.allChannels.add(e.getChannel());
 		}
 		
 		@SuppressWarnings("deprecation")
 		@Override
 		public void messageReceived(ChannelHandlerContext ctx, final MessageEvent e) throws Exception{
+			window.ConnectionUpdate(clientChannel.getRemoteAddress().toString(), hostChannel.getRemoteAddress().toString(), window.READ_FROM_HOST);
 			DefaultHttpResponse msg = (DefaultHttpResponse) e.getMessage();
 			ProxyClientHandler.write(e.getChannel(), this.clientChannel, msg, trafficLock, msg.isKeepAlive());
 			ProxyLog.write(this.clientChannel, e.getChannel(), msg);
@@ -214,7 +226,7 @@ public class ProxyClientHandler extends SimpleChannelHandler{
 		
 		@Override
 		public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
-			window.allChannels.remove(e.getChannel());
+			ProxyServer.allChannels.remove(e.getChannel());
 			if (this.clientChannel != null && this.clientChannel.isOpen()) {
 				ProxyClientHandler.closeOnFlush(this.clientChannel);
 			}		
