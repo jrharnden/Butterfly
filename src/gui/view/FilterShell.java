@@ -5,6 +5,7 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Widget;
@@ -16,6 +17,11 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Button;
 import java.awt.Frame;
 import org.eclipse.swt.awt.SWT_AWT;
+
+import storage.Account;
+import storage.Accounts;
+import storage.Filter;
+
 import java.awt.Panel;
 import java.awt.BorderLayout;
 import javax.swing.JRootPane;
@@ -23,6 +29,7 @@ import javax.swing.JTextArea;
 import javax.swing.DropMode;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
+import java.io.File;
 
 public class FilterShell {
 	private String fName = ""; 
@@ -31,14 +38,18 @@ public class FilterShell {
 	protected Display display;
 	private Composite btnComposite;
 	private Text textName;
-	
+	private Filter editFilter;
+	private Account account;
+	private Accounts accounts;
 	//TODO implement method to set the text of the text area upon editing a filter
 	//TODO imp1ement method to save the text of the text area to a filter 
 	
 	
-	public FilterShell(Display d){
+	public FilterShell(Display d, String s, Account acc,Accounts accs){
 		display = d;
 		fName = "";
+		account = acc;
+		accounts = accs;
 	}
 	
 	public FilterShell(Display d, String s){
@@ -61,7 +72,9 @@ public class FilterShell {
 	return result;
 	}
 	
-
+	public void setFilter(Filter f){
+		editFilter = f;
+	}
 	/**
 	 * Create the shell.
 	 * @param display
@@ -113,12 +126,15 @@ public class FilterShell {
 			btnSave.setLayoutData(gd_btnSave);
 			btnSave.setText("Save");
 			
+			
+		
 			//Cancel Button
 			Button btnCancel = new Button(innerComposite, SWT.NONE);
 			GridData gd_btnCancel = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
 			gd_btnCancel.widthHint = 119;
 			btnCancel.setLayoutData(gd_btnCancel);
 			btnCancel.setText("Cancel");
+			
 		
 			//Check button composite
 			Composite chkComposite = new Composite(innerComposite, SWT.NONE);
@@ -164,7 +180,7 @@ public class FilterShell {
 		rootPane.getContentPane().setLayout(new java.awt.GridLayout(1, 0, 0, 0));
 		
 			//Regular Expression text area
-			JTextArea textAreaRegExp = new JTextArea();
+			final JTextArea textAreaRegExp = new JTextArea();
 			rootPane.getContentPane().add(textAreaRegExp);
 		
 		//Replacement String Text Area Composite
@@ -196,12 +212,55 @@ public class FilterShell {
 		rootPane_1.getContentPane().setLayout(gridBagLayout);
 		
 			// Replacement String text area
-			JTextArea textAreaReplacement = new JTextArea();
+			final JTextArea textAreaReplacement = new JTextArea();
 			GridBagConstraints gbc_textAreaReplacement = new GridBagConstraints();
 			gbc_textAreaReplacement.fill = GridBagConstraints.BOTH;
 			gbc_textAreaReplacement.gridx = 0;
 			gbc_textAreaReplacement.gridy = 0;
 			rootPane_1.getContentPane().add(textAreaReplacement, gbc_textAreaReplacement);
+			
+		if(editFilter !=null){
+			textAreaReplacement.setText(editFilter.getReplaceWith());
+			textAreaRegExp.setText(editFilter.getRegex());
+			textName.setText(editFilter.getName());
+		}
+		
+		//Button Listeners
+		btnSave.addListener(SWT.Selection, new Listener(){
+			public void handleEvent(Event e){
+				switch (e.type){
+				case SWT.Selection:
+					String replaceText = textAreaReplacement.getText();
+					String regexText = textAreaRegExp.getText();
+					String name = textName.getText();
+					if(editFilter != null){
+						account.removeFilter(editFilter.getName());
+						editFilter.changeName(name);
+						editFilter.changeReplaceWith(replaceText);
+						editFilter.changeRegex(regexText);
+						account.addFilter(editFilter);
+					}
+					else{
+						editFilter = new Filter(name,regexText,replaceText);
+						account.addFilter(editFilter);
+					}
+					accounts.saveAccounts();
+					shell.close();
+					shell.dispose();
+				}
+			}
+		});
+		
+		btnCancel.addListener(SWT.Selection, new Listener(){
+			public void handleEvent(Event e){
+				switch (e.type){
+				case SWT.Selection:
+					shell.close();
+					shell.dispose();
+				}
+			}
+		});
+	
 				
 	}
 }

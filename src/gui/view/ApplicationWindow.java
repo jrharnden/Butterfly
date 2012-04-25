@@ -91,9 +91,10 @@ public class ApplicationWindow{
 	 * @param s type of window (create/edit)
 	 * @return boolean true upon close
 	 */
-	private boolean filterEdit(String s) {
+	private boolean filterEdit(String s, Filter editFilter) {
 		Display display = Display.getDefault();
-		FilterShell filterEdit = new FilterShell(display, s);
+		FilterShell filterEdit = new FilterShell(display, s, account, accounts);
+		filterEdit.setFilter(editFilter);
 		filterEdit.open();
 		return true;
 	}
@@ -398,7 +399,18 @@ public class ApplicationWindow{
 				public void handleEvent(Event e){
 					switch (e.type){
 					case SWT.Selection:
-						filterEdit(CREATE);
+						filterEdit(CREATE,null);
+						//Repopulate filter lists
+						List filterInactiveList = filterInactiveListViewer.getList();
+						ArrayList<Filter> fml = account.getInactiveFilters();
+						for(Filter fia: fml){
+							filterInactiveList.add(fia.toString());
+						}
+						List filteractiveList = filterActiveListViewer.getList();
+						ArrayList<Filter> fma = account.getActiveFilters();
+						for(Filter fia: fma){
+							filteractiveList.add(fia.toString());
+						}
 					}
 				}
 			}
@@ -415,7 +427,34 @@ public class ApplicationWindow{
 				public void handleEvent(Event e){
 					switch (e.type){
 					case SWT.Selection:
-						filterEdit(EDIT);
+						List activeFilters = filterActiveListViewer.getList();
+						List inactiveFilters = filterInactiveListViewer.getList();
+						try{
+							String filter;
+							if(inactiveFilters.getSelection().length!=0)
+								filter = inactiveFilters.getSelection()[0];
+							else
+								filter = activeFilters.getSelection()[0];
+							String[] fil = filter.split(":");
+							String filterName = fil[0];
+							Filter editFilter = account.getFilter(filterName);
+							filterEdit(EDIT,editFilter);
+							//Repopulate filter lists
+							List filterInactiveList = filterInactiveListViewer.getList();
+							filterInactiveList.removeAll();
+							ArrayList<Filter> fml = account.getInactiveFilters();
+							for(Filter fia: fml){
+								filterInactiveList.add(fia.toString());
+							}
+							List filteractiveList = filterActiveListViewer.getList();
+							filteractiveList.removeAll();
+							ArrayList<Filter> fma = account.getActiveFilters();
+							for(Filter fia: fma){
+								filteractiveList.add(fia.toString());
+							}
+						}catch(ArrayIndexOutOfBoundsException exc){
+							System.err.println("Didn't select anything");
+						}
 					}
 				}
 			}
@@ -590,7 +629,17 @@ public class ApplicationWindow{
 				}
 			}
 			);
-			
+			//Quit
+			MenuItem mntmQuit = new MenuItem(menu_main, SWT.NONE);
+			mntmQuit.setText("Quit");
+			mntmQuit.addListener(SWT.Selection, new Listener(){
+				public void handleEvent(Event e){
+					switch (e.type){
+					case SWT.Selection:
+						System.exit(0);
+					}
+				}
+			});
 		// Menu Bar Settings	
 		MenuItem mntmSettings = new MenuItem(menu, SWT.CASCADE);
 		mntmSettings.setText("Settings");

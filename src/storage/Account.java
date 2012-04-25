@@ -52,6 +52,21 @@ public class Account implements Serializable{
 	public void addInactiveFilter(Filter f){
 		inactiveFilters.add(f);
 	}
+	public Filter removeFilter(String filterName){
+		for(Filter f: activeFilters){
+			if(f.getName().equals(filterName)){
+				activeFilters.remove(f);
+				return f;
+			}
+		}
+		for(Filter f: inactiveFilters){
+			if(f.getName().equals(filterName)){
+				inactiveFilters.remove(f);
+				return f;
+			}
+		}
+		return null;
+	}
 	public Filter removeActiveFilter(String filterName){
 		for(Filter f: activeFilters){
 			if(f.getName().equals(filterName)){
@@ -74,6 +89,17 @@ public class Account implements Serializable{
 		for(int i = 0; i < permission.length;++i){
 			permissions[i] = permission[i] && permissions[i];
 		}
+	}
+	public Filter getFilter(String filterName){
+		for(Filter f: activeFilters){
+			if(f.getName().equals(filterName))
+				return f;
+		}
+		for(Filter f: inactiveFilters){
+			if(f.getName().equals(filterName))
+				return f;
+		}
+		return null;
 	}
 	@Override
 	public boolean equals(Object o){
