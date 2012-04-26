@@ -8,7 +8,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.zip.GZIPInputStream;
 
@@ -111,20 +110,4 @@ public class ProxyLog {
 				return false;
 			}
 	}
-
-
-
-	/********************************************************
-	 * Private Methods
-	 ********************************************************/
-	private String ArrayToString(ArrayList<byte[]> data) {
-		String returnString = "";
-		
-		for (int i =0; i < data.size(); i++) {
-			returnString += new String(data.get(i));
-		}
-		
-		return returnString;
-	}
-
 }

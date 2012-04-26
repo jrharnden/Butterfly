@@ -3,12 +3,7 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.util.ArrayList;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -16,21 +11,7 @@ import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.SwingConstants;
-
-import org.jboss.netty.bootstrap.ServerBootstrap;
-import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelPipelineFactory;
-import org.jboss.netty.channel.group.ChannelGroup;
-import org.jboss.netty.channel.group.ChannelGroupFuture;
-import org.jboss.netty.channel.group.DefaultChannelGroup;
-import org.jboss.netty.channel.socket.ClientSocketChannelFactory;
-import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
-import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import javax.swing.JTextArea;
-import javax.swing.JScrollBar;
 
 /**
  * window
@@ -50,7 +31,7 @@ public class window {
 	private static ArrayList<String> connectionList = new ArrayList<String>(), dialogList = new ArrayList<String>();
 	private static int NumConnections = 0;
 	private JFrame frame;
-	private ProxyServer server;
+	private DefaultHttpProxyServer server;
 	
 	protected JTextField txtPort;
 	protected JButton btnListen;
@@ -84,8 +65,6 @@ public class window {
 	 * @throws IOException 
 	 */
 	private void initialize() throws IOException {
-		server = new ProxyServer();
-		
 		frame = new JFrame();
 		frame.setResizable(false);
 		frame.setBounds(100, 100, 650, 430);
@@ -108,10 +87,15 @@ public class window {
 
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				if (server.isRunning()) {
+				if (server != null && server.isRunning()) {
 					server.stop();
 			        btnListen.setText("Listen");
 				} else {
+					server = new DefaultHttpProxyServer(Integer.parseInt(txtPort.getText()), new HttpResponseFilters() {
+			            public HttpFilter getFilter(String hostAndPort) {
+			                return null;
+			            }
+			        }, null);
 					server.start();
 					btnListen.setText("Stop");
 				}
