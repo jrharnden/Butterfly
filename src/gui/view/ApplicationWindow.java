@@ -342,7 +342,6 @@ public class ApplicationWindow{
 			btnCreate.setText(CREATE);
 			
 			//Add Filter from inactive to active list
-			//TODO: make this work correctly
 			btnAdd.addListener(SWT.Selection, new Listener(){
 
 				@Override
@@ -402,11 +401,13 @@ public class ApplicationWindow{
 						filterEdit(CREATE,null);
 						//Repopulate filter lists
 						List filterInactiveList = filterInactiveListViewer.getList();
+						filterInactiveList.removeAll();
 						ArrayList<Filter> fml = account.getInactiveFilters();
 						for(Filter fia: fml){
 							filterInactiveList.add(fia.toString());
 						}
 						List filteractiveList = filterActiveListViewer.getList();
+						filteractiveList.removeAll();
 						ArrayList<Filter> fma = account.getActiveFilters();
 						for(Filter fia: fma){
 							filteractiveList.add(fia.toString());
@@ -464,6 +465,43 @@ public class ApplicationWindow{
 			Button btnDelete = new Button(filterBtnBarComposite, SWT.NONE);
 			formToolkit.adapt(btnDelete, true, true);
 			btnDelete.setText("Delete");
+			
+			btnDelete.addListener(SWT.Selection, new Listener(){
+				public void handleEvent(Event e){
+					switch(e.type){
+					case SWT.Selection:
+						try{
+							List activeFilters = filterActiveListViewer.getList();
+							List inactiveFilters = filterInactiveListViewer.getList();
+							String filter;
+							if(inactiveFilters.getSelection().length!=0)
+								filter = inactiveFilters.getSelection()[0];
+							else
+								filter = activeFilters.getSelection()[0];
+							String[] fil = filter.split(":");
+							String filterName = fil[0];
+							account.removeFilter(filterName);
+							accounts.saveAccounts();
+							inactiveFilters.removeAll();
+							activeFilters.removeAll();
+							ArrayList<Filter> fml = account.getInactiveFilters();
+							for(Filter fia: fml){
+								inactiveFilters.add(fia.toString());
+							}
+							fml = account.getActiveFilters();
+							for(Filter fia: fml){
+								activeFilters.add(fia.toString());
+							}
+							
+						}catch(ArrayIndexOutOfBoundsException exc){
+							
+							System.err.println("Didn't select anything");
+						}
+						
+						
+					}
+				}
+			});
 		
 		//-----------------------------------------------------------------
 		//Administrator Tab
