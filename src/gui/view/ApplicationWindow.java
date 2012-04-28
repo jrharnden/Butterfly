@@ -75,6 +75,9 @@ public class ApplicationWindow{
 	protected JTextField txtPort;
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 	
+	private  ListViewer filterInactiveListViewer;
+	private ListViewer  filterActiveListViewer;
+	
 	/**
 	 * Launches Login window
 	 * @param shell
@@ -268,7 +271,7 @@ public class ApplicationWindow{
 		filterActiveComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 			// Active filter list viewer
-			final ListViewer filterActiveListViewer = new ListViewer(filterActiveComposite, SWT.BORDER | SWT.V_SCROLL);
+			filterActiveListViewer = new ListViewer(filterActiveComposite, SWT.BORDER | SWT.V_SCROLL);
 			List filterActiveList = filterActiveListViewer.getList();
 			ArrayList<Filter> f = account.getActiveFilters();
 			for(Filter fil: f){
@@ -320,7 +323,7 @@ public class ApplicationWindow{
 		filterInactiveComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 			//Inactive List viewer
-			final ListViewer filterInactiveListViewer = new ListViewer(filterInactiveComposite, SWT.BORDER | SWT.V_SCROLL);
+			filterInactiveListViewer = new ListViewer(filterInactiveComposite, SWT.BORDER | SWT.V_SCROLL);
 			List filterInactiveList = filterInactiveListViewer.getList();
 			ArrayList<Filter> fml = account.getInactiveFilters();
 			for(Filter fil: fml){
@@ -348,20 +351,7 @@ public class ApplicationWindow{
 				public void handleEvent(Event event) {
 					switch(event.type){
 					case SWT.Selection:
-						List al = filterActiveListViewer.getList();
-						List il = filterInactiveListViewer.getList();
-						try{
-							String filter = il.getSelection()[0];
-							String[] fil = filter.split(":");
-							String filterName = fil[0];
-							Filter removedFilter = account.removeInactiveFilter(filterName);
-							account.addFilter(removedFilter);
-							accounts.saveAccounts();
-							il.remove(filter);
-							al.add(filter);
-						}catch(ArrayIndexOutOfBoundsException e){
-							System.err.println("Didn't select anything");
-						}
+						btnAddHandleEvent();
 					}
 				}
 				
@@ -373,21 +363,7 @@ public class ApplicationWindow{
 				public void handleEvent(Event event) {
 					switch(event.type){
 					case SWT.Selection:
-						try{
-							List al = filterActiveListViewer.getList();
-							List il = filterInactiveListViewer.getList();
-							
-							String filter = al.getSelection()[0];
-							String[] fil = filter.split(":");
-							String filterName = fil[0];
-							Filter removedFilter = account.removeActiveFilter(filterName);
-							account.addInactiveFilter(removedFilter);
-							accounts.saveAccounts();
-							al.remove(filter);
-							il.add(filter);
-						}catch(ArrayIndexOutOfBoundsException e){
-							System.err.println("Didn't select anything");
-						}
+						btnRemoveHandleEvent();
 					}
 				}
 				
@@ -398,20 +374,7 @@ public class ApplicationWindow{
 				public void handleEvent(Event e){
 					switch (e.type){
 					case SWT.Selection:
-						filterEdit(CREATE,null);
-						//Repopulate filter lists
-						List filterInactiveList = filterInactiveListViewer.getList();
-						filterInactiveList.removeAll();
-						ArrayList<Filter> fml = account.getInactiveFilters();
-						for(Filter fia: fml){
-							filterInactiveList.add(fia.toString());
-						}
-						List filteractiveList = filterActiveListViewer.getList();
-						filteractiveList.removeAll();
-						ArrayList<Filter> fma = account.getActiveFilters();
-						for(Filter fia: fma){
-							filteractiveList.add(fia.toString());
-						}
+						btnCreateHandleEvent();
 					}
 				}
 			}
@@ -428,34 +391,7 @@ public class ApplicationWindow{
 				public void handleEvent(Event e){
 					switch (e.type){
 					case SWT.Selection:
-						List activeFilters = filterActiveListViewer.getList();
-						List inactiveFilters = filterInactiveListViewer.getList();
-						try{
-							String filter;
-							if(inactiveFilters.getSelection().length!=0)
-								filter = inactiveFilters.getSelection()[0];
-							else
-								filter = activeFilters.getSelection()[0];
-							String[] fil = filter.split(":");
-							String filterName = fil[0];
-							Filter editFilter = account.getFilter(filterName);
-							filterEdit(EDIT,editFilter);
-							//Repopulate filter lists
-							List filterInactiveList = filterInactiveListViewer.getList();
-							filterInactiveList.removeAll();
-							ArrayList<Filter> fml = account.getInactiveFilters();
-							for(Filter fia: fml){
-								filterInactiveList.add(fia.toString());
-							}
-							List filteractiveList = filterActiveListViewer.getList();
-							filteractiveList.removeAll();
-							ArrayList<Filter> fma = account.getActiveFilters();
-							for(Filter fia: fma){
-								filteractiveList.add(fia.toString());
-							}
-						}catch(ArrayIndexOutOfBoundsException exc){
-							System.err.println("Didn't select anything");
-						}
+						btnEditHandleEvent();
 					}
 				}
 			}
@@ -470,34 +406,7 @@ public class ApplicationWindow{
 				public void handleEvent(Event e){
 					switch(e.type){
 					case SWT.Selection:
-						try{
-							List activeFilters = filterActiveListViewer.getList();
-							List inactiveFilters = filterInactiveListViewer.getList();
-							String filter;
-							if(inactiveFilters.getSelection().length!=0)
-								filter = inactiveFilters.getSelection()[0];
-							else
-								filter = activeFilters.getSelection()[0];
-							String[] fil = filter.split(":");
-							String filterName = fil[0];
-							account.removeFilter(filterName);
-							accounts.saveAccounts();
-							inactiveFilters.removeAll();
-							activeFilters.removeAll();
-							ArrayList<Filter> fml = account.getInactiveFilters();
-							for(Filter fia: fml){
-								inactiveFilters.add(fia.toString());
-							}
-							fml = account.getActiveFilters();
-							for(Filter fia: fml){
-								activeFilters.add(fia.toString());
-							}
-							
-						}catch(ArrayIndexOutOfBoundsException exc){
-							
-							System.err.println("Didn't select anything");
-						}
-						
+						btnDeleteHandleEvent();
 						
 					}
 				}
@@ -717,6 +626,112 @@ public class ApplicationWindow{
 	public void setAccounts(Accounts a){
 		accounts = a;
 	}
-	
-
+	private void btnDeleteHandleEvent(){
+		try{
+			List activeFilters = filterActiveListViewer.getList();
+			List inactiveFilters = filterInactiveListViewer.getList();
+			String filter;
+			if(inactiveFilters.getSelection().length!=0)
+				filter = inactiveFilters.getSelection()[0];
+			else
+				filter = activeFilters.getSelection()[0];
+			String[] fil = filter.split(":");
+			String filterName = fil[0];
+			account.removeFilter(filterName);
+			accounts.saveAccounts();
+			inactiveFilters.removeAll();
+			activeFilters.removeAll();
+			ArrayList<Filter> fml = account.getInactiveFilters();
+			for(Filter fia: fml){
+				inactiveFilters.add(fia.toString());
+			}
+			fml = account.getActiveFilters();
+			for(Filter fia: fml){
+				activeFilters.add(fia.toString());
+			}
+			
+		}catch(ArrayIndexOutOfBoundsException exc){
+			
+			System.err.println("Didn't select anything");
+		}
+	}
+	private void btnAddHandleEvent(){
+		List al = filterActiveListViewer.getList();
+		List il = filterInactiveListViewer.getList();
+		try{
+			String filter = il.getSelection()[0];
+			String[] fil = filter.split(":");
+			String filterName = fil[0];
+			Filter removedFilter = account.removeInactiveFilter(filterName);
+			account.addFilter(removedFilter);
+			accounts.saveAccounts();
+			il.remove(filter);
+			al.add(filter);
+		}catch(ArrayIndexOutOfBoundsException e){
+			System.err.println("Didn't select anything");
+		}
+	}
+	private void btnRemoveHandleEvent(){
+		try{
+			List al = filterActiveListViewer.getList();
+			List il = filterInactiveListViewer.getList();
+			
+			String filter = al.getSelection()[0];
+			String[] fil = filter.split(":");
+			String filterName = fil[0];
+			Filter removedFilter = account.removeActiveFilter(filterName);
+			account.addInactiveFilter(removedFilter);
+			accounts.saveAccounts();
+			al.remove(filter);
+			il.add(filter);
+		}catch(ArrayIndexOutOfBoundsException e){
+			System.err.println("Didn't select anything");
+		}
+	}
+	private void btnCreateHandleEvent(){
+		filterEdit(CREATE,null);
+		//Repopulate filter lists
+		List filterInactiveList = filterInactiveListViewer.getList();
+		filterInactiveList.removeAll();
+		ArrayList<Filter> fml = account.getInactiveFilters();
+		for(Filter fia: fml){
+			filterInactiveList.add(fia.toString());
+		}
+		List filteractiveList = filterActiveListViewer.getList();
+		filteractiveList.removeAll();
+		ArrayList<Filter> fma = account.getActiveFilters();
+		for(Filter fia: fma){
+			filteractiveList.add(fia.toString());
+		}
+	}
+	private void btnEditHandleEvent(){
+		List activeFilters = filterActiveListViewer.getList();
+		List inactiveFilters = filterInactiveListViewer.getList();
+		try{
+			String filter;
+			if(inactiveFilters.getSelection().length!=0)
+				filter = inactiveFilters.getSelection()[0];
+			else
+				filter = activeFilters.getSelection()[0];
+			String[] fil = filter.split(":");
+			String filterName = fil[0];
+			Filter editFilter = account.getFilter(filterName);
+			filterEdit(EDIT,editFilter);
+			//Repopulate filter lists
+			List filterInactiveList = filterInactiveListViewer.getList();
+			filterInactiveList.removeAll();
+			ArrayList<Filter> fml = account.getInactiveFilters();
+			for(Filter fia: fml){
+				filterInactiveList.add(fia.toString());
+			}
+			List filteractiveList = filterActiveListViewer.getList();
+			filteractiveList.removeAll();
+			ArrayList<Filter> fma = account.getActiveFilters();
+			for(Filter fia: fma){
+				filteractiveList.add(fia.toString());
+			}
+		}catch(ArrayIndexOutOfBoundsException exc){
+			System.err.println("Didn't select anything");
+		}
+	}
 }

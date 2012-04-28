@@ -17,6 +17,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
@@ -102,7 +104,43 @@ public class LoginShell extends Dialog {
 		
 		txtPassword = new Text(composite_1, SWT.BORDER | SWT.PASSWORD);
 		txtPassword.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
+		txtPassword.addKeyListener( new KeyAdapter(){
+			
+			public void keyPressed(KeyEvent e){
+				if(e.keyCode == SWT.CR){
+					Accounts accounts = new Accounts();
+					accounts.loadAccounts();
+					String username = (String) txtUsername.getText();
+					String pass = (String) txtPassword.getText();
+					String errEmpty = "Error: Enter nonblank  username/password";
+					String errInvalid = "Error: Invalid username/password";
+					
+					if(!pass.isEmpty() || !username.isEmpty()) {
+						if(accounts.containsAccount(username, accounts.hashPass(pass))){
+							System.out.println("LOGIN SUCCESS!");
+							try {
+								ap.setAccount(accounts.getAccount(username, accounts.hashPass(pass)));
+								ap.setAccounts(accounts);
+							} catch (NoSuchAlgorithmException e1){
+							
+								e1.printStackTrace();
+							}
+							catch( UnsupportedEncodingException e2) {
+								e2.printStackTrace();
+							}
+							shell.close();
+							shell.dispose();
+						}	else	{
+								//lblErrorLabel.setText(errInvalid);
+								System.err.println("LOGIN FAILED!");
+						}
+					}	else {
+						//lblErrorLabel.setText(errEmpty);
+					}
+				
+				}
+			}
+		});
 		//Error Composite
 		Composite errComposite = new Composite(loginComposite, SWT.NONE);
 		errComposite.setLayout(new FillLayout(SWT.HORIZONTAL));

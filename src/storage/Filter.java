@@ -43,6 +43,6 @@ public class Filter implements Serializable {
 	}
 	@Override
 	public String toString(){
-		return name+":"+regex;
+		return name;
 	}
 }
