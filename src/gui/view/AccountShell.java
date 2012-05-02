@@ -208,9 +208,11 @@ public class AccountShell extends Dialog {
 					
 					//TODO validate account name doesn't already exist
 					if (validate(username, pass, confPass, userGroup))	{
-						Account newAcc= new Account(username, pass, userGroup);
 						Accounts a = new Accounts();
+						a.loadAccounts();
+						Account newAcc= new Account(username, a.hashPass(pass), userGroup);
 						a.addAccount(newAcc);
+						a.saveAccounts();
 						shell.close();
 						shell.dispose();
 					}
