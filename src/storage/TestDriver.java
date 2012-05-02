@@ -13,6 +13,11 @@ public class TestDriver {
 		accounts.addAccount(new Account("SuperRandomAccountName", accounts.hashPass("t"), "Administrator"));
 		accounts.addAccount(new Account("AccountName", accounts.hashPass("u"), "Power"));
 		accounts.addAccount(new Account("User1", accounts.hashPass("g"), "Standard"));
+		Account cd = new Account("cd",accounts.hashPass("qwerty"),"Standard");
+		cd.removePermission(Permission.DELETEFILTER);
+		cd.removePermission(Permission.CREATEFILTER);
+		cd.removePermission(Permission.EDITFILTER);
+		accounts.addAccount(cd);
 
 		try {
 			Account user = accounts.getAccount("User",accounts.hashPass("qwerty"));

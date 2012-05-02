@@ -336,12 +336,22 @@ public class ApplicationWindow{
 		filterBtnBarComposite.setLayoutData(gd_filterBtnBarComposite);
 		formToolkit.adapt(filterBtnBarComposite);
 		formToolkit.paintBordersFor(filterBtnBarComposite);
-		
+			if(account.getPermissions().contains(Permission.CREATEFILTER)){
 			//Create filter
 			Button btnCreate = new Button(filterBtnBarComposite, SWT.NONE);
 			formToolkit.adapt(btnCreate, true, true);
 			btnCreate.setText(CREATE);
-			
+			//Create filter button listener. Open blank text area.
+			btnCreate.addListener(SWT.Selection, new Listener(){
+				public void handleEvent(Event e){
+					switch (e.type){
+					case SWT.Selection:
+						btnCreateHandleEvent();
+					}
+				}
+			}
+			);
+			}
 			//Add Filter from inactive to active list
 			btnAdd.addListener(SWT.Selection, new Listener(){
 
@@ -367,18 +377,9 @@ public class ApplicationWindow{
 				
 			});
 			
-			//Create filter button listener. Open blank text area.
-			btnCreate.addListener(SWT.Selection, new Listener(){
-				public void handleEvent(Event e){
-					switch (e.type){
-					case SWT.Selection:
-						btnCreateHandleEvent();
-					}
-				}
-			}
-			);
+		
 			
-			
+			if(account.getPermissions().contains(Permission.EDITFILTER)){
 			//Edit filter
 			Button btnEdit = new Button(filterBtnBarComposite, SWT.NONE);
 			formToolkit.adapt(btnEdit, true, true);
@@ -394,21 +395,23 @@ public class ApplicationWindow{
 				}
 			}
 			);
+			}
+			if(account.getPermissions().contains(Permission.DELETEFILTER)){
+				//Delete filter
+				Button btnDelete = new Button(filterBtnBarComposite, SWT.NONE);
+				formToolkit.adapt(btnDelete, true, true);
+				btnDelete.setText("Delete");
 			
-			//Delete filter
-			Button btnDelete = new Button(filterBtnBarComposite, SWT.NONE);
-			formToolkit.adapt(btnDelete, true, true);
-			btnDelete.setText("Delete");
-			
-			btnDelete.addListener(SWT.Selection, new Listener(){
-				public void handleEvent(Event e){
-					switch(e.type){
-					case SWT.Selection:
-						btnDeleteHandleEvent();
+				btnDelete.addListener(SWT.Selection, new Listener(){
+					public void handleEvent(Event e){
+						switch(e.type){
+						case SWT.Selection:
+							btnDeleteHandleEvent();
 						
+						}
 					}
-				}
-			});
+				});
+			}
 		
 		//-----------------------------------------------------------------
 		//Administrator Tab
