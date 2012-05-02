@@ -46,6 +46,8 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ListViewer;
 import org.jboss.netty.bootstrap.ServerBootstrap;
@@ -458,6 +460,7 @@ public class ApplicationWindow{
 			admTableTreeComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
 				// Acccount viewer
 				ListViewer AccountListViewer = new ListViewer(admTableTreeComposite, SWT.BORDER | SWT.V_SCROLL);
+
 				final List AccountList = AccountListViewer.getList();
 				Accounts a = new Accounts();
 				a.loadAccounts(); 
@@ -479,6 +482,7 @@ public class ApplicationWindow{
 							AccountList.add("\t"+acc.getName());
 						
 				}
+
 		// Administrator button bar
 		Composite admBtnBarComposite = formToolkit.createComposite(admComposite, SWT.NONE);
 		GridData gd_admBtnBarComposite = new GridData(SWT.LEFT, SWT.TOP, true, false, 1, 1);
@@ -523,11 +527,42 @@ public class ApplicationWindow{
 				}
 			}
 			);
-			
+			//TODO:: Shouldn't be able to delete your own account
 			//Delete User Groups/Accounts
-			Button admBtnDelete = new Button(admBtnBarComposite, SWT.NONE);
+			final Button admBtnDelete = new Button(admBtnBarComposite, SWT.NONE);
 			formToolkit.adapt(admBtnDelete, true, true);
 			admBtnDelete.setText("Delete");
+			admBtnDelete.addListener(SWT.Selection, new Listener(){
+				public void handleEvent(Event e){
+					switch(e.type){
+					case SWT.Selection:
+						Accounts acc = new Accounts();
+						acc.loadAccounts();
+						Account a =acc.getAccount(AccountList.getSelection()[0].trim());
+						if(a!=null){
+							acc.removeAccount(a);
+							acc.saveAccounts();
+						}
+						else
+							System.err.println("No account selected");
+					}
+				}
+			});
+			AccountListViewer.addSelectionChangedListener(new ISelectionChangedListener(){
+
+
+				@Override
+				public void selectionChanged(SelectionChangedEvent e) {
+					String selection = AccountList.getSelection()[0].trim();
+					if(selection.equals("Administrator")||selection.equals("Power Users")||selection.equals("Standard Users")){
+						
+						admBtnDelete.setEnabled(false);
+					}
+					else
+						admBtnDelete.setEnabled(true);
+				}
+				
+			});
 		
 		}
 		//-----------------------------------------------------------------
@@ -635,6 +670,8 @@ public class ApplicationWindow{
 			MenuItem mntmFilterExample = new MenuItem(menu_1, SWT.NONE);
 			mntmFilterExample.setText("Filter Example");
 		//-----------------------------------------------------------------
+			
+
 	}
 	public void setAccounts(Accounts a){
 		accounts = a;
