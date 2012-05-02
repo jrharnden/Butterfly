@@ -10,7 +10,7 @@ public class Account implements Serializable{
 	private static final long serialVersionUID = -218624877012403429L;
 	private String accName, passHash;
 	private Group group;
-	private Set<Permission> permissions = EnumSet.of(Permission.CREATEFILTER, Permission.DELETEFILTER, Permission.EDITFILTER);
+	private EnumSet<Permission> permissions = EnumSet.of(Permission.CREATEFILTER, Permission.DELETEFILTER, Permission.EDITFILTER);
 	private ArrayList<Filter> activeFilters;
 	private ArrayList<Filter> inactiveFilters;
 	private ArrayList<Filter> defaultFilters;
@@ -140,8 +140,14 @@ public class Account implements Serializable{
 	public void removePermission(Permission perm){
 		permissions.remove(perm);
 	}
-	public Set<Permission> getPermissions(){
-		return permissions;
+	public void removePermission(EnumSet<Permission> perm){
+		permissions.removeAll(perm);
+	}
+	public void addPermission(EnumSet<Permission> perm){
+		
+	}
+	public EnumSet<Permission> getPermissions(){
+		return (EnumSet)permissions;
 	}
 	@Override
 	public boolean equals(Object o){

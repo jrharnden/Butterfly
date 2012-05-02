@@ -11,9 +11,9 @@ import java.util.Set;
 public class Accounts implements Serializable,Iterable<Account> {
 	private static final long serialVersionUID = -6591287821163963006L;
 	private ArrayList<Account> accounts = new ArrayList<Account>();
-	private Set<Permission> groupAdmin = EnumSet.allOf(Permission.class);
-	private Set<Permission> groupPower = EnumSet.allOf(Permission.class);
-	private Set<Permission> groupStandard = EnumSet.of(Permission.CREATEFILTER,Permission.DELETEFILTER,Permission.EDITFILTER);
+	private EnumSet<Permission> groupAdminPermission = EnumSet.allOf(Permission.class);
+	private EnumSet<Permission> groupPowerPermission = EnumSet.allOf(Permission.class);
+	private EnumSet<Permission> groupStandardPermission = EnumSet.of(Permission.CREATEFILTER,Permission.DELETEFILTER,Permission.EDITFILTER);
 	public boolean addAccount(Account a){
 		if(!containsAccount(a.getName())){
 			accounts.add(a);
@@ -221,7 +221,16 @@ public class Accounts implements Serializable,Iterable<Account> {
 		for(Account a: accounts){
 			switch(a.getGroup()){
 			case ADMINISTRATOR:
-				a.getPermissions();
+				a.removePermission(EnumSet.complementOf(groupAdminPermission));
+				a.addPermission(groupAdminPermission);
+				break;
+			case POWER:
+				a.removePermission(EnumSet.complementOf(groupPowerPermission));
+				a.addPermission(groupPowerPermission);
+				break;
+			default:
+				a.removePermission(EnumSet.complementOf(groupStandardPermission));
+				a.addPermission(groupStandardPermission);
 			}
 			
 		}
