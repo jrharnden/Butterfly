@@ -3,7 +3,6 @@ package networking;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import java.io.IOException;
-import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -18,16 +17,9 @@ import javax.swing.JTextArea;
  * @author Zong
  */
 public class window {
-	public static ProxyLog		log				= new ProxyLog("./proxylog");
-	public static final int		WRITE_TO_CLIENT	= 0, READ_FROM_CLIENT = 1, WRITE_TO_HOST = 2, READ_FROM_HOST = 3;
-	public static final int		MAX_DIALOG_SIZE	= 20;
-	private static final Object	ConnectionsLock	= new Object();
-	private static final Object	DialogLock		= new Object();
-	private static ArrayList<String>	connectionList	= new ArrayList<String>(), dialogList = new ArrayList<String>();
-	private static int					NumConnections	= 0;
-	static public JTextArea				txtNumConn, txtConnections, txtDialog;
+	private JTextArea					txtNumConn, txtConnections, txtDialog;
 	private JFrame						frame;
-	private ProxyServer		server;
+	private ProxyServer					server;
 	protected JTextField				txtPort;
 	protected JButton					btnListen;
 
@@ -122,96 +114,10 @@ public class window {
 		JScrollPane sbDialog = new JScrollPane(txtDialog);
 		sbDialog.setBounds(304, 6, 331, 386);
 		frame.getContentPane().add(sbDialog);
-	}
-
-	public static void addConnection(String client, String server) {
-		synchronized(ConnectionsLock) {
-			NumConnections++;
-			txtNumConn.setText(Integer.toString(NumConnections));
-			connectionList.add(client);
-			connectionList.add(server);
-			String updatedList = "";
-
-			for(int i = 0; i < connectionList.size(); i += 2) {
-				updatedList += connectionList.get(i);
-				updatedList += " connected to ";
-				updatedList += connectionList.get(i + 1);
-				updatedList += "\n";
-			}
-
-			txtConnections.setText(updatedList);
-		}
-	}
-
-	public static void removeConnection(String client, String server) {
-		synchronized(ConnectionsLock) {
-			NumConnections--;
-			txtNumConn.setText(Integer.toString(NumConnections));
-
-			for(int i = 0; i < connectionList.size(); i += 2) {
-				if(connectionList.get(i).equals(client)) {
-					connectionList.remove(i + 1);
-					connectionList.remove(i);
-					i = connectionList.size();
-				}
-			}
-
-			String updatedList = "";
-
-			for(int i = 0; i < connectionList.size(); i += 2) {
-				updatedList += connectionList.get(i);
-				updatedList += " connected to ";
-				updatedList += connectionList.get(i + 1);
-				updatedList += "\n";
-			}
-
-			txtConnections.setText(updatedList);
-		}
-	}
-
-	public static void ConnectionUpdate(String client, String server, int action) {
-		synchronized(DialogLock) {
-			String update = "";
-
-			switch (action) {
-				case WRITE_TO_CLIENT:
-					update += server;
-					update += " wrote to ";
-					update += client;
-					update += "\n";
-					break;
-				case WRITE_TO_HOST:
-					update += client;
-					update += " wrote to ";
-					update += server;
-					update += "\n";
-					break;
-				case READ_FROM_CLIENT:
-					update += client;
-					update += " read for ";
-					update += server;
-					update += "\n";
-					break;
-				case READ_FROM_HOST:
-					update += server;
-					update += " read for ";
-					update += client;
-					update += "\n";
-					break;
-			}
-
-			if(dialogList.size() > MAX_DIALOG_SIZE) {
-				dialogList.remove(0);
-			}
-
-			dialogList.add(update);
-			update = "";
-
-			for(int i = 0; i < dialogList.size(); i++) {
-				update += dialogList.get(i);
-			}
-
-			txtDialog.setText(update);
-		}
+		
+		ProxyLog.setConnectionText(txtConnections);
+		ProxyLog.setCountText(txtNumConn);
+		ProxyLog.setDialogText(txtDialog);
+		ProxyLog.setLogEnabled(true);
 	}
 }

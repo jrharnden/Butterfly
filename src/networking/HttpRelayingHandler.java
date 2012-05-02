@@ -64,9 +64,24 @@ public class HttpRelayingHandler extends SimpleChannelUpstreamHandler {
 	public void messageReceived(final ChannelHandlerContext ctx, final MessageEvent me) throws Exception {
 		final Object messageToWrite;
 		final boolean writeEndBuffer;
-
+		
+		/**
+		 * Edit:
+		 * ProxyLog for dialog
+		 * Author: Zong
+		 */
+		ProxyLog.appendDialog(ProxyLog.clientToString(browserToProxyChannel), ProxyLog.serverToString(me.getChannel()), ProxyLog.READ_RESPONSE);
+		
 		if(!readingChunks) {
 			final HttpResponse hr = (HttpResponse) me.getMessage();
+			
+			/**
+			 * Edit:
+			 * ProxyLog for log files
+			 * Author: Zong
+			 */
+			ProxyLog.write(ProxyLog.clientToString(browserToProxyChannel), ProxyLog.serverToString(me.getChannel()), hr);
+			
 			originalHttpResponse = ProxyUtils.copyMutableResponseFields(hr, new DefaultHttpResponse(hr.getProtocolVersion(), hr.getStatus()));
 			final HttpResponse response;
 			final String te = hr.getHeader(HttpHeaders.Names.TRANSFER_ENCODING);
@@ -103,7 +118,14 @@ public class HttpRelayingHandler extends SimpleChannelUpstreamHandler {
 		}
 		else {
 			final HttpChunk chunk = (HttpChunk) me.getMessage();
-
+			
+			/**
+			 * Edit:
+			 * ProxyLog for log files
+			 * Author: Zong
+			 */
+			ProxyLog.write(ProxyLog.clientToString(browserToProxyChannel), ProxyLog.serverToString(me.getChannel()), chunk);
+			
 			if(chunk.isLast()) {
 				readingChunks = false;
 				writeEndBuffer = true;
@@ -126,6 +148,13 @@ public class HttpRelayingHandler extends SimpleChannelUpstreamHandler {
 
 			ChannelFuture future = browserToProxyChannel.write(new ProxyHttpResponse(currentHttpRequest, originalHttpResponse, messageToWrite));
 
+			/**
+			 * Edit:
+			 * ProxyLog for dialog
+			 * Author: Zong
+			 */
+			ProxyLog.appendDialog(ProxyLog.clientToString(browserToProxyChannel), ProxyLog.clientToString(browserToProxyChannel), ProxyLog.WROTE_RESPONSE);
+			
 			if(writeEndBuffer) {
 				future = browserToProxyChannel.write(ChannelBuffers.EMPTY_BUFFER);
 			}

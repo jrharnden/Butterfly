@@ -4,6 +4,7 @@
 package networking;
 
 import static org.jboss.netty.channel.Channels.pipeline;
+
 import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -104,9 +105,25 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler implements 
 		final Channel inboundChannel = me.getChannel();
 		this.unansweredRequestCount.incrementAndGet();
 		String hostAndPort = ProxyUtils.parseHostAndPort(request);
+		String host = hostAndPort.split(":")[0];
+		
+		/**
+		 * Edit:
+		 * ProxyLog for dialog and log files
+		 * Author: Zong
+		 */
+		ProxyLog.appendDialog(ProxyLog.clientToString(inboundChannel), host, ProxyLog.READ_REQUEST);
+		ProxyLog.write(ProxyLog.clientToString(inboundChannel), host, request);
 
 		final class OnConnect {
 			public ChannelFuture onConnect(final ChannelFuture cf) {
+				/**
+				 * Edit:
+				 * ProxyLog for dialog
+				 * Author: Zong
+				 */
+				ProxyLog.appendDialog(ProxyLog.clientToString(inboundChannel), ProxyLog.serverToString(cf.getChannel()), ProxyLog.WROTE_REQUEST);
+				
 				if(request.getMethod() != HttpMethod.CONNECT) {
 					return cf.getChannel().write(request);
 				}
@@ -118,7 +135,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler implements 
 		}
 
 		final OnConnect onConnect = new OnConnect();
-		final ChannelFuture curFuture = getChannelFuture(hostAndPort);
+		final ChannelFuture curFuture = getChannelFuture(inboundChannel, hostAndPort);
 
 		if(curFuture != null) {
 			this.currentChannelFuture = curFuture;
@@ -162,9 +179,16 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler implements 
 
 					if(future.isSuccess()) {
 						final ChannelFuture wf = onConnect.onConnect(cf);
-
+						
+						/**
+						 * Edit:
+						 * ProxyLog for adding connections
+						 * Author: Zong
+						 */
+						ProxyLog.addConnection(ProxyLog.clientToString(inboundChannel), ProxyLog.serverToString(future.getChannel()));
 						wf.addListener(new ChannelFutureListener() {
 							public void operationComplete(final ChannelFuture wcf) throws Exception {
+								//ProxyLog.appendDialog(ProxyLog.serverToString(wf.getChannel()), ProxyLog.WROTE_REQUEST);
 								ctx.getChannel().setReadable(true);
 							}
 						});
@@ -202,7 +226,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler implements 
 		}
 	}
 
-	private ChannelFuture getChannelFuture(final String hostAndPort) {
+	private ChannelFuture getChannelFuture(final Channel inbound, final String hostAndPort) {
 		synchronized(externalHostsToChannelFutures) {
 			final Queue<ChannelFuture> futures = externalHostsToChannelFutures.get(hostAndPort);
 
@@ -217,7 +241,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler implements 
 			final ChannelFuture cf = futures.remove();
 
 			if(cf != null && cf.isSuccess() && !cf.getChannel().isConnected()) {
-				removeProxyToWebConnection(hostAndPort);
+				removeProxyToWebConnection(inbound, hostAndPort);
 				return null;
 			}
 
@@ -320,7 +344,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler implements 
 			receivedChannelClosed = true;
 		}
 
-		removeProxyToWebConnection(key);
+		removeProxyToWebConnection(browserToProxyChannel, key);
 		unansweredRequestCount.set(unansweredRequestCount.get() - unansweredRequestsOnChannel);
 
 		if(receivedChannelClosed && (externalHostsToChannelFutures.isEmpty() || unansweredRequestCount.get() == 0)) {
@@ -330,8 +354,15 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler implements 
 		}
 	}
 
-	private void removeProxyToWebConnection(final String key) {
+	private void removeProxyToWebConnection(final Channel inbound, final String key) {
 		externalHostsToChannelFutures.remove(key);
+		
+		/**
+		 * Edit:
+		 * ProxyLog for removing connections
+		 * Author: Zong
+		 */
+		ProxyLog.removeConnection(ProxyLog.clientToString(inbound), key);
 	}
 
 	public void onRelayHttpResponse(final Channel browserToProxyChannel, final String key, final HttpRequest httpRequest) {
