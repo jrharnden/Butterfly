@@ -119,6 +119,21 @@ public class Account implements Serializable{
 		}
 		return null;
 	}
+	/**
+	 * Returns a default filter should only be used by admin
+	 * @param filterName
+	 * @return
+	 */
+	public Filter getDefaultFilter(String filterName){
+		for(Filter f: defaultFilters){
+			if(f.getName().equals(filterName))
+				return f;
+		}
+		return null;
+	}
+	public ArrayList<Filter> getDefaultFilters(){
+		return defaultFilters;
+	}
 	public void addPermission(Permission perm){
 		permissions.add(perm);
 	}

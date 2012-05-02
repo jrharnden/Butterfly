@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import storage.Account;
+import storage.Accounts;
 import storage.Filter;
 import swing2swt.layout.FlowLayout;
 import org.eclipse.swt.layout.FillLayout;
@@ -112,7 +113,7 @@ public class EditShell {
 		filterActiveComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
 			
 			//Active List
-			ListViewer filterActiveListViewer = new ListViewer(filterActiveComposite, SWT.BORDER | SWT.V_SCROLL);
+			final ListViewer filterActiveListViewer = new ListViewer(filterActiveComposite, SWT.BORDER | SWT.V_SCROLL);
 			List filterActiveList = filterActiveListViewer.getList();
 			ArrayList<Filter> f = account.getActiveFilters();
 			for(Filter fil: f){
@@ -168,9 +169,12 @@ public class EditShell {
 		filterInactiveComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 			//Inactive filter list
-			ListViewer filterInactiveListViewer = new ListViewer(filterInactiveComposite, SWT.BORDER | SWT.V_SCROLL);
+			final ListViewer filterInactiveListViewer = new ListViewer(filterInactiveComposite, SWT.BORDER | SWT.V_SCROLL);
 			List filterInactiveList = filterInactiveListViewer.getList();
-			
+			f = account.getInactiveFilters();
+			for(Filter fil: f){
+				filterInactiveList.add(fil.toString());
+			}			
 			Composite btnBarComposite = new Composite(filterComposite, SWT.NONE);
 			btnBarComposite.setLayout(new GridLayout(4, false));
 			GridData gd_btnBarComposite = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
@@ -197,8 +201,25 @@ public class EditShell {
 						String path = dialog.open();
 						if (path != null) {
 						  File file = new File(path);
-						  if (file.isFile())
+						  if (file.isFile()){
 							  displayFiles(new String[] { file.toString()});
+						  	  Accounts accounts = new Accounts();
+						  	  accounts.loadAccounts();
+						  	  accounts.importFilters(account, file);
+						  	//Active List
+								List filterActiveList = filterActiveListViewer.getList();
+								ArrayList<Filter> f = account.getActiveFilters();
+								for(Filter fil: f){
+									filterActiveList.add(fil.toString());
+								}
+						  	//Inactive filter list
+								List filterInactiveList = filterInactiveListViewer.getList();
+								f = account.getInactiveFilters();
+								for(Filter fil: f){
+									filterInactiveList.add(fil.toString());
+								}	
+						  	  
+						  }
 						  else
 							  displayFiles(file.list());
 						}

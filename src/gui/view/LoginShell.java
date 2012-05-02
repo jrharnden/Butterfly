@@ -118,16 +118,10 @@ public class LoginShell extends Dialog {
 					if(!pass.isEmpty() || !username.isEmpty()) {
 						if(accounts.containsAccount(username, accounts.hashPass(pass))){
 							System.out.println("LOGIN SUCCESS!");
-							try {
+							
 								ap.setAccount(accounts.getAccount(username, accounts.hashPass(pass)));
 								ap.setAccounts(accounts);
-							} catch (NoSuchAlgorithmException e1){
 							
-								e1.printStackTrace();
-							}
-							catch( UnsupportedEncodingException e2) {
-								e2.printStackTrace();
-							}
 							shell.close();
 							shell.dispose();
 						}	else	{
@@ -184,16 +178,10 @@ public class LoginShell extends Dialog {
 				if(!pass.isEmpty() || !username.isEmpty()) {
 					if(accounts.containsAccount(username, accounts.hashPass(pass))){
 						System.out.println("LOGIN SUCCESS!");
-						try {
+						
 							ap.setAccount(accounts.getAccount(username, accounts.hashPass(pass)));
 							ap.setAccounts(accounts);
-						} catch (NoSuchAlgorithmException e1){
 						
-							e1.printStackTrace();
-						}
-						catch( UnsupportedEncodingException e2) {
-							e2.printStackTrace();
-						}
 						shell.close();
 						shell.dispose();
 					}	else	{

@@ -1,6 +1,9 @@
 package gui.view;
 
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
@@ -73,7 +76,7 @@ public class AccountShell extends Dialog {
 	 * @param pass
 	 * @param passConf
 	 * @param userGroup
-	 * @return
+	 * @return 
 	 */
 	private boolean validate(String userName, String pass, String passConf, String userGroup){
 		String errBlankPass = "Error: Please fill out the password fields";
@@ -81,12 +84,17 @@ public class AccountShell extends Dialog {
 		String errBlankAccount = "Error: Please enter an Account Name";
 		String errBlankUserGroup = "Error: Please select a User Group";
 		boolean set = false;
+		Accounts a = new Accounts();
+		a.loadAccounts();
 		if (userName.isEmpty()) {
 			errorLabel.setText(errBlankAccount);
 		} else if (pass.isEmpty() || passConf.isEmpty()){
 			errorLabel.setText(errBlankPass);
 		} else if (userGroup.isEmpty()){
 			errorLabel.setText(errBlankUserGroup);
+		} else if(a.getAccount(userName)!=null){
+			errorLabel.setText("Error: Account already exists");
+		
 		} else if (pass.equals(passConf)) {
 				set = true;
 		} else {
@@ -161,12 +169,12 @@ public class AccountShell extends Dialog {
 		
 			//Power User
 			userGroupRadio[POWER] = new Button(accUserGroupComposite, SWT.RADIO);
-			userGroupRadio[POWER].setText("Power User");
+			userGroupRadio[POWER].setText("Power");
 			new Label(accUserGroupComposite, SWT.NONE);
 			
 			//Standard User
 			userGroupRadio[STANDARD] = new Button(accUserGroupComposite, SWT.RADIO);
-			userGroupRadio[STANDARD].setText("Standard User");
+			userGroupRadio[STANDARD].setText("Standard");
 			
 		//Error Label composite
 		Composite accErrorComposite = new Composite(accComposite, SWT.NONE);
@@ -206,18 +214,22 @@ public class AccountShell extends Dialog {
 						}
 					}
 					
-					//TODO validate account name doesn't already exist
-					if (validate(username, pass, confPass, userGroup))	{
-						Accounts a = new Accounts();
-						a.loadAccounts();
-						Account newAcc= new Account(username, a.hashPass(pass), userGroup);
-						a.addAccount(newAcc);
-						a.saveAccounts();
-						shell.close();
-						shell.dispose();
+					
+						if (validate(username, pass, confPass, userGroup))	{
+							Accounts a = new Accounts();
+							a.loadAccounts();
+							Account newAcc= new Account(username, a.hashPass(pass), userGroup);
+							
+							a.addAccount(newAcc);
+								
+							a.saveAccounts();
+
+							shell.close();
+							shell.dispose();
+						}
 					}
 				}
-			}
+			
 			);
 			
 			//Cancel Button

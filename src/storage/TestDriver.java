@@ -1,5 +1,6 @@
 package storage;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
@@ -32,6 +33,8 @@ public class TestDriver {
 			admin.addFilter(new Filter("Disable JavaScript (and meta) cookies", ".cookie(*[(;)=])\1|http-equiv=\"Set-Cookie", ".Cracker\1"));
 			admin.addFilter(new Filter("Kill alert/confirm boxes"," (<!DOCTYPE*> |)\1","$STOP()\1\r\n<!--//--><script> "));
 			admin.addInactiveFilter(new Filter("Dummy Inactive Filter"," (<!DOCTYPE*> |)\1","$STOP()\1\r\n<!--//--><script> "));
+			accounts.exportFilters(admin, new File("Newfilters.txt"));
+			accounts.importFilters(cd, new File("Newfilters.txt"));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

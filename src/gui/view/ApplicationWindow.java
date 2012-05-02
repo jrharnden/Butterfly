@@ -9,6 +9,8 @@ import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.custom.SashForm;
 import java.awt.Frame;
+
+import org.eclipse.swt.accessibility.Accessible;
 import org.eclipse.swt.awt.SWT_AWT;
 
 import java.awt.Color;
@@ -268,6 +270,7 @@ public class ApplicationWindow{
 		formToolkit.paintBordersFor(filterActiveComposite);
 		filterActiveComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
+		
 			// Active filter list viewer
 			filterActiveListViewer = new ListViewer(filterActiveComposite, SWT.BORDER | SWT.V_SCROLL);
 			List filterActiveList = filterActiveListViewer.getList();
@@ -336,7 +339,6 @@ public class ApplicationWindow{
 		filterBtnBarComposite.setLayoutData(gd_filterBtnBarComposite);
 		formToolkit.adapt(filterBtnBarComposite);
 		formToolkit.paintBordersFor(filterBtnBarComposite);
-			if(account.getPermissions().contains(Permission.CREATEFILTER)){
 			//Create filter
 			Button btnCreate = new Button(filterBtnBarComposite, SWT.NONE);
 			formToolkit.adapt(btnCreate, true, true);
@@ -351,6 +353,8 @@ public class ApplicationWindow{
 				}
 			}
 			);
+			if(!account.getPermissions().contains(Permission.CREATEFILTER)){
+				btnCreate.setEnabled(false);
 			}
 			//Add Filter from inactive to active list
 			btnAdd.addListener(SWT.Selection, new Listener(){
@@ -379,7 +383,6 @@ public class ApplicationWindow{
 			
 		
 			
-			if(account.getPermissions().contains(Permission.EDITFILTER)){
 			//Edit filter
 			Button btnEdit = new Button(filterBtnBarComposite, SWT.NONE);
 			formToolkit.adapt(btnEdit, true, true);
@@ -395,8 +398,9 @@ public class ApplicationWindow{
 				}
 			}
 			);
+			if(!account.getPermissions().contains(Permission.EDITFILTER)){
+				btnEdit.setEnabled(false);
 			}
-			if(account.getPermissions().contains(Permission.DELETEFILTER)){
 				//Delete filter
 				Button btnDelete = new Button(filterBtnBarComposite, SWT.NONE);
 				formToolkit.adapt(btnDelete, true, true);
@@ -411,7 +415,9 @@ public class ApplicationWindow{
 						}
 					}
 				});
-			}
+				if(!account.getPermissions().contains(Permission.DELETEFILTER)){
+					btnDelete.setEnabled(false);
+				}
 		
 		//-----------------------------------------------------------------
 		//Administrator Tab
@@ -603,6 +609,12 @@ public class ApplicationWindow{
 				MenuItem mntmEnableLogging = new MenuItem(menu_settings, SWT.CHECK);
 				mntmEnableLogging.setSelection(true);
 				mntmEnableLogging.setText("Enable Logging");
+				//Set port
+				MenuItem mntmSetPort = new MenuItem(menu_settings, SWT.NONE);
+				mntmSetPort.setText("Set Port");
+				if(!account.getPermissions().contains(Permission.SETPORT)){
+					menu_settings.getItem(menu_settings.indexOf(mntmSetPort)).setEnabled(false);
+				}
 		
 		// Menu Bar Help
 		MenuItem mntmHelp = new MenuItem(menu, SWT.CASCADE);

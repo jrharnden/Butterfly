@@ -1,4 +1,5 @@
 package storage;
+import java.io.*;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -66,7 +67,7 @@ public class Accounts implements Serializable,Iterable<Account> {
 			return null;
 		}
 	}
-	public Account getAccount(String username, String password) throws NoSuchAlgorithmException, UnsupportedEncodingException{
+	public Account getAccount(String username, String password){
 		Account p = new Account(username, password,null);
 		for(Account a: accounts){
 			if(a.equals(p))
@@ -85,8 +86,8 @@ public class Accounts implements Serializable,Iterable<Account> {
 	 * Hashes a String password
 	 * @param password text password to be hashed
 	 * @return Hex String of hashed password
-	 * @throws NoSuchAlgorithmException
 	 * @throws UnsupportedEncodingException
+	 * @throws NoSuchAlgorithmException
 	 */
 	public String hashPass(String password){
 	       MessageDigest digest;
@@ -101,9 +102,11 @@ public class Accounts implements Serializable,Iterable<Account> {
 		   	     	hexString.append(hex);
 		    	}
 		    	return hexString.toString();
-		} catch (NoSuchAlgorithmException e) {
+		} catch (Exception e) {
 			return null;
 		}
+		
+		
 	       
 	 }
 	public boolean saveAccounts(){
@@ -154,15 +157,22 @@ public class Accounts implements Serializable,Iterable<Account> {
 	 * @return true if successful
 	 */
 	public boolean exportFilters(Account a, File f){
-		BufferedWriter fwr;
 		try{
-			fwr = new BufferedWriter(new FileWriter(f));
+			PrintWriter fwr = new PrintWriter(new FileWriter(f));
 			ArrayList<Filter> fil = a.getActiveFilters();
+			fwr.println("active");
 			for(Filter filt: fil){
-				String s = filt.toString();
-				fwr.write(s);
-				fwr.newLine();
+				String s = filt.getName()+":"+filt.getRegex()+":"+filt.getReplaceWith();
+				fwr.println(s);
 			}
+			fil = a.getInactiveFilters();
+			fwr.println("inactive");
+			for(Filter filt: fil){
+				String s = filt.getName()+":"+filt.getRegex()+":"+filt.getReplaceWith();
+				fwr.println(s);
+			}
+			fwr.close();	
+			
 		}
 		catch(IOException e){
 			System.err.println(e.getMessage());
@@ -183,16 +193,26 @@ public class Accounts implements Serializable,Iterable<Account> {
 			
 			br = new BufferedReader(new FileReader(f));
 			String fstr;
+			boolean active = true;
 			while((fstr = br.readLine()) != null){
 				String[] filt= fstr.split(":");
-				if(filt.length==3){ 
+				if(filt.length==1 && filt[0].equals("active"))
+					active = true;
+				else if(filt.length ==1 && filt[0].equals("inactive"))
+					active = false;
+				else if(filt.length==3 && active){ 
 					//TODO I had to add what we were replacing the regex with, don't know if I broke this
 					a.addFilter(new Filter(filt[0],filt[1],filt[2]));
+				}
+				else if(filt.length==3 && !active){
+					a.addInactiveFilter(new Filter(filt[0], filt[1], filt[2]));
 				}
 				else{
 					System.err.println("Malformed regex read");
 				}
+				
 			}
+			saveAccounts();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
