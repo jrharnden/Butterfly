@@ -424,7 +424,7 @@ public class ApplicationWindow{
 		//-----------------------------------------------------------------
 		//Administrator Tab
 		//-----------------------------------------------------------------
-		if(account.getGroup().equals("Administrator")){
+		if(account.getGroup()==Group.ADMINISTRATOR){
 		CTabItem tbtmAdministrator = new CTabItem(tabFolder, SWT.NONE);
 		tbtmAdministrator.setText("Administrator");
 		
@@ -467,18 +467,18 @@ public class ApplicationWindow{
 				//TODO: terrible way of doing this
 				AccountList.add("Administrator");
 				for(Account acc: a){
-					if(acc.getGroup().equals("Administrator"))
+					if(acc.getGroup()==Group.ADMINISTRATOR)
 						AccountList.add("\t"+acc.getName());
 					
 				}
 				AccountList.add("Power Users");
 				for(Account acc: a){
-					if(acc.getGroup().equals("Power"))
+					if(acc.getGroup()==Group.POWER)
 						AccountList.add("\t"+acc.getName());
 				}
 				AccountList.add("Standard Users");
 				for(Account acc: a){
-					if(acc.getGroup().equals("Standard"))
+					if(acc.getGroup()==Group.STANDARD)
 							AccountList.add("\t"+acc.getName());
 						
 				}

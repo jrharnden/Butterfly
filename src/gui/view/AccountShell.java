@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Event;
 import storage.Account;
 import storage.Accounts;
+import storage.Group;
 
 public class AccountShell extends Dialog {
 	
@@ -218,7 +219,7 @@ public class AccountShell extends Dialog {
 						if (validate(username, pass, confPass, userGroup))	{
 							Accounts a = new Accounts();
 							a.loadAccounts();
-							Account newAcc= new Account(username, a.hashPass(pass), userGroup);
+							Account newAcc= new Account(username, a.hashPass(pass), Group.valueOf(userGroup.toUpperCase()));
 							
 							a.addAccount(newAcc);
 								

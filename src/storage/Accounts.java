@@ -1,28 +1,19 @@
 package storage;
 import java.io.*;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.Iterator;
+import java.util.Set;
 
 
 public class Accounts implements Serializable,Iterable<Account> {
 	private static final long serialVersionUID = -6591287821163963006L;
 	private ArrayList<Account> accounts = new ArrayList<Account>();
-	
+	private Set<Permission> groupAdmin = EnumSet.allOf(Permission.class);
+	private Set<Permission> groupPower = EnumSet.allOf(Permission.class);
+	private Set<Permission> groupStandard = EnumSet.of(Permission.CREATEFILTER,Permission.DELETEFILTER,Permission.EDITFILTER);
 	public boolean addAccount(Account a){
 		if(!containsAccount(a.getName())){
 			accounts.add(a);
@@ -225,6 +216,15 @@ public class Accounts implements Serializable,Iterable<Account> {
 			System.err.println("Account was null");
 		}
 		
+	}
+	private void applyPermissions(){
+		for(Account a: accounts){
+			switch(a.getGroup()){
+			case ADMINISTRATOR:
+				a.getPermissions();
+			}
+			
+		}
 	}
 	@Override
 	public Iterator<Account> iterator() {

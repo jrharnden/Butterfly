@@ -7,14 +7,14 @@ import java.security.NoSuchAlgorithmException;
 public class TestDriver {
 	public static void main(String[] args){
 		Accounts accounts = new Accounts();
-		accounts.addAccount(new Account("Admin", accounts.hashPass("admin"),"Administrator"));
-		accounts.addAccount(new Account("User", accounts.hashPass("qwerty"), "Standard"));
-		accounts.addAccount(new Account("NotSoRandomAccountName", accounts.hashPass("z"), "Power"));
-		accounts.addAccount(new Account("RandomAccountName", accounts.hashPass("x"), "Standard"));
-		accounts.addAccount(new Account("SuperRandomAccountName", accounts.hashPass("t"), "Administrator"));
-		accounts.addAccount(new Account("AccountName", accounts.hashPass("u"), "Power"));
-		accounts.addAccount(new Account("User1", accounts.hashPass("g"), "Standard"));
-		Account cd = new Account("cd",accounts.hashPass("qwerty"),"Standard");
+		accounts.addAccount(new Account("Admin", accounts.hashPass("admin"),Group.ADMINISTRATOR));
+		accounts.addAccount(new Account("User", accounts.hashPass("qwerty"), Group.STANDARD));
+		accounts.addAccount(new Account("NotSoRandomAccountName", accounts.hashPass("z"), Group.POWER));
+		accounts.addAccount(new Account("RandomAccountName", accounts.hashPass("x"), Group.STANDARD));
+		accounts.addAccount(new Account("SuperRandomAccountName", accounts.hashPass("t"), Group.ADMINISTRATOR));
+		accounts.addAccount(new Account("AccountName", accounts.hashPass("u"), Group.POWER));
+		accounts.addAccount(new Account("User1", accounts.hashPass("g"),Group.STANDARD));
+		Account cd = new Account("cd",accounts.hashPass("qwerty"),Group.STANDARD);
 		cd.removePermission(Permission.DELETEFILTER);
 		cd.removePermission(Permission.CREATEFILTER);
 		cd.removePermission(Permission.EDITFILTER);

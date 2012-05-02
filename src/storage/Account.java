@@ -8,20 +8,20 @@ import java.util.Set;
 public class Account implements Serializable{
 
 	private static final long serialVersionUID = -218624877012403429L;
-	private String accName, passHash, group;
+	private String accName, passHash;
+	private Group group;
 	private Set<Permission> permissions = EnumSet.of(Permission.CREATEFILTER, Permission.DELETEFILTER, Permission.EDITFILTER);
 	private ArrayList<Filter> activeFilters;
 	private ArrayList<Filter> inactiveFilters;
 	private ArrayList<Filter> defaultFilters;
-	public Account(String name, String pass, String gr){
+	public Account(String name, String pass, Group gr){
 		accName = name;
 		passHash = pass;
 		if(!(gr == null)){
 			group = gr;
-			if(gr.toLowerCase().equals("administrator"))
-					permissions.add(Permission.SETPORT);	
+			
 		}
-		else group = "";
+		else group = Group.STANDARD;
 		activeFilters = new ArrayList<Filter>();
 		inactiveFilters = new ArrayList<Filter>();
 		defaultFilters = new ArrayList<Filter>();
@@ -32,7 +32,7 @@ public class Account implements Serializable{
 	public String getPassHash(){
 		return passHash;
 	}
-	public String getGroup(){
+	public Group getGroup(){
 		return group;
 	}
 	public ArrayList<Filter> getActiveFilters(){
@@ -47,10 +47,10 @@ public class Account implements Serializable{
 	public void changePass(String newPass){
 		passHash = newPass;
 	}
-	public void changeGroup(String newGroup){
+	public void changeGroup(Group newGroup){
 		if(!(newGroup == null))
 			group = newGroup;
-		else group = "";
+		else group = Group.STANDARD;
 		
 	}
 	public void addFilter(Filter f){
