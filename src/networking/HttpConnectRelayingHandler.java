@@ -39,10 +39,27 @@ public class HttpConnectRelayingHandler extends SimpleChannelUpstreamHandler {
 		this.channelGroup = channelGroup;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void messageReceived(final ChannelHandlerContext ctx, final MessageEvent e) throws Exception {
+		/**
+		 * Edit:
+		 * ProxyLog for dialog
+		 * Author: Zong
+		 */
+		ProxyLog.appendDialog(ProxyLog.clientToString(relayChannel), ProxyLog.serverToString(e.getChannel()), ProxyLog.READ_RESPONSE);
+		
 		if(relayChannel.isConnected()) {
-			relayChannel.write((ChannelBuffer) e.getMessage());
+			/**
+			 * Edit:
+			 * ProxyLog for dialog and log files
+			 * Author: Zong
+			 */
+			ChannelBuffer cb = (ChannelBuffer) e.getMessage();
+			ProxyLog.write(ProxyLog.clientToString(relayChannel), ProxyLog.serverToString(e.getChannel()), cb.toString(ProxyLog.DEFAULT_ENCODING));
+			ProxyLog.appendDialog(ProxyLog.clientToString(relayChannel), ProxyLog.serverToString(e.getChannel()), ProxyLog.WROTE_RESPONSE);
+			
+			relayChannel.write(cb);
 		}
 		else {
 			ProxyUtils.closeOnFlush(e.getChannel());

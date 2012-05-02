@@ -26,6 +26,7 @@ import org.jboss.netty.handler.codec.http.HttpResponse;
  */
 public class ProxyLog {
 	public static final int		WROTE_REQUEST	= 0, READ_REQUEST = 1, WROTE_RESPONSE = 2, READ_RESPONSE = 3;
+	public static final String	DEFAULT_ENCODING = "UTF-8";
 	/********************************************************
 	 * Fields
 	 ********************************************************/
@@ -269,15 +270,15 @@ public class ProxyLog {
 					out.write("Server writes to client\r\n---------\r\n");
 					out.write(msg.toString());
 					out.write("\r\n---Content---\r\n");
-					String encoding = msg.getHeader("Content-Encoding");
-					if (encoding != null&&encoding.equals("gzip")) {
-						GZIPInputStream gin = new GZIPInputStream(new ByteArrayInputStream(msg.getContent().toByteBuffer().array()));
-						ByteArrayOutputStream gout = new ByteArrayOutputStream();
-						IOUtils.copy(gin, gout);
-						out.write(gout.toString("UTF-8"));
-					} else {
-						out.write(msg.getContent().toString("UTF-8"));
-					}
+					//String encoding = msg.getHeader("Content-Encoding");
+					//if (encoding != null&&encoding.equals("gzip")) {
+						//GZIPInputStream gin = new GZIPInputStream(new ByteArrayInputStream(msg.getContent().toByteBuffer().array()));
+						//ByteArrayOutputStream gout = new ByteArrayOutputStream();
+						//IOUtils.copy(gin, gout);
+						//out.write(gout.toString("UTF-8"));
+					//} else {
+						out.write(msg.getContent().toString(DEFAULT_ENCODING));
+					//}
 					out.write("\r\n---End---\r\n\r\n");
 					out.close();
 					return true;
@@ -320,7 +321,7 @@ public class ProxyLog {
 					out.write("Server writes a chunk to client\r\n---------\r\n");
 					out.write(msg.toString());
 					out.write("\r\n---Content---\r\n");
-					out.write(msg.getContent().toString("UTF-8"));
+					out.write(msg.getContent().toString(DEFAULT_ENCODING));
 					out.write("\r\n---End---\r\n\r\n");
 					out.close();
 					return true;
@@ -363,7 +364,47 @@ public class ProxyLog {
 					out.write("Client writes to server\r\n---------\r\n");
 					out.write(msg.toString());
 					out.write("\r\n---Content---\r\n");
-					out.write(msg.getContent().toString("UTF-8"));
+					out.write(msg.getContent().toString(DEFAULT_ENCODING));
+					out.write("\r\n---End---\r\n\r\n");
+					out.close();
+					return true;
+				}
+				catch(IOException e) {
+					e.printStackTrace();
+					return false;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * write
+	 * Writes to log file with passed String
+	 * 
+	 * @param client, String representation of client channel
+	 * @param server, String representation of server channel
+	 * @param msg, String message to write to log
+	 * 
+	 * @return true if written successfully
+	 */
+	public static boolean write(String client, String server, String msg) {
+		if (isLogEnabled) {
+			synchronized (fileLock) {
+				Date date = new Date();
+				String path = root + "/" + dateformat.format(date) + "/" + client;
+
+				try {
+					File file = new File(path);
+					file.mkdirs();
+
+					if(!file.exists()) {
+						file.createNewFile();
+					}
+
+					FileWriter out = new FileWriter(new File(path + "/" + server + ".txt"), true);
+					out.write("Client and Server Message");
+					out.write(msg.toString());
 					out.write("\r\n---End---\r\n\r\n");
 					out.close();
 					return true;

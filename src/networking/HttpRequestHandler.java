@@ -356,13 +356,13 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler implements 
 
 	private void removeProxyToWebConnection(final Channel inbound, final String key) {
 		externalHostsToChannelFutures.remove(key);
-		
+		String host = key.split(":")[0];
 		/**
 		 * Edit:
 		 * ProxyLog for removing connections
 		 * Author: Zong
 		 */
-		ProxyLog.removeConnection(ProxyLog.clientToString(inbound), key);
+		ProxyLog.removeConnection(ProxyLog.clientToString(inbound), host);
 	}
 
 	public void onRelayHttpResponse(final Channel browserToProxyChannel, final String key, final HttpRequest httpRequest) {
