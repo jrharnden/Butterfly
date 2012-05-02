@@ -4,8 +4,6 @@ import java.util.concurrent.Executors;
 
 import javax.swing.JButton;
 
-import networking.ProxyPipelineFactory;
-
 import org.eclipse.swt.widgets.Shell;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.Channel;
@@ -36,24 +34,6 @@ public class Backbone {
 			Backbone b = new Backbone();
 		//	b.startNetworking();
 			b.startDisplay();
-	}
-	
-	public void startNetworking(){
-		if (sb==null) {
-			Executor executor = Executors.newCachedThreadPool();
-			sb = new ServerBootstrap(new NioServerSocketChannelFactory(executor, executor));
-			cf = new NioClientSocketChannelFactory(executor, executor);
-			sb.setPipelineFactory(new ProxyPipelineFactory(cf)); 
-	        channel = sb.bind(new InetSocketAddress(8080));
-	        allChannels.add(channel);
-		} else {
-	        @SuppressWarnings("unused")
-			ChannelGroupFuture future = allChannels.close();
-	        //future.awaitUninterruptibly();
-	        //cf.releaseExternalResources();
-	        sb = null;
-	        cf = null;
-		}
 	}
 	
 	public void startDisplay(){
