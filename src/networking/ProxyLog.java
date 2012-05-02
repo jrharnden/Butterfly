@@ -31,7 +31,7 @@ public class ProxyLog {
 	 * Fields
 	 ********************************************************/
 	private volatile static boolean				isLogEnabled = false;
-	private static final DateFormat				dateformat	= new SimpleDateFormat("MM-dd-YYYY");
+	private static final DateFormat				dateformat	= new SimpleDateFormat("MM-dd-yyyy");
 	private volatile static String				root		= "./proxyLog";
 	private static AtomicInteger				connectionCount = new AtomicInteger(0);
 	private static final Object					connectionLock = new Object(), dialogLock = new Object(), fileLock = new Object();
