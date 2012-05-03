@@ -39,7 +39,6 @@ public class HttpConnectRelayingHandler extends SimpleChannelUpstreamHandler {
 		this.channelGroup = channelGroup;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void messageReceived(final ChannelHandlerContext ctx, final MessageEvent e) throws Exception {
 		/**
