@@ -275,6 +275,12 @@ public class AccountShell extends Dialog {
 					
 					//TODO add in check to changepassword for password changing 
 					if(changepassword){
+						Accounts a = new Accounts();
+						a.loadAccounts();
+						a.getAccount(accname).changePass(a.hashPass(accPassText.getText()));
+						a.saveAccounts();
+						shell.close();
+						shell.dispose();
 						
 					}
 					else if (validate(username, pass, confPass, userGroup))	{
