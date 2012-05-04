@@ -1,20 +1,16 @@
 package networking;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.zip.GZIPInputStream;
-
 import javax.swing.JTextArea;
 
-import org.apache.commons.io.IOUtils;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.handler.codec.http.HttpChunk;
 import org.jboss.netty.handler.codec.http.HttpRequest;
@@ -26,7 +22,7 @@ import org.jboss.netty.handler.codec.http.HttpResponse;
  */
 public class ProxyLog {
 	public static final int		WROTE_REQUEST	= 0, READ_REQUEST = 1, WROTE_RESPONSE = 2, READ_RESPONSE = 3;
-	public static final String	DEFAULT_ENCODING = "UTF-8";
+	public static final Charset	DEFAULT_ENCODING = Charset.defaultCharset();
 	/********************************************************
 	 * Fields
 	 ********************************************************/
@@ -250,7 +246,6 @@ public class ProxyLog {
 	 * 
 	 * @return true if written successfully
 	 */
-	@SuppressWarnings("deprecation")
 	public static boolean write(String client, String server, HttpResponse msg) {
 		if (isLogEnabled) {
 			synchronized (fileLock) {
@@ -302,7 +297,6 @@ public class ProxyLog {
 	 * 
 	 * @return true if written successfully
 	 */
-	@SuppressWarnings("deprecation")
 	public static boolean write(String client, String server, HttpChunk msg) {
 		if (isLogEnabled) {
 			synchronized (fileLock) {
@@ -346,7 +340,6 @@ public class ProxyLog {
 	 * 
 	 * @return true if written successfully
 	 */
-	@SuppressWarnings("deprecation")
 	public static boolean write(String client, String server, HttpRequest msg) {
 		if (isLogEnabled) {
 			synchronized (fileLock) {
