@@ -45,6 +45,7 @@ public class LoginShell extends Dialog {
 	public Object open(ApplicationWindow a) {
 		ap = a;
 		createContents();
+		
 		shell.open();
 		shell.layout();
 		Display display = getParent().getDisplay();
@@ -65,6 +66,7 @@ public class LoginShell extends Dialog {
 		shell.setSize(300, 200);
 		shell.setText("Butterfly Log In");
 		shell.setLayout(new FillLayout(SWT.HORIZONTAL));
+		
 		
 		Composite loginComposite = new Composite(shell, SWT.NONE);
 		loginComposite.setLayout(new GridLayout(1, false));
@@ -210,4 +212,6 @@ public class LoginShell extends Dialog {
 			}
 		});
 		}
+	
+	
 	}

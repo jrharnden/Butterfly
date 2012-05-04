@@ -30,7 +30,12 @@ public class AccountShell extends Dialog {
 	private static final int STANDARD = 1;
 	private static final int ACCNUM = 2;
 	
+	//Change password lock
+	private boolean changepassword = false;
 	
+	//Data for change password defaults
+	private String accname = "";
+	Group group;
 	
 	private Label errorLabel;
 	private String userGroup = "";
@@ -51,6 +56,20 @@ public class AccountShell extends Dialog {
 	}
 	
 	/**
+	 * Constructor used for creating the change password window. When used the user groups will be defaulted and set disabled.
+	 * The user account name will be filled in and also disabled. Password labels will be changed.
+	 * @param parent shell
+	 * @param accName account name of the user
+	 * @param group user group of the user
+	 */
+	public AccountShell(Shell parent, String accName, Group group){
+		super(parent);
+		changepassword = true;
+		accname = accName;
+		this.group = group;
+		
+	}
+	/**
 	 * Entry point to open the shell
 	 * @param a
 	 * @return
@@ -67,6 +86,26 @@ public class AccountShell extends Dialog {
 			}
 		}
 		return result;
+	}
+	
+	private String getPassLabel(boolean changepass){
+		String passlabel;
+		if (changepass){
+			passlabel = "New Password:";
+		} else {
+			passlabel = "Password:";
+		}
+		return passlabel;
+	}
+	
+	private String getPassLabelConf(boolean changepass){
+		String passlabelconf;
+		if (changepass){
+			passlabelconf = "Confirm Password:";	
+		} else {
+			passlabelconf = "Confirm Password:";
+		}
+		return passlabelconf;
 	}
 	
 	/**
@@ -136,19 +175,26 @@ public class AccountShell extends Dialog {
 			//Account data
 			accUserNameText = new Text(accNamePassComposite, SWT.BORDER);
 			accUserNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
+			
+			//If changing the password for the account set the account name and disable the field
+			if (changepassword) {
+				accUserNameText.setText(accname);
+				accUserNameText.setEnabled(false);
+			}
+			
 		//Password
 		Label lblPassword = new Label(accNamePassComposite, SWT.NONE);
-		lblPassword.setText("Password:");
+		lblPassword.setText(getPassLabel(changepassword));
 		
 			//Password data
 			accPassText = new Text(accNamePassComposite, SWT.BORDER | SWT.PASSWORD);
 			accPassText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+			
 		
 		//Password confirm
 		Label lblConfirmpassword = new Label(accNamePassComposite, SWT.NONE);
 		lblConfirmpassword.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblConfirmpassword.setText("Confirm Password:");
+		lblConfirmpassword.setText(getPassLabelConf(changepassword));
 		
 			// Password confirm data
 			accPassConfirmText = new Text(accNamePassComposite, SWT.BORDER | SWT.PASSWORD);
@@ -176,6 +222,17 @@ public class AccountShell extends Dialog {
 			//Standard User
 			userGroupRadio[STANDARD] = new Button(accUserGroupComposite, SWT.RADIO);
 			userGroupRadio[STANDARD].setText("Standard");
+			
+			//If the window was opened for changing the password disable the fields and select the right group.
+			if (changepassword){
+				if (group == Group.POWER) {
+					userGroupRadio[POWER].setSelection(true);
+				} else if (group == Group.STANDARD) {
+					userGroupRadio[STANDARD].setSelection(true);
+				}
+				userGroupRadio[STANDARD].setEnabled(false);
+				userGroupRadio[POWER].setEnabled(false);
+			}
 			
 		//Error Label composite
 		Composite accErrorComposite = new Composite(accComposite, SWT.NONE);
@@ -215,6 +272,8 @@ public class AccountShell extends Dialog {
 						}
 					}
 					
+					
+					//TODO add in check to changepassword for password changing 
 					
 						if (validate(username, pass, confPass, userGroup))	{
 							Accounts a = new Accounts();
