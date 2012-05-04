@@ -306,12 +306,23 @@ public class EditShell {
 						  if (file.isFile()){
 							  displayFiles(new String[] { file.toString()});
 						  	  Accounts accounts = new Accounts();
-						  	  accounts.loadAccounts();
+							  List filterActiveList = filterActiveListViewer.getList();
+							  System.err.println(sName);
+						  	  if(sName.equalsIgnoreCase("IMPORT")){
 						  	  imported = accounts.importFilters(file);
+
 						  	//Active List
-								List filterActiveList = filterActiveListViewer.getList();
 								for(Filter fil: imported)
 									filterActiveList.add(fil.toString());
+						  	  }
+						  	  else if(sName.equalsIgnoreCase("EXPORT")){
+						  		  imported = new ArrayList<Filter>();
+						  		  imported.addAll(account.getActiveFilters());
+						  		  imported.addAll(account.getInactiveFilters());
+						  		  for(Filter fil: imported){
+						  			  filterActiveList.add(fil.toString());
+						  		  }
+						  	  }
 								
 						  
 						  	  
@@ -439,21 +450,37 @@ public class EditShell {
 				public void handleEvent(Event e){
 					switch (e.type){
 					case SWT.Selection:
-						
+						if(sName.equalsIgnoreCase("IMPORT")){
 						List importFilters = filterInactiveListViewer.getList();
 						String[] filtersToImport = importFilters.getItems();
 						for(Filter f: imported){
 							String filterName = f.getName();
 							for(int i = 0; i < filtersToImport.length; ++i){
-								System.err.println("THIS IS A FILTER TO IMPORT " + filtersToImport[i]);
 								if(filterName.equals(filtersToImport[i])){
-									System.err.println("adding " + f.getName());
 									account.addFilter(f);
 
 								}
 							}
 						}
+						
 						accounts.saveAccounts();
+						}
+						else if(sName.equalsIgnoreCase("EXPORT")){
+							List importFilters = filterInactiveListViewer.getList();
+							String[] filtersToImport = importFilters.getItems();
+							for(Filter f: imported){
+								String filterName = f.getName();
+								for(int i = 0; i < filtersToImport.length; ++i){
+									System.err.println("THIS IS A FILTER TO IMPORT " + filtersToImport[i]);
+									if(filterName.equals(filtersToImport[i])){
+										System.err.println("adding " + f.getName());
+										account.addFilter(f);
+
+									}
+								}
+							}
+							
+						}
 						shell.close();
 						shell.dispose();
 						

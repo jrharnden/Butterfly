@@ -81,7 +81,7 @@ public class ApplicationWindow{
 	
 	private  ListViewer filterInactiveListViewer;
 	private ListViewer  filterActiveListViewer;
-	
+	private ListViewer AccountListViewer;
 	/**
 	 * Launches Login window
 	 * @param shell
@@ -126,6 +126,8 @@ public class ApplicationWindow{
 		shlButterfly.setActive();
 		return true;
 	}
+	
+
 	
 	/**
 	 * Call the edit shell with edit user group permissions
@@ -207,7 +209,22 @@ public class ApplicationWindow{
 	 */
 	private boolean accountShell(Shell shell){
 		AccountShell aShell = new AccountShell(shell);
+		shlButterfly.setEnabled(false);
+		
 		aShell.open(this);
+		List AccountList = AccountListViewer.getList();
+		AccountList.removeAll();
+		AccountList.add("Administrator");
+		AccountList.add("Power Users");
+		AccountList.add("Standard Users");
+		accounts.loadAccounts();
+		for(Account ac: accounts){
+			
+			AccountList.add(ac.getName());
+		}
+		shlButterfly.setEnabled(true);
+		shlButterfly.setActive();
+		
 		return true;
 		
 	}
@@ -561,7 +578,7 @@ public class ApplicationWindow{
 			admTableTreeComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
 			
 			// Acccount viewer
-			ListViewer AccountListViewer = new ListViewer(admTableTreeComposite, SWT.BORDER | SWT.V_SCROLL);
+			AccountListViewer = new ListViewer(admTableTreeComposite, SWT.BORDER | SWT.V_SCROLL);
 			final List AccountList = AccountListViewer.getList();
 			
 			//TODO: terrible way of doing this
@@ -597,6 +614,7 @@ public class ApplicationWindow{
 												case SWT.Selection:
 													Shell accShell = new Shell(display);
 													accountShell(accShell);
+													
 												}
 											}
 										}
@@ -619,7 +637,7 @@ public class ApplicationWindow{
 															//editShell(a,"Administrator");
 															
 															//TODO If an account is selected
-															//editUserAccount(a);
+															editUserAccount(a);
 															
 															//TODO If a user group is selected
 															//editUserGroup(group);
@@ -642,6 +660,15 @@ public class ApplicationWindow{
 														if(a!=null){
 															acc.removeAccount(a);
 															acc.saveAccounts();
+															AccountList.removeAll();
+															AccountList.add("Administrator");
+															AccountList.add("Power Users");
+															AccountList.add("Standard Users");
+															for(Account ac: acc){
+																
+																AccountList.add(ac.getName());
+															}
+															
 														}
 														else
 															System.err.println("No account selected");
@@ -809,22 +836,7 @@ public class ApplicationWindow{
 //					menu_settings.getItem(menu_settings.indexOf(mntmSetPort)).setEnabled(false);
 //				}
 						
-			filterComposite.addFocusListener(new FocusListener(){
 
-				
-				
-				@Override
-				public void focusGained(org.eclipse.swt.events.FocusEvent arg0) {
-							
-				}
-
-				@Override
-				public void focusLost(org.eclipse.swt.events.FocusEvent arg0) {
-					// TODO Auto-generated method stub
-					
-				}
-				
-			});
 
 	}
 	public void setAccounts(Accounts a){
