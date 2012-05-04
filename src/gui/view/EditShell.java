@@ -57,6 +57,8 @@ public class EditShell {
 	
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 	private Text textHandle;
+	private ArrayList<Filter> imported;
+	private Accounts accounts;
 	
 	
 	/**
@@ -97,6 +99,13 @@ public class EditShell {
 		opened_user_account = true;
 	}
 	
+	public EditShell(Display d, Account accToEdit, String s, Accounts a) {
+		display =d;
+		sName = s;
+		account = accToEdit;
+		accounts = a;
+	}
+
 	/**
 	 * Gets the inactive filter label for the window
 	 * User Group/User/import export edit
@@ -238,23 +247,20 @@ public class EditShell {
 			//Add items from inactive to active < / move from "User Filters" to "to be exported"
 			Button btnAdd = new Button(filterBtnComposite_CENTER, SWT.NONE);
 			formToolkit.adapt(btnAdd, true, true);
-			btnAdd.setText("ADD");
+			btnAdd.setText("<");
+			
 			
 			//Remove items from active to inactive > / move from "File filters" to "Filters to be imported"
 			Button btnRemove = new Button(filterBtnComposite_CENTER, SWT.NONE);
 			formToolkit.adapt(btnRemove, true, true);
-			btnRemove.setText("REMOVE");
+			btnRemove.setText(">");
 			
 			//South Button Composite
 			Composite filterBtnComposite_SOUTH = new Composite(filterBtnComposite, SWT.NONE);
 			formToolkit.adapt(filterBtnComposite_SOUTH);
 			formToolkit.paintBordersFor(filterBtnComposite_SOUTH);
 			filterBtnComposite_SOUTH.setLayout(new FillLayout(SWT.HORIZONTAL));
-			ArrayList<Filter> f = account.getActiveFilters();
-			for(Filter fil: f){
-				filterActiveList_1.add(fil.toString());
-			}
-		
+	
 		//Inactive filter composite
 		Composite filterInactiveComposite = new Composite(filterComposite_1, SWT.NONE);
 		GridData gd_filterInactiveComposite = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
@@ -267,11 +273,7 @@ public class EditShell {
 		
 			//Inactive filter list
 			final ListViewer filterInactiveListViewer = new ListViewer(filterInactiveComposite, SWT.BORDER | SWT.V_SCROLL);
-			List filterInactiveList_1 = filterInactiveListViewer.getList();
-			f = account.getInactiveFilters();
-			for(Filter fil: f){
-				filterInactiveList_1.add(fil.toString());
-			}			
+		
 			Composite btnBarComposite = new Composite(filterComposite, SWT.NONE);
 			btnBarComposite.setLayout(new GridLayout(11, false));
 			GridData gd_btnBarComposite = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
@@ -305,19 +307,13 @@ public class EditShell {
 							  displayFiles(new String[] { file.toString()});
 						  	  Accounts accounts = new Accounts();
 						  	  accounts.loadAccounts();
-						  	  accounts.importFilters(account, file);
+						  	  imported = accounts.importFilters(file);
 						  	//Active List
 								List filterActiveList = filterActiveListViewer.getList();
-								ArrayList<Filter> f = account.getActiveFilters();
-								for(Filter fil: f){
+								for(Filter fil: imported)
 									filterActiveList.add(fil.toString());
-								}
-						  	//Inactive filter list
-								List filterInactiveList = filterInactiveListViewer.getList();
-								f = account.getInactiveFilters();
-								for(Filter fil: f){
-									filterInactiveList.add(fil.toString());
-								}	
+								
+						  
 						  	  
 						  }
 						  else
@@ -443,8 +439,24 @@ public class EditShell {
 				public void handleEvent(Event e){
 					switch (e.type){
 					case SWT.Selection:
-						//TODO add save functionality for backend filter save
-						System.out.println("You wish you could save");
+						
+						List importFilters = filterInactiveListViewer.getList();
+						String[] filtersToImport = importFilters.getItems();
+						for(Filter f: imported){
+							String filterName = f.getName();
+							for(int i = 0; i < filtersToImport.length; ++i){
+								System.err.println("THIS IS A FILTER TO IMPORT " + filtersToImport[i]);
+								if(filterName.equals(filtersToImport[i])){
+									System.err.println("adding " + f.getName());
+									account.addFilter(f);
+
+								}
+							}
+						}
+						accounts.saveAccounts();
+						shell.close();
+						shell.dispose();
+						
 					}
 				}
 			});
@@ -467,8 +479,62 @@ public class EditShell {
 					}
 				}
 			});
+			//Add Filter from inactive to active list
+			btnAdd.addListener(SWT.Selection, new Listener(){
+
+				@Override
+				public void handleEvent(Event event) {
+					switch(event.type){
+					case SWT.Selection:
+						    List al = filterActiveListViewer.getList();
+							List il = filterInactiveListViewer.getList();
+							try{
+								String filter = il.getSelection()[0];
+								String[] fil = filter.split(":");
+								String filterName = fil[0];
+								Filter removedFilter = account.removeInactiveFilter(filterName);
+								account.addFilter(removedFilter);
+								il.remove(filter);
+								al.add(filter);
+							}catch(ArrayIndexOutOfBoundsException e){
+								System.err.println("Didn't select anything");
+							}
+						
+						
+					}
+				}
+				
+			});
+			
+			btnRemove.addListener(SWT.Selection, new Listener(){
+
+				@Override
+				public void handleEvent(Event event) {
+					switch(event.type){
+					case SWT.Selection:
+
+						try{
+							List al = filterActiveListViewer.getList();
+							List il = filterInactiveListViewer.getList();
+							
+							String filter = al.getSelection()[0];
+							String[] fil = filter.split(":");
+							String filterName = fil[0];
+							Filter removedFilter = account.removeActiveFilter(filterName);
+							account.addInactiveFilter(removedFilter);
+							al.remove(filter);
+							il.add(filter);
+						}catch(ArrayIndexOutOfBoundsException e){
+							System.err.println("Didn't select anything");
+						}
+					
+					}
+				}
+				
+			});
 			
 	}
+	
 	
 	 private void displayFiles(String[] files) {
 		 for (int i = 0; files != null && i < files.length; i++) {

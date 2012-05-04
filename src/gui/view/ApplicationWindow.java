@@ -16,6 +16,7 @@ import org.eclipse.swt.awt.SWT_AWT;
 import java.awt.Color;
 import java.awt.Panel;
 import java.awt.BorderLayout;
+import java.awt.event.FocusEvent;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
@@ -41,6 +42,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Tree;
@@ -152,7 +154,7 @@ public class ApplicationWindow{
 	 */
 	private boolean impExpShell(Account a, String s){
 		Display display = Display.getDefault();
-		EditShell eShell = new EditShell(display, a, s);
+		EditShell eShell = new EditShell(display, a, s, accounts);
 		
 		//Disable the main window
 		shlButterfly.setEnabled(false);
@@ -161,6 +163,19 @@ public class ApplicationWindow{
 		//Re-Enable and make the window active
 		shlButterfly.setEnabled(true);
 		shlButterfly.setActive();
+		accounts.loadAccounts();
+		List filterInactiveList = filterInactiveListViewer.getList();
+		filterInactiveList.removeAll();
+		ArrayList<Filter> fml = account.getInactiveFilters();
+		for(Filter fia: fml){
+			filterInactiveList.add(fia.toString());
+		}
+		List filteractiveList = filterActiveListViewer.getList();
+		filteractiveList.removeAll();
+		ArrayList<Filter> fma = account.getActiveFilters();
+		for(Filter fia: fma){
+			filteractiveList.add(fia.toString());
+		}	
 		return true;
 	}
 	
@@ -405,6 +420,7 @@ public class ApplicationWindow{
 				List filterInactiveList = filterInactiveListViewer.getList();
 			ArrayList<Filter> fml = account.getInactiveFilters();
 			for(Filter fil: fml){
+
 				filterInactiveList.add(fil.toString());
 			}
 		//Filter Button Bar
@@ -499,7 +515,7 @@ public class ApplicationWindow{
 		//-----------------------------------------------------------------
 		//Administrator Tab
 		//-----------------------------------------------------------------
-		//if(account.getGroup()==Group.ADMINISTRATOR){
+		if(account.getGroup()==Group.ADMINISTRATOR){
 		CTabItem tbtmAdministrator = new CTabItem(tabFolder, SWT.NONE);
 		tbtmAdministrator.setText("Administrator");
 		
@@ -666,7 +682,7 @@ public class ApplicationWindow{
 						
 				}
 		
-	//	}
+		}
 		
 		//-----------------------------------------------------------------
 		//Main menu bar
@@ -792,7 +808,23 @@ public class ApplicationWindow{
 //				if(!account.getPermissions().contains(Permission.SETPORT)){
 //					menu_settings.getItem(menu_settings.indexOf(mntmSetPort)).setEnabled(false);
 //				}
+						
+			filterComposite.addFocusListener(new FocusListener(){
+
+				
+				
+				@Override
+				public void focusGained(org.eclipse.swt.events.FocusEvent arg0) {
 							
+				}
+
+				@Override
+				public void focusLost(org.eclipse.swt.events.FocusEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+			});
 
 	}
 	public void setAccounts(Accounts a){

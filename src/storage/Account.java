@@ -1,12 +1,13 @@
 package storage;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Set;
 
 
 public class Account implements Serializable{
-
+	private static int ids = 0;
 	private static final long serialVersionUID = -218624877012403429L;
 	private String accName, passHash;
 	private Group group;
@@ -14,6 +15,7 @@ public class Account implements Serializable{
 	private ArrayList<Filter> activeFilters;
 	private ArrayList<Filter> inactiveFilters;
 	private ArrayList<Filter> defaultFilters;
+	private int accountId;
 	public Account(String name, String pass, Group gr){
 		accName = name;
 		passHash = pass;
@@ -25,6 +27,7 @@ public class Account implements Serializable{
 		activeFilters = new ArrayList<Filter>();
 		inactiveFilters = new ArrayList<Filter>();
 		defaultFilters = new ArrayList<Filter>();
+		accountId = ids++;
 	}
 	public String getName(){
 		return accName;
@@ -53,11 +56,21 @@ public class Account implements Serializable{
 		else group = Group.STANDARD;
 		
 	}
+	public int getAccountId(){
+		return accountId;
+	}
 	public void addFilter(Filter f){
-		activeFilters.add(f);
+		if(f!=null)
+			activeFilters.add(f);
+	}
+	public void addFilter(Collection<Filter> f){
+		for(Filter filt: f){
+			inactiveFilters.add(filt);
+		}
 	}
 	public void addInactiveFilter(Filter f){
-		inactiveFilters.add(f);
+		if(f!= null)
+			inactiveFilters.add(f);
 	}
 	/**
 	 * Removes a filter from the users inactive or active filter list
@@ -147,7 +160,7 @@ public class Account implements Serializable{
 		
 	}
 	public EnumSet<Permission> getPermissions(){
-		return (EnumSet)permissions;
+		return permissions;
 	}
 	@Override
 	public boolean equals(Object o){

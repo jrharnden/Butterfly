@@ -147,21 +147,15 @@ public class Accounts implements Serializable,Iterable<Account> {
 	 * @param f File that the filters will be exported to
 	 * @return true if successful
 	 */
-	public boolean exportFilters(Account a, File f){
+	public boolean exportFilters(ArrayList<Filter> filters, File f){
 		try{
 			PrintWriter fwr = new PrintWriter(new FileWriter(f));
-			ArrayList<Filter> fil = a.getActiveFilters();
-			fwr.println("active");
-			for(Filter filt: fil){
+			
+			for(Filter filt: filters){
 				String s = filt.getName()+":"+filt.getRegex()+":"+filt.getReplaceWith();
 				fwr.println(s);
 			}
-			fil = a.getInactiveFilters();
-			fwr.println("inactive");
-			for(Filter filt: fil){
-				String s = filt.getName()+":"+filt.getRegex()+":"+filt.getReplaceWith();
-				fwr.println(s);
-			}
+		
 			fwr.close();	
 			
 		}
@@ -178,32 +172,26 @@ public class Accounts implements Serializable,Iterable<Account> {
 	 * @param f File where the filters are stored
 	 * @return true if successful
 	 */
-	public void importFilters(Account a, File f){
+	public ArrayList<Filter> importFilters(File f){
 		BufferedReader br;
+		ArrayList<Filter> imported = new ArrayList<Filter>();
 		try {
 			
 			br = new BufferedReader(new FileReader(f));
 			String fstr;
-			boolean active = true;
 			while((fstr = br.readLine()) != null){
 				String[] filt= fstr.split(":");
-				if(filt.length==1 && filt[0].equals("active"))
-					active = true;
-				else if(filt.length ==1 && filt[0].equals("inactive"))
-					active = false;
-				else if(filt.length==3 && active){ 
+				
+				if(filt.length==3){ 
 					//TODO I had to add what we were replacing the regex with, don't know if I broke this
-					a.addFilter(new Filter(filt[0],filt[1],filt[2]));
-				}
-				else if(filt.length==3 && !active){
-					a.addInactiveFilter(new Filter(filt[0], filt[1], filt[2]));
+					imported.add(new Filter(filt[0],filt[1],filt[2]));
 				}
 				else{
 					System.err.println("Malformed regex read");
 				}
 				
 			}
-			saveAccounts();
+			
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -211,10 +199,7 @@ public class Accounts implements Serializable,Iterable<Account> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		catch(NullPointerException e){
-			if(a == null)
-			System.err.println("Account was null");
-		}
+		return imported;
 		
 	}
 	private void applyPermissions(){
