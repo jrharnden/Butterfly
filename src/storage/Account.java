@@ -72,6 +72,13 @@ public class Account implements Serializable{
 		if(f!= null)
 			inactiveFilters.add(f);
 	}
+	public ArrayList<Filter> getAllFilters(){
+		ArrayList<Filter> allFilters = new ArrayList<Filter>();
+		allFilters.addAll(inactiveFilters);
+		allFilters.addAll(activeFilters);
+		allFilters.addAll(defaultFilters);
+		return allFilters;
+	}
 	/**
 	 * Removes a filter from the users inactive or active filter list
 	 * @param filterName the filter to be removed

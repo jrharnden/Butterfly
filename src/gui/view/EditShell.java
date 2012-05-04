@@ -59,7 +59,7 @@ public class EditShell {
 	private Text textHandle;
 	private ArrayList<Filter> imported;
 	private Accounts accounts;
-	
+	private File file;
 	
 	/**
 	 * Import/Export constructor 
@@ -119,7 +119,7 @@ public class EditShell {
 		} else {
 			//If the window was opened for export
 			if (sName == ApplicationWindow.EXPORT){
-				out = account.getName() + " Filters";
+				out = "Filters to be exported";
 				
 			//If the window was opened for import
 			} else {
@@ -142,7 +142,7 @@ public class EditShell {
 		} else {
 			//If the window was opened for export
 			if (sName == ApplicationWindow.EXPORT){
-				out = "Filters to be Exported";
+				out = account.getName() + " Filters";
 				
 			//If the window was opened for import	
 			} else {
@@ -221,6 +221,15 @@ public class EditShell {
 		//Active List
 		final ListViewer filterActiveListViewer = new ListViewer(filterActiveComposite, SWT.BORDER | SWT.V_SCROLL);
 		List filterActiveList_1 = filterActiveListViewer.getList();
+		//Populate list with all filters if export
+		if(sName.equalsIgnoreCase("Export")){
+			
+				for(Filter f: account.getAllFilters()){
+					filterActiveList_1.add(f.getName());
+						
+					}
+				
+		}
 		
 		//Button composite
 		Composite filterBtnComposite = new Composite(filterComposite_1, SWT.NONE);
@@ -302,12 +311,11 @@ public class EditShell {
 						FileDialog dialog = new FileDialog(shell, SWT.NULL);
 						String path = dialog.open();
 						if (path != null) {
-						  File file = new File(path);
+						  file = new File(path);
 						  if (file.isFile()){
 							  displayFiles(new String[] { file.toString()});
 						  	  Accounts accounts = new Accounts();
 							  List filterActiveList = filterActiveListViewer.getList();
-							  System.err.println(sName);
 						  	  if(sName.equalsIgnoreCase("IMPORT")){
 						  	  imported = accounts.importFilters(file);
 
@@ -315,14 +323,7 @@ public class EditShell {
 								for(Filter fil: imported)
 									filterActiveList.add(fil.toString());
 						  	  }
-						  	  else if(sName.equalsIgnoreCase("EXPORT")){
-						  		  imported = new ArrayList<Filter>();
-						  		  imported.addAll(account.getActiveFilters());
-						  		  imported.addAll(account.getInactiveFilters());
-						  		  for(Filter fil: imported){
-						  			  filterActiveList.add(fil.toString());
-						  		  }
-						  	  }
+						  	  
 								
 						  
 						  	  
@@ -464,22 +465,23 @@ public class EditShell {
 						}
 						
 						accounts.saveAccounts();
+						
+						
+							
 						}
 						else if(sName.equalsIgnoreCase("EXPORT")){
-							List importFilters = filterInactiveListViewer.getList();
-							String[] filtersToImport = importFilters.getItems();
-							for(Filter f: imported){
+							ArrayList<Filter> filtersToExport = new ArrayList<Filter>();
+							List exportFilters = filterInactiveListViewer.getList();
+							String[] filtersStrings = exportFilters.getItems();
+							for(Filter f: account.getAllFilters()){
 								String filterName = f.getName();
-								for(int i = 0; i < filtersToImport.length; ++i){
-									System.err.println("THIS IS A FILTER TO IMPORT " + filtersToImport[i]);
-									if(filterName.equals(filtersToImport[i])){
-										System.err.println("adding " + f.getName());
-										account.addFilter(f);
-
+								for(int i = 0; i < filtersStrings.length; ++i){
+									if(filterName.equals(filtersStrings[i])){
+										filtersToExport.add(f);
 									}
 								}
 							}
-							
+							accounts.exportFilters(filtersToExport, file);
 						}
 						shell.close();
 						shell.dispose();
