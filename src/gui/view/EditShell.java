@@ -22,6 +22,7 @@ import storage.Account;
 import storage.Accounts;
 import storage.Filter;
 import storage.Group;
+import storage.Permission;
 import swing2swt.layout.FlowLayout;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormLayout;
@@ -282,7 +283,11 @@ public class EditShell {
 		
 			//Inactive filter list
 			final ListViewer filterInactiveListViewer = new ListViewer(filterInactiveComposite, SWT.BORDER | SWT.V_SCROLL);
-		
+			List inactiveList = filterInactiveListViewer.getList();
+			if(opened_user_account){
+				for(Filter f: edit_account.getAllFilters())
+					inactiveList.add(f.getName());
+			}
 			Composite btnBarComposite = new Composite(filterComposite, SWT.NONE);
 			btnBarComposite.setLayout(new GridLayout(11, false));
 			GridData gd_btnBarComposite = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
@@ -359,6 +364,8 @@ public class EditShell {
 				final Button btnCreateFilters = new Button(btnBarComposite, SWT.CHECK);
 				formToolkit.adapt(btnCreateFilters, true, true);
 				btnCreateFilters.setText("Create Filters");
+				if(edit_account.getPermissions().contains(Permission.CREATEFILTER)) btnCreateFilters.setSelection(true);
+
 				btnCreateFilters.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
 						if (btnCreateFilters.getSelection()) {
@@ -374,6 +381,8 @@ public class EditShell {
 				final Button btnEditFilters = new Button(btnBarComposite, SWT.CHECK);
 				formToolkit.adapt(btnEditFilters, true, true);
 				btnEditFilters.setText("Edit Filters");
+				if(edit_account.getPermissions().contains(Permission.EDITFILTER)) btnEditFilters.setSelection(true);
+
 				btnEditFilters.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
 						if (btnEditFilters.getSelection()) {
@@ -391,6 +400,7 @@ public class EditShell {
 				btnDeleteFilters.setLayoutData(gd_btnDeleteFilters);
 				formToolkit.adapt(btnDeleteFilters, true, true);
 				btnDeleteFilters.setText("Delete Filters");
+				if(edit_account.getPermissions().contains(Permission.DELETEFILTER)) btnDeleteFilters.setSelection(true);
 				btnDeleteFilters.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
 						if (btnDeleteFilters.getSelection()) {
@@ -403,6 +413,8 @@ public class EditShell {
 				
 				//change port check box
 				final Button btnSetProxyListening = new Button(btnBarComposite, SWT.CHECK);
+				if(edit_account.getPermissions().contains(Permission.SETPORT)) btnSetProxyListening.setSelection(true);
+
 				btnSetProxyListening.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
 						if (btnSetProxyListening.getSelection()) {
@@ -416,7 +428,7 @@ public class EditShell {
 				btnSetProxyListening.setText("Change Port Number");
 				
 				//Change password button
-				if (opened_user_group){	
+				if (opened_user_account){	
 					Button btnResetPassword = new Button(btnBarComposite, SWT.NONE);
 					formToolkit.adapt(btnResetPassword, true, true);
 					btnResetPassword.setText("Reset Password");
@@ -430,7 +442,7 @@ public class EditShell {
 						public void handleEvent(Event e){
 							switch (e.type) {
 							case SWT.Selection:
-							
+								edit_account.changePass("");
 							}
 						}
 					});
