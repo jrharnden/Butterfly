@@ -52,7 +52,7 @@ public class DefaultRelayPipelineFactory implements ChannelPipelineFactory {
 		final HttpRelayingHandler handler;
 		final boolean shouldFilter;
 		final HttpFilter filter;
-				
+		
 		if(httpRequest.getMethod() == HttpMethod.HEAD) {
 			pipeline.addLast("decoder", new HttpResponseDecoder(8192, 8192 * 2, 8192 * 2) {
 				@Override

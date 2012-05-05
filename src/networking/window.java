@@ -79,7 +79,7 @@ public class window {
 				else {
 					server = new ProxyServer(Integer.parseInt(txtPort.getText()), new HttpResponseFilters() {
 						public HttpFilter getFilter(String hostAndPort) {
-							return null;
+							return new CustomHttpFilter();
 						}
 					}, null);
 					server.start();

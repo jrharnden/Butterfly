@@ -82,6 +82,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler implements 
 	}
 
 	private void processChunk(final ChannelHandlerContext ctx, final MessageEvent me) {
+		System.out.println("got here!");
 		final HttpChunk chunk = (HttpChunk) me.getMessage();
 
 		if(chunk.isLast()) {
@@ -98,6 +99,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler implements 
 				}
 			});
 		}
+		System.out.println("got here!");
 	}
 
 	private void processRequest(final ChannelHandlerContext ctx, final MessageEvent me) {
