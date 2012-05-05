@@ -110,6 +110,9 @@ public class Accounts implements Serializable,Iterable<Account> {
 			objOut = new ObjectOutputStream(fileOut);
 			
 			objOut.writeObject(accounts);
+			objOut.writeObject(groupAdminPermission);
+			objOut.writeObject(groupPowerPermission);
+			objOut.writeObject(groupStandardPermission);
 			objOut.close();
 			f = new File("./data.dat");
 			return true;
@@ -130,6 +133,9 @@ public class Accounts implements Serializable,Iterable<Account> {
 			
 			try {
 				accounts = (ArrayList<Account>) objIn.readObject();
+				groupAdminPermission = (EnumSet<Permission>) objIn.readObject();
+				groupPowerPermission = (EnumSet<Permission>) objIn.readObject();
+				groupStandardPermission = (EnumSet<Permission>) objIn.readObject();
 				for(Account ac: accounts) System.out.println(ac.toString());
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
@@ -227,6 +233,7 @@ public class Accounts implements Serializable,Iterable<Account> {
 			case ADMINISTRATOR:
 				a.removePermission(EnumSet.complementOf(groupAdminPermission));
 				a.addPermission(groupAdminPermission);
+				System.err.println(groupAdminPermission + " " + a.getName() + " " + a.getPermissions());
 				break;
 			case POWER:
 				a.removePermission(EnumSet.complementOf(groupPowerPermission));

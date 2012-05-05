@@ -89,6 +89,7 @@ public class ApplicationWindow{
 	private ListViewer AccountListViewer;
 	private Text textPort;
 	private Text textConnectionCount;
+	private Button btnCreate, btnDelete, btnEdit;
 	/**
 	 * Launches Login window
 	 * @param shell
@@ -120,7 +121,7 @@ public class ApplicationWindow{
 	 */
 	private boolean editUserAccount(Account a){
 		Display display = Display.getDefault();
-		EditShell eShell = new EditShell(display, a);
+		EditShell eShell = new EditShell(display, a, accounts);
 		
 		//Disable the main window
 		shlButterfly.setEnabled(false);
@@ -141,9 +142,9 @@ public class ApplicationWindow{
 	 * @param g
 	 * @return
 	 */
-	private boolean editUserGroup(Group g, Accounts a){
+	private boolean editUserGroup(Group g){
 		Display display = Display.getDefault();
-		EditShell eShell = new EditShell(display, g, a);
+		EditShell eShell = new EditShell(display, g, accounts);
 		
 		//Disable the main window
 		shlButterfly.setEnabled(false);
@@ -152,6 +153,18 @@ public class ApplicationWindow{
 		eShell.open();
 		
 		//Re-Enable and make the window active
+		if(account.getPermissions().contains(Permission.CREATEFILTER))
+			btnCreate.setEnabled(true);
+		else
+			btnCreate.setEnabled(false);
+		if(account.getPermissions().contains(Permission.EDITFILTER))
+			btnEdit.setEnabled(true);
+		else
+			btnEdit.setEnabled(false);
+		if(account.getPermissions().contains(Permission.DELETEFILTER))
+			btnDelete.setEnabled(true);
+		else
+			btnDelete.setEnabled(false);
 		shlButterfly.setEnabled(true);
 		shlButterfly.setActive();
 		return true;
@@ -222,8 +235,8 @@ public class ApplicationWindow{
 		List AccountList = AccountListViewer.getList();
 		AccountList.removeAll();
 		AccountList.add("Administrator");
-		AccountList.add("Power Users");
-		AccountList.add("Standard Users");
+		AccountList.add("Power");
+		AccountList.add("Standard");
 		accounts.loadAccounts();
 		for(Account ac: accounts){
 			
@@ -563,7 +576,7 @@ public class ApplicationWindow{
 		formToolkit.adapt(filterBtnBarComposite);
 		formToolkit.paintBordersFor(filterBtnBarComposite);
 			//Create filter
-			Button btnCreate = new Button(filterBtnBarComposite, SWT.NONE);
+			btnCreate = new Button(filterBtnBarComposite, SWT.NONE);
 			formToolkit.adapt(btnCreate, true, true);
 			btnCreate.setText(CREATE);
 			//Create filter button listener. Open blank text area.
@@ -607,7 +620,7 @@ public class ApplicationWindow{
 		
 			
 			//Edit filter
-			Button btnEdit = new Button(filterBtnBarComposite, SWT.NONE);
+			btnEdit = new Button(filterBtnBarComposite, SWT.NONE);
 			formToolkit.adapt(btnEdit, true, true);
 			btnEdit.setText(EDIT);
 			
@@ -625,7 +638,7 @@ public class ApplicationWindow{
 				btnEdit.setEnabled(false);
 			}
 				//Delete filter
-				Button btnDelete = new Button(filterBtnBarComposite, SWT.NONE);
+				btnDelete = new Button(filterBtnBarComposite, SWT.NONE);
 				formToolkit.adapt(btnDelete, true, true);
 				btnDelete.setText("Delete");
 			
@@ -679,7 +692,6 @@ public class ApplicationWindow{
 			formToolkit.adapt(lblNewLabel_1, true, true);
 			lblNewLabel_1.setText("Inactive Filters");
 		
-		//TODO: All of this code is basically a hack until I can get TreeViewer to work
 			Composite admTableTreeComposite = new Composite(admComposite, SWT.NONE);
 			GridData gd_admTableTreeComposite = new GridData(SWT.LEFT, SWT.TOP, true, true, 3, 1);
 			gd_admTableTreeComposite.heightHint = 484;
@@ -694,18 +706,17 @@ public class ApplicationWindow{
 			AccountListViewer = new ListViewer(admTableTreeComposite, SWT.BORDER | SWT.V_SCROLL);
 			final List AccountList = AccountListViewer.getList();
 			
-			//TODO: terrible way of doing this
 			AccountList.add("Administrator");
-			AccountList.add("Power Users");
-			AccountList.add("Standard Users");
+			AccountList.add("Power");
+			AccountList.add("Standard");
 			
 			//TODO set active list to selections current active filters
 			ListViewer activeViewer = new ListViewer(admTableTreeComposite, SWT.BORDER | SWT.V_SCROLL);
-			List activeList = activeViewer.getList();
+			final List activeList = activeViewer.getList();
 			
 			//TODO set inactive list to selections current inactive filters
 			ListViewer inactiveViewer = new ListViewer(admTableTreeComposite, SWT.BORDER | SWT.V_SCROLL);
-			List inactiveList = inactiveViewer.getList();
+			final List inactiveList = inactiveViewer.getList();
 							
 									// Administrator button bar
 									Composite admBtnBarComposite = formToolkit.createComposite(admComposite, SWT.NONE);
@@ -745,21 +756,31 @@ public class ApplicationWindow{
 													case SWT.Selection:
 														Accounts acc = new Accounts();
 														acc.loadAccounts();
-														Account a =acc.getAccount(AccountList.getSelection()[0].trim());
-														if(a == null) System.err.println(AccountList.getSelection()[0]);
+													try{
+														String selection = AccountList.getSelection()[0].trim();
+														Account a =acc.getAccount(selection);
+														if(a == null){
+															if(Group.valueOf(selection.toUpperCase())!= null){
+																editUserGroup(Group.valueOf(selection.toUpperCase()));
+															}
+														}
+														else{
 															//editShell(a,"Administrator");
 															
 															//TODO If an account is selected
 															editUserAccount(a);
-															
+														}
 															//TODO If a user group is selected
 															//editUserGroup(group);
+													}catch(ArrayIndexOutOfBoundsException ex){
+														
+													}
+													catch(IllegalArgumentException ex){}
 													}
 												}
 											}
 											);
-											//TODO:: Shouldn't be able to delete your own account
-											//Delete User Groups/Accounts
+											//Delete User Accounts
 											final Button admBtnDelete = new Button(admBtnBarComposite, SWT.NONE);
 											formToolkit.adapt(admBtnDelete, true, true);
 											admBtnDelete.setText("Delete");
@@ -771,15 +792,17 @@ public class ApplicationWindow{
 														acc.loadAccounts();
 														Account a =acc.getAccount(AccountList.getSelection()[0].trim());
 														if(a!=null){
+															if(!a.getName().equals(account.getName())){
 															acc.removeAccount(a);
 															acc.saveAccounts();
 															AccountList.removeAll();
 															AccountList.add("Administrator");
-															AccountList.add("Power Users");
-															AccountList.add("Standard Users");
+															AccountList.add("Power");
+															AccountList.add("Standard");
 															for(Account ac: acc){
 																
 																AccountList.add(ac.getName());
+															}
 															}
 															
 														}
@@ -793,13 +816,32 @@ public class ApplicationWindow{
 
 												@Override
 												public void selectionChanged(SelectionChangedEvent e) {
+													try{
 													String selection = AccountList.getSelection()[0].trim();
-													if(selection.equals("Administrator")||selection.equals("Power Users")||selection.equals("Standard Users")){
-														
+													if(selection.equals("Administrator")||selection.equals("Power")||selection.equals("Standard")){
+														activeList.removeAll();
+														inactiveList.removeAll();
 														admBtnDelete.setEnabled(false);
+													}
+													else if(accounts.getAccount(selection)!=null){
+														Account acc = accounts.getAccount(selection);
+														activeList.removeAll();
+														inactiveList.removeAll();
+														for(Filter f: acc.getActiveFilters())
+															activeList.add(f.getName());
+														for(Filter f: acc.getInactiveFilters())
+															inactiveList.add(f.getName());
+														if(acc.getName().equals(account.getName()))
+															admBtnDelete.setEnabled(false);
+														else
+															admBtnDelete.setEnabled(true);
 													}
 													else
 														admBtnDelete.setEnabled(true);
+													
+													}catch(ArrayIndexOutOfBoundsException ex){
+														
+													}
 												}
 												
 											});

@@ -96,11 +96,12 @@ public class EditShell {
 	 * @param accName account being edited
 	 * @param group Group
 	 */
-	public EditShell(Display d, Account accToEdit){
+	public EditShell(Display d, Account accToEdit, Accounts acc){
 		display = d;
 		edit_account = accToEdit;
 		sName = "Edit: " + edit_account.getName() + " Settings";
 		opened_user_account = true;
+		accounts = acc;
 	}
 	
 	public EditShell(Display d, Account accToEdit, String s, Accounts a) {
@@ -562,18 +563,18 @@ public class EditShell {
 						}
 						else if(opened_user_account){
 							if(btnCreateFilters.getSelection()){
-								account.addPermission(Permission.CREATEFILTER);
+								edit_account.addPermission(Permission.CREATEFILTER);
 							}
 							else account.removePermission(Permission.CREATEFILTER);
 							if(btnDeleteFilters.getSelection()){
-								account.addPermission(Permission.DELETEFILTER);
+								edit_account.addPermission(Permission.DELETEFILTER);
 							}
 							else account.removePermission(Permission.DELETEFILTER);
 							if(btnEditFilters.getSelection()){
-								account.addPermission(Permission.EDITFILTER);
+								edit_account.addPermission(Permission.EDITFILTER);
 							}
-							else account.removePermission(Permission.EDITFILTER);
-							
+							else edit_account.removePermission(Permission.EDITFILTER);
+							accounts.saveAccounts();
 						}
 						else if(opened_user_group){
 							EnumSet<Permission> p = EnumSet.noneOf(Permission.class);
@@ -598,7 +599,7 @@ public class EditShell {
 							}
 							accounts.saveAccounts();
 							
-							}
+						}
 						
 						shell.close();
 						shell.dispose();

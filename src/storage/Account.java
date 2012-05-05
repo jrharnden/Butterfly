@@ -167,7 +167,7 @@ public class Account implements Serializable{
 		permissions.removeAll(perm);
 	}
 	public void addPermission(EnumSet<Permission> perm){
-		
+		permissions.addAll(perm);
 	}
 	public EnumSet<Permission> getPermissions(){
 		return permissions;
