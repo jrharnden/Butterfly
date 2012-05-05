@@ -1,576 +1,0 @@
-Client writes to server
----------
-DefaultHttpRequest(chunked: false)
-GET http://ad.doubleclick.net/adi/N6138.6441.USATODAY.COM/B6186709.3;sz=728x90;pc=[TPAS_ID];click=http%3A//gannett.gcion.com/adlink%2F5111%2F788275%2F0%2F225%2FAdId%3D2459989%3BBnId%3D1%3Bitime%3D116382721%3Bkey%3DChina%2Bsays%2Bblind%2Bactivist%2BChen%2Bcan%2Bapply%2Bstudy%2Babroad%2BUSATODAYcom%3Blink%3D;ord=116382721? HTTP/1.1
-Accept: text/html, application/xhtml+xml, */*
-Referer: http://www.usatoday.com/news/world/story/2012-05-04/china-activist-chen-guangcheng/54739930/1
-Accept-Language: en-US
-User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)
-Accept-Encoding: gzip, deflate
-Host: ad.doubleclick.net
-Proxy-Connection: Keep-Alive
-Pragma: no-cache
-Cookie: id=22ce86fb5401000f||t=1336116363|et=730|cs=002213fd48dcb8f1341e987110; _drt_=NO_DATA
----Content---
-
----End---
-
-Client writes to server
----------
-DefaultHttpRequest(chunked: false)
-GET http://ad.doubleclick.net/adi/N6138.6441.USATODAY.COM/B6186709.3;sz=728x90;pc=[TPAS_ID];click=http%3A//gannett.gcion.com/adlink%2F5111%2F788275%2F0%2F225%2FAdId%3D2459989%3BBnId%3D1%3Bitime%3D116382721%3Bkey%3DChina%2Bsays%2Bblind%2Bactivist%2BChen%2Bcan%2Bapply%2Bstudy%2Babroad%2BUSATODAYcom%3Blink%3D;ord=116382721? HTTP/1.1
-Accept: text/html, application/xhtml+xml, */*
-Referer: http://www.usatoday.com/news/world/story/2012-05-04/china-activist-chen-guangcheng/54739930/1
-Accept-Language: en-US
-User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)
-Accept-Encoding: gzip, deflate
-Host: ad.doubleclick.net
-Proxy-Connection: Keep-Alive
-Pragma: no-cache
-Cookie: id=22ce86fb5401000f||t=1336116363|et=730|cs=002213fd48dcb8f1341e987110; _drt_=NO_DATA
----Content---
-
----End---
-
-Server writes to client
----------
-DefaultHttpResponse(chunked: false)
-HTTP/1.1 200 OK
-Server: DCLK-AdSvr
-Content-Type: text/html
-Content-Length: 6346
-Cache-Control: no-cache
-Pragma: no-cache
-Date: Fri, 04 May 2012 07:26:23 GMT
-Expires: Fri, 04 May 2012 07:26:23 GMT
-Discarded: true
----Content---
-<!-- Copyright 2008 DoubleClick, a division of Google Inc. All rights reserved. -->
-<!-- Code auto-generated on Tue Apr 24 16:52:46 EDT 2012 -->
-<script src="http://s0.2mdn.net/879366/flashwrite_1_2.js"></script>
-<SCRIPT LANGUAGE="JavaScript">
-<!--
-function DCFlash(id,pVM){
-var swf = "http://s0.2mdn.net/2644424/2012 bike_728x90_B.swf";
-var gif = "http://s0.2mdn.net/2644424/2012 bike_728x90-r2_B.gif";
-var minV = 8;
-var FWH = ' width="728" height="90" ';
-var url = escape("http://ad.doubleclick.net/click%3Bh%3Dv8/3c6b/7/d1/%2a/e%3B253411087%3B3-0%3B0%3B77106006%3B3454-728/90%3B47906444/47921647/1%3B%3B%7Eokv%3D%3Bpc%3D%5BTPAS_ID%5D%3B%3B%7Esscs%3D%3fhttp%3A//gannett.gcion.com/adlink%2F5111%2F788275%2F0%2F225%2FAdId%3D2459989%3BBnId%3D1%3Bitime%3D116382721%3Bkey%3DChina%2Bsays%2Bblind%2Bactivist%2BChen%2Bcan%2Bapply%2Bstudy%2Babroad%2BUSATODAYcom%3Blink%3Dhttps://www.ra.com/joint-profile/default.aspx?cid=DFA:1045649:77106006:253411087:47906444");
-var fscUrl = url;
-var fscUrlClickTagFound = false;
-var wmode = "opaque";
-var bg = "";
-var dcallowscriptaccess = "never";
-
-var openWindow = "false";
-var winW = 0;
-var winH = 0;
-var winL = 0;
-var winT = 0;
-
-var moviePath=swf.substring(0,swf.lastIndexOf("/"));
-var sm=new Array();
-
-
-var defaultCtVal = escape("http://ad.doubleclick.net/click%3Bh%3Dv8/3c6b/7/d1/%2a/e%3B253411087%3B3-0%3B0%3B77106006%3B3454-728/90%3B47906444/47921647/1%3B%3B%7Eokv%3D%3Bpc%3D%5BTPAS_ID%5D%3B%3B%7Esscs%3D%3fhttp%3A//gannett.gcion.com/adlink%2F5111%2F788275%2F0%2F225%2FAdId%3D2459989%3BBnId%3D1%3Bitime%3D116382721%3Bkey%3DChina%2Bsays%2Bblind%2Bactivist%2BChen%2Bcan%2Bapply%2Bstudy%2Babroad%2BUSATODAYcom%3Blink%3Dhttps://www.ra.com/joint-profile/default.aspx?cid=DFA:1045649:77106006:253411087:47906444");
-var ctp=new Array();
-var ctv=new Array();
-ctp[0] = "clickTag";
-ctv[0] = "";
-
-
-var fv='"moviePath='+moviePath+'/'+'&moviepath='+moviePath+'/';
-for(i=1;i<sm.length;i++){if(sm[i]!=""){fv+="&submovie"+i+"="+escape(sm[i]);}}
-for(var ctIndex = 0; ctIndex < ctp.length; ctIndex++) {
-  var ctParam = ctp[ctIndex];
-  var ctVal = ctv[ctIndex];
-  if(ctVal != null && typeof(ctVal) == 'string') {
-    if(ctVal == "") {
-      ctVal = defaultCtVal;
-    }
-    else {
-      ctVal = escape("http://ad.doubleclick.net/click%3Bh%3Dv8/3c6b/7/d1/%2a/e%3B253411087%3B3-0%3B0%3B77106006%3B3454-728/90%3B47906444/47921647/1%3B%3B%7Eokv%3D%3Bpc%3D%5BTPAS_ID%5D%3B%3B%7Esscs%3D%3fhttp%3A//gannett.gcion.com/adlink%2F5111%2F788275%2F0%2F225%2FAdId%3D2459989%3BBnId%3D1%3Bitime%3D116382721%3Bkey%3DChina%2Bsays%2Bblind%2Bactivist%2BChen%2Bcan%2Bapply%2Bstudy%2Babroad%2BUSATODAYcom%3Blink%3D" + ctVal);
-    }
-    if(ctParam.toLowerCase() == "clicktag") {
-      fscUrl = ctVal;
-      fscUrlClickTagFound = true;
-    }
-    else if(!fscUrlClickTagFound) {
-      fscUrl = ctVal;
-    }
-    fv += "&" + ctParam + "=" + ctVal;
-  }
-}
-fv+='"';
-var bgo=(bg=="")?"":'<param name="bgcolor" value="#'+bg+'">';
-var bge=(bg=="")?"":' bgcolor="#'+bg+'"';
-function FSWin(){if((openWindow=="false")&&(id=="DCF0"))alert('openWindow is wrong.');
-var dcw = 800;
-var dch = 600;
-// IE
-if(!window.innerWidth)
-{
-  // strict mode
-  if(!(document.documentElement.clientWidth == 0))
-  {
-    dcw = document.documentElement.clientWidth;
-    dch = document.documentElement.clientHeight;
-  }
-  // quirks mode
-  else if(document.body)
-  {
-    dcw = document.body.clientWidth;
-    dch = document.body.clientHeight;
-  }
-}
-// w3c
-else
-{
-  dcw = window.innerWidth;
-  dch = window.innerHeight;
-}
-if(openWindow=="center"){winL=Math.floor((dcw-winW)/2);winT=Math.floor((dch-winH)/2);}window.open(unescape(fscUrl),id,"width="+winW+",height="+winH+",top="+winT+",left="+winL+",status=no,toolbar=no,menubar=no,location=no");}this.FSWin = FSWin;
-ua=navigator.userAgent;
-if(minV<=pVM&&(openWindow=="false"||(ua.indexOf("Mac")<0&&ua.indexOf("Opera")<0))){
-	var adcode='<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" id="'+id+'"'+FWH+'>'+
-		'<param name="movie" value="'+swf+'"><param name="flashvars" value='+fv+'><param name="quality" value="high"><param name="wmode" value="'+wmode+'"><param name="base" value="'+swf.substring(0,swf.lastIndexOf("/"))+'"><PARAM NAME="AllowScriptAccess" VALUE="'+dcallowscriptaccess+'">'+bgo+
-		'<embed src="'+swf+'" flashvars='+fv+bge+FWH+' type="application/x-shockwave-flash" quality="high" swliveconnect="true" wmode="'+wmode+'" name="'+id+'" base="'+swf.substring(0,swf.lastIndexOf("/"))+'" AllowScriptAccess="'+dcallowscriptaccess+'"></embed></object>';
-  if(('i'!="j")&&(typeof dclkFlashWrite!="undefined")){dclkFlashWrite(adcode);}else{document.write(adcode);}
-}else{
-	document.write('<a target="_blank" href="'+unescape(url)+'"><img src="'+gif+'"'+FWH+'border="0" alt="Advertisement" galleryimg="no"></a>');
-}}
-function getFlashVersion(){
-// code derived from SWFObject (http://code.google.com/p/swfobject/)
- var vfv = "0,0,0";
- try {
- try {
-   var axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.6");
-     try {axo.AllowScriptAccess = "always"; }catch(e) {return "6";}
- }catch(e) {}
- vfv = new ActiveXObject("ShockwaveFlash.ShockwaveFlash").GetVariable("$version");}
- catch(e) {
-   try {if(navigator.mimeTypes["application/x-shockwave-flash"].enabledPlugin){vfv= navigator.plugins["Shockwave Flash"].description;}}
-   catch(e) {}
- }
- return vfv.replace(/\D+/g, ",").match(/^,?(.+),?$/)[1].split(',').shift();
-}
-var DCid=(isNaN("253411087"))?"DCF2":"DCF253411087";
-var pVM=getFlashVersion();
-eval("function "+DCid+"_DoFSCommand(c,a){if(c=='openWindow')o"+DCid+".FSWin();}o"+DCid+"=new DCFlash('"+DCid+"',pVM);");
-//-->
-</SCRIPT>
-<noscript><a target="_blank" href="http://ad.doubleclick.net/click%3Bh%3Dv8/3c6b/7/d1/%2a/e%3B253411087%3B3-0%3B0%3B77106006%3B3454-728/90%3B47906444/47921647/1%3B%3B%7Eokv%3D%3Bpc%3D%5BTPAS_ID%5D%3B%3B%7Esscs%3D%3fhttp%3A//gannett.gcion.com/adlink%2F5111%2F788275%2F0%2F225%2FAdId%3D2459989%3BBnId%3D1%3Bitime%3D116382721%3Bkey%3DChina%2Bsays%2Bblind%2Bactivist%2BChen%2Bcan%2Bapply%2Bstudy%2Babroad%2BUSATODAYcom%3Blink%3Dhttps://www.ra.com/joint-profile/default.aspx?cid=DFA:1045649:77106006:253411087:47906444"><img src="http://s0.2mdn.net/2644424/2012 bike_728x90-r2_B.gif" width="728" height="90" border="0" alt="Advertisement" galleryimg="no"></a></noscript>
-
----End---
-
-Server writes to client
----------
-DefaultHttpResponse(chunked: false)
-HTTP/1.1 200 OK
-Server: DCLK-AdSvr
-Content-Type: text/html
-Content-Length: 2333
-Content-Encoding: gzip
-Date: Fri, 04 May 2012 07:26:23 GMT
----Content---
-‹      íkoÛ8òóÈ`y›H‚lI–Û‰­nœ´9ôlÒæ½^@K”ÌFU=ìÙü÷’’b'éöºÀ\›&â?3Ãápž?k·ÑOo2Íä:ÎMy9‹éQÌüë"(`K–3ž ¢—œG1E§‰o¡I#I•£Œæ4[ÒÀBíöáöÖX1("eÁÛMhF
- `rQR4I3äöP§°çôúèxz;wÜŠ:÷3–(Ï|Ï‹"=°íÜ±ÜE?X	-ìá`¿ÛïÛaLòù*c½ê\¹ÖçŽmE*˜œývzv?^OÞ¾|?yyìá¿“%9—Ë¸q{+,¿G›?v:Zé‡7ÆíöÖ’d(_…ÈCOÉàö{½žÛ³¥Ô3vM¯îðë¾sõÂ"<RôûQúvæ «Y,Xòx+ðäò@Z± ˜{ˆ0šSq	Þw0Ò*¼2‹?æ>I©^@+?Wë‹«•rÈÑN÷Å|§;]í®ßŸÙ;èØ;.±),¸{Ý^§ã0î¶ø+~ƒŽÓwœ¾˜ìíõÚ ‡½/zƒ}GÍ†?Ûé÷vfÅÿÁ1¿^Â.0N}ñÝ{qq69¿:…Ñ´ÁÉs?—H¡?y§;±íˆ$ iaE>\”åóœ#fÉõŽ{²×étà3ÝÁøu]1š§ðq{{ûûÃ}àý"‘BV°ãN¿„®˜»¦70s4g	Ùq_ää&‡Ï¶	àKÀFÀ
-ÍiŸˆ¿$Mã?^”?ø’YÆ‰ x>¹x7?ü„ÞRØîT(‡[X­VVFäA>s–í4ã!‹©Ð?”qa‘<ýúÜg?7=™tœÞ^¿·Pkü ¹?ƒZ×Ø¨.=Ìý÷òÞáö7¦¤+_?è„—I ë!‰sZa¬ÂOÁJyJ¾”´¶»Y$æj(ðIó•ò.âû4ÏÅrB—48
-‹§4¹•ñ•X”›ÔV,¹„Iç|µ	¾Þ/*°r¾dôŒ€ÅƒsYy9Ë‹Œ%‘î´Ž[œ&ýú.Ô±??ZùÂKè
-M²ŒÜè†dV?F)ú¨ø@~zÉÿ?—øEúÀ.ÔìòÁ,à}t>	Kö+÷ÁrvYÍâ5‹
-—ž†ï­T3›±©Ùš©íJ8}b˜„<Ó™×±q¾°bšDÅ|ÄLÓ¸e¡ž/>²OÏ<Œ?ÛpizxŒ_Òc“™ØÃfe¼ÏÝÝ)vêDÒ)¤#5ÀX¿Þ¤ž…½d<„ÙÉÈÈ„*ŒO£ûeå4B‹ ¬Z{æ¡¤„Ò`w7)åÕ¼?<H\Êqµj¿5*Oh´™FÍ>ë¾:R‹wêC!¼<ÆÿéÌ!gÆÈTcl^?¼uifVÁ_óÍŽHNui"ÊÛ
-ð¶5kh2›¿fèÙ­ÈJú„©À¦Ïž øÞ.‹p‰LnWI¹ˆ‰Àë#Jt@žªa­É¤ÜÓg‘'œø9ÆÚ8•Ô	YPÏ"ŸÇ<Ãà\q	ðß4s™>¼'§›ä¨"¹Ç•A¤®dOÎ!ë2xè÷	ÈU>6vw¡È*^r%‰iVèÚZêf9Ze<‰,Íh²¿HèCÇià9À}	Û6:=ÞÞÊ]Iz‹?íf—¢>5¶·¤nGø½_ QkTÁâ™p¿\Ð¤°êÁqL% ÉBX„c‚¦º&%ÌC;ª	æß'x%kèú¥È_J–]ç?Èµ5Œf<¸ùÁÄò÷¥YÃÚáNªvÕõ··ÄÎ•&Õ?=RkókÇ;yAÖàÃŽP»·¢öòÞ@6²Â˜CêÐa?¶(×Û5F¢{°:«¯äê]µ›à¬—I{•-è¥pÕ§˜‚¡‰[u«"àW <UÀ 1«¥× å)ÊÜK8 ñxF21?•Õ0æ>cHíwÅœå–´}P‚üÂ¹Kâ%dÉ"RðÌ*¡E?@+*Ú?ÕØƒfâ	?ùýw½$ Æª¬|C|lŒ?ÝÝõÉw)´µbÚ0DÇø‹ðø`0ž6æ³Ï,Þ‡ê4‡ƒ°ŸƒÀøÁ¬OÛ„öƒv§ã‡íýþlØ†ü±·×Ýë9ð#?¯™,¾mBËgj‡š	ü²;T!PGÍ„bXDŽÙ%ƒ`y?§™ž´M¤/%‰YqÓ°šÃ-=à#Û„µ½$üh·„ñM?¾_­K&g“ß&oÐÛÉhÔ'¢ÕP?úD¶}˜¼~,8>ÑˆÈ`	??W¢‹ÔãA­ÔhAbªR«¬P<,²Sædmçsî_¯È’¶%F•z*½ |³%õ9¸˜+ÒVmÔºb*?T×ˆ„f~D%è‘þàøc[¾Êêdò?QV×˜åãg÷U9?"¾–¯—âñV!Ò?%4€­o7WueÏà`"
-Ý6qkµ¹!F®Ã<@ÑÆ$‹(hêj“ä£yFCqš&b@¿ªÌ€-¢úæ"Þ›ÿŒg…Œ¾Abà4	 ñ,X.C8Fh…f7@ía r(³—¬‡ëÌ2Èƒ} ™xÎÒ…ÏBŒG€23ƒ;P˜ñ:¿<y§¼W¯ÊH?cEòíK–c©÷¦tm‹ <	%TN~Do uÈ?ÌõWÐä+4Ùjˆ‹þCm¥ãóÚì¤?Ö°?ëJñ6Ö#û“x¥¡;0h®S(p2Z”Y‚p‹«Z_ üG%Â†õ’Bá“1åµŽ]*µbiè~)µ”ìñ>/ "½ ƒÌ?~Çý>Y4[gq±Ä¸yAÜ†Q*§?M#:©ª<ËÖHô	G¿•r€«•Ñ4&>ÕíMM;j!Ü‚S.$…ýïÖsÝ2?Öó_mãcç“•ƒÌP8µ4ÃÊç,,dÏx§
-¤éDp?åoÉ[7íx×sQv¹ø@~šùª¬‚\ä=²QX£OuÜ˜16{_MùÉù_,Hè~‹È’Ï÷¼µZN3x?mUuáè®™’ýnýð©Õ³š| Is³mõ k«ÇT1LxõÄúM¿þÙyý:¯ÿÝ3ÊZ?þSïÚß|ºþ1~l7æ¸½õ	]|Ê  
----End---
-
-Client writes to server
----------
-DefaultHttpRequest(chunked: false)
-GET http://ad.doubleclick.net/adj/N5956.Advertising.com/B6123590.17;sz=300x250;click=http://r1-ads.ace.advertising.com/click/site=0000784329/mnum=0001132722/cstr=83189586=_4fa47695,0605572505,784329_1132722_1183_0,1_/xsxdata=$xsxdata/bnum=83189586/optn=64?trg=;ord=0605572505? HTTP/1.1
-Accept: application/javascript, */*;q=0.8
-Referer: http://www.bluesnews.com/
-Accept-Language: en-US
-User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)
-Accept-Encoding: gzip, deflate
-Host: ad.doubleclick.net
-Proxy-Connection: Keep-Alive
-Cookie: id=221f9b0a7d01007f||t=1336178314|et=730|cs=002213fd4878a3225fe91a597d
----Content---
-
----End---
-
-Client writes to server
----------
-DefaultHttpRequest(chunked: false)
-GET http://ad.doubleclick.net/adj/N5956.Advertising.com/B6123590.18;sz=728x90;click=http://r1-ads.ace.advertising.com/click/site=0000784328/mnum=0001132723/cstr=59294813=_4fa47695,1178862486,784328_1132723_1183_0,1_/xsxdata=$xsxdata/bnum=59294813/optn=64?trg=;ord=1178862486? HTTP/1.1
-Accept: application/javascript, */*;q=0.8
-Referer: http://www.bluesnews.com/inserts/bluesLeaderboard-fp.html
-Accept-Language: en-US
-User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)
-Accept-Encoding: gzip, deflate
-Host: ad.doubleclick.net
-Proxy-Connection: Keep-Alive
-Cookie: id=221f9b0a7d01007f||t=1336178314|et=730|cs=002213fd4878a3225fe91a597d
----Content---
-
----End---
-
-Server writes to client
----------
-DefaultHttpResponse(chunked: false)
-HTTP/1.1 200 OK
-Server: DCLK-AdSvr
-Content-Type: application/x-javascript
-Date: Sat, 05 May 2012 00:38:45 GMT
-Content-Encoding: identity
-Content-Length: 6839
----Content---
-document.write('<!-- Copyright 2008 DoubleClick, a division of Google Inc. All rights reserved. -->\r\n<!-- Code auto-generated on Fri Feb 11 13:13:34 EST 2011 -->\r\n<script src=\"http://s0.2mdn.net/879366/flashwrite_1_2.js\"><\/script>');document.write('\r\n');
-
-function DCFlash(id,pVM){
-var swf = "http://s0.2mdn.net/2450389/1-Capella_DR_standard_Financial_Aid_300x250.swf";
-var gif = "http://s0.2mdn.net/2450389/1-Capella_DR_standard_Financial_Aid_300x250.jpg";
-var minV = 10;
-var FWH = ' width="300" height="250" ';
-var url = escape("http://ad.doubleclick.net/click%3Bh%3Dv8/3c6c/f/af/%2a/s%3B250514595%3B0-0%3B0%3B75119792%3B4307-300/250%3B40710722/40728509/1%3B%3B%7Esscs%3D%3fhttp://r1-ads.ace.advertising.com/click/site=0000784329/mnum=0001132722/cstr=83189586=_4fa47695,0605572505,784329_1132722_1183_0,1_/xsxdata=$xsxdata/bnum=83189586/optn=64?trg=http%3a%2f%2ft.mookie1.com/t/v1/clk%3FmigAgencyId%3D319%26migSource%3Dadsrv2%26migRandom%3D%5Btimestamp%5D%26migTrackDataExt%3D2450389%3B75119792%3B250514595%3B40710722%26migTrackFmtExt%3Dclient%3Bio%3Bad%3Bcrtv%26migUnencodedDest%3Dhttp%3A//learning.capella.edu/unilong%3Frevkey%3D169157%26csdartid%3D169157%26cssiteid%3D848198");
-var fscUrl = url;
-var fscUrlClickTagFound = false;
-var wmode = "opaque";
-var bg = "";
-var dcallowscriptaccess = "never";
-
-var openWindow = "false";
-var winW = 0;
-var winH = 0;
-var winL = 0;
-var winT = 0;
-
-var moviePath=swf.substring(0,swf.lastIndexOf("/"));
-var sm=new Array();
-
-
-var defaultCtVal = escape("http://ad.doubleclick.net/click%3Bh%3Dv8/3c6c/f/af/%2a/s%3B250514595%3B0-0%3B0%3B75119792%3B4307-300/250%3B40710722/40728509/1%3B%3B%7Esscs%3D%3fhttp://r1-ads.ace.advertising.com/click/site=0000784329/mnum=0001132722/cstr=83189586=_4fa47695,0605572505,784329_1132722_1183_0,1_/xsxdata=$xsxdata/bnum=83189586/optn=64?trg=http%3a%2f%2ft.mookie1.com/t/v1/clk%3FmigAgencyId%3D319%26migSource%3Dadsrv2%26migRandom%3D%5Btimestamp%5D%26migTrackDataExt%3D2450389%3B75119792%3B250514595%3B40710722%26migTrackFmtExt%3Dclient%3Bio%3Bad%3Bcrtv%26migUnencodedDest%3Dhttp%3A//learning.capella.edu/unilong%3Frevkey%3D169157%26csdartid%3D169157%26cssiteid%3D848198");
-var ctp=new Array();
-var ctv=new Array();
-ctp[0] = "clickTag";
-ctv[0] = "";
-
-
-var fv='"moviePath='+moviePath+'/'+'&moviepath='+moviePath+'/';
-for(i=1;i<sm.length;i++){if(sm[i]!=""){fv+="&submovie"+i+"="+escape(sm[i]);}}
-for(var ctIndex = 0; ctIndex < ctp.length; ctIndex++) {
-  var ctParam = ctp[ctIndex];
-  var ctVal = ctv[ctIndex];
-  if(ctVal != null && typeof(ctVal) == 'string') {
-    if(ctVal == "") {
-      ctVal = defaultCtVal;
-    }
-    else {
-      ctVal = escape("http://ad.doubleclick.net/click%3Bh%3Dv8/3c6c/f/af/%2a/s%3B250514595%3B0-0%3B0%3B75119792%3B4307-300/250%3B40710722/40728509/1%3B%3B%7Esscs%3D%3fhttp://r1-ads.ace.advertising.com/click/site=0000784329/mnum=0001132722/cstr=83189586=_4fa47695,0605572505,784329_1132722_1183_0,1_/xsxdata=$xsxdata/bnum=83189586/optn=64?trg=" + ctVal);
-    }
-    if(ctParam.toLowerCase() == "clicktag") {
-      fscUrl = ctVal;
-      fscUrlClickTagFound = true;
-    }
-    else if(!fscUrlClickTagFound) {
-      fscUrl = ctVal;
-    }
-    fv += "&" + ctParam + "=" + ctVal;
-  }
-}
-fv+='"';
-var bgo=(bg=="")?"":'<param name="bgcolor" value="#'+bg+'">';
-var bge=(bg=="")?"":' bgcolor="#'+bg+'"';
-function FSWin(){if((openWindow=="false")&&(id=="DCF0"))alert('openWindow is wrong.');
-var dcw = 800;
-var dch = 600;
-// IE
-if(!window.innerWidth)
-{
-  // strict mode
-  if(!(document.documentElement.clientWidth == 0))
-  {
-    dcw = document.documentElement.clientWidth;
-    dch = document.documentElement.clientHeight;
-  }
-  // quirks mode
-  else if(document.body)
-  {
-    dcw = document.body.clientWidth;
-    dch = document.body.clientHeight;
-  }
-}
-// w3c
-else
-{
-  dcw = window.innerWidth;
-  dch = window.innerHeight;
-}
-if(openWindow=="center"){winL=Math.floor((dcw-winW)/2);winT=Math.floor((dch-winH)/2);}window.open(unescape(fscUrl),id,"width="+winW+",height="+winH+",top="+winT+",left="+winL+",status=no,toolbar=no,menubar=no,location=no");}this.FSWin = FSWin;
-ua=navigator.userAgent;
-if(minV<=pVM&&(openWindow=="false"||(ua.indexOf("Mac")<0&&ua.indexOf("Opera")<0))){
-	var adcode='<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" id="'+id+'"'+FWH+'>'+
-		'<param name="movie" value="'+swf+'"><param name="flashvars" value='+fv+'><param name="quality" value="high"><param name="wmode" value="'+wmode+'"><param name="base" value="'+swf.substring(0,swf.lastIndexOf("/"))+'"><PARAM NAME="AllowScriptAccess" VALUE="'+dcallowscriptaccess+'">'+bgo+
-		'<embed src="'+swf+'" flashvars='+fv+bge+FWH+' type="application/x-shockwave-flash" quality="high" swliveconnect="true" wmode="'+wmode+'" name="'+id+'" base="'+swf.substring(0,swf.lastIndexOf("/"))+'" AllowScriptAccess="'+dcallowscriptaccess+'"></embed></object>';
-  if(('j'!="j")&&(typeof dclkFlashWrite!="undefined")){dclkFlashWrite(adcode);}else{document.write(adcode);}
-}else{
-	document.write('<a target="_blank" href="'+unescape(url)+'"><img src="'+gif+'"'+FWH+'border="0" alt="Advertisement" galleryimg="no"></a>');
-}}
-var pVM=0;var DCid=(isNaN("250514595"))?"DCF2":"DCF250514595";
-if(navigator.plugins && navigator.mimeTypes.length){
-  var x=navigator.plugins["Shockwave Flash"];if(x && x.description){var pVF=x.description;var y=pVF.indexOf("Flash ")+6;pVM=pVF.substring(y,pVF.indexOf(".",y));}}
-else if (window.ActiveXObject && window.execScript){
-  window.execScript('on error resume next\npVM=2\ndo\npVM=pVM+1\nset swControl = CreateObject("ShockwaveFlash.ShockwaveFlash."&pVM)\nloop while Err = 0\nOn Error Resume Next\npVM=pVM-1\nSub '+DCid+'_FSCommand(ByVal command, ByVal args)\nCall '+DCid+'_DoFSCommand(command, args)\nEnd Sub\n',"VBScript");}
-eval("function "+DCid+"_DoFSCommand(c,a){if(c=='openWindow')o"+DCid+".FSWin();}o"+DCid+"=new DCFlash('"+DCid+"',pVM);");
-//-->
-
-document.write('\r\n<noscript><a target=\"_blank\" href=\"http://ad.doubleclick.net/click%3Bh%3Dv8/3c6c/f/af/%2a/s%3B250514595%3B0-0%3B0%3B75119792%3B4307-300/250%3B40710722/40728509/1%3B%3B%7Esscs%3D%3fhttp://r1-ads.ace.advertising.com/click/site=0000784329/mnum=0001132722/cstr=83189586=_4fa47695,0605572505,784329_1132722_1183_0,1_/xsxdata=$xsxdata/bnum=83189586/optn=64?trg=http%3a%2f%2ft.mookie1.com/t/v1/clk%3FmigAgencyId%3D319%26migSource%3Dadsrv2%26migRandom%3D%5Btimestamp%5D%26migTrackDataExt%3D2450389%3B75119792%3B250514595%3B40710722%26migTrackFmtExt%3Dclient%3Bio%3Bad%3Bcrtv%26migUnencodedDest%3Dhttp%3A//learning.capella.edu/unilong%3Frevkey%3D169157%26csdartid%3D169157%26cssiteid%3D848198\"><img src=\"http://s0.2mdn.net/2450389/1-Capella_DR_standard_Financial_Aid_300x250.jpg\" width=\"300\" height=\"250\" border=\"0\" alt=\"Advertisement\" galleryimg=\"no\"></a></noscript>\r\n');
-
----End---
-
-Server writes to client
----------
-DefaultHttpResponse(chunked: false)
-HTTP/1.1 200 OK
-Server: DCLK-AdSvr
-Content-Type: application/x-javascript
-Date: Sat, 05 May 2012 00:38:45 GMT
-Content-Encoding: identity
-Content-Length: 6830
----Content---
-document.write('<!-- Copyright 2008 DoubleClick, a division of Google Inc. All rights reserved. -->\r\n<!-- Code auto-generated on Tue Feb 22 14:58:51 EST 2011 -->\r\n<script src=\"http://s0.2mdn.net/879366/flashwrite_1_2.js\"><\/script>');document.write('\r\n');
-
-function DCFlash(id,pVM){
-var swf = "http://s0.2mdn.net/2450389/2-Capella_DR_standard_Grad_Programs_728x90.swf";
-var gif = "http://s0.2mdn.net/2450389/2-Capella_DR_standard_Grad_Programs_728x90.jpg";
-var minV = 10;
-var FWH = ' width="728" height="90" ';
-var url = escape("http://ad.doubleclick.net/click%3Bh%3Dv8/3c6c/f/af/%2a/d%3B250514774%3B1-0%3B0%3B75119797%3B3454-728/90%3B40845829/40863616/1%3B%3B%7Esscs%3D%3fhttp://r1-ads.ace.advertising.com/click/site=0000784328/mnum=0001132723/cstr=59294813=_4fa47695,1178862486,784328_1132723_1183_0,1_/xsxdata=$xsxdata/bnum=59294813/optn=64?trg=http%3a%2f%2ft.mookie1.com/t/v1/clk%3FmigAgencyId%3D319%26migSource%3Dadsrv2%26migRandom%3D%5Btimestamp%5D%26migTrackDataExt%3D2450389%3B75119797%3B250514774%3B40845829%26migTrackFmtExt%3Dclient%3Bio%3Bad%3Bcrtv%26migUnencodedDest%3Dhttp%3A//learning.capella.edu/unilong%3Frevkey%3D171184%26csdartid%3D171184%26cssiteid%3D848198");
-var fscUrl = url;
-var fscUrlClickTagFound = false;
-var wmode = "opaque";
-var bg = "";
-var dcallowscriptaccess = "never";
-
-var openWindow = "false";
-var winW = 0;
-var winH = 0;
-var winL = 0;
-var winT = 0;
-
-var moviePath=swf.substring(0,swf.lastIndexOf("/"));
-var sm=new Array();
-
-
-var defaultCtVal = escape("http://ad.doubleclick.net/click%3Bh%3Dv8/3c6c/f/af/%2a/d%3B250514774%3B1-0%3B0%3B75119797%3B3454-728/90%3B40845829/40863616/1%3B%3B%7Esscs%3D%3fhttp://r1-ads.ace.advertising.com/click/site=0000784328/mnum=0001132723/cstr=59294813=_4fa47695,1178862486,784328_1132723_1183_0,1_/xsxdata=$xsxdata/bnum=59294813/optn=64?trg=http%3a%2f%2ft.mookie1.com/t/v1/clk%3FmigAgencyId%3D319%26migSource%3Dadsrv2%26migRandom%3D%5Btimestamp%5D%26migTrackDataExt%3D2450389%3B75119797%3B250514774%3B40845829%26migTrackFmtExt%3Dclient%3Bio%3Bad%3Bcrtv%26migUnencodedDest%3Dhttp%3A//learning.capella.edu/unilong%3Frevkey%3D171184%26csdartid%3D171184%26cssiteid%3D848198");
-var ctp=new Array();
-var ctv=new Array();
-ctp[0] = "clickTag";
-ctv[0] = "";
-
-
-var fv='"moviePath='+moviePath+'/'+'&moviepath='+moviePath+'/';
-for(i=1;i<sm.length;i++){if(sm[i]!=""){fv+="&submovie"+i+"="+escape(sm[i]);}}
-for(var ctIndex = 0; ctIndex < ctp.length; ctIndex++) {
-  var ctParam = ctp[ctIndex];
-  var ctVal = ctv[ctIndex];
-  if(ctVal != null && typeof(ctVal) == 'string') {
-    if(ctVal == "") {
-      ctVal = defaultCtVal;
-    }
-    else {
-      ctVal = escape("http://ad.doubleclick.net/click%3Bh%3Dv8/3c6c/f/af/%2a/d%3B250514774%3B1-0%3B0%3B75119797%3B3454-728/90%3B40845829/40863616/1%3B%3B%7Esscs%3D%3fhttp://r1-ads.ace.advertising.com/click/site=0000784328/mnum=0001132723/cstr=59294813=_4fa47695,1178862486,784328_1132723_1183_0,1_/xsxdata=$xsxdata/bnum=59294813/optn=64?trg=" + ctVal);
-    }
-    if(ctParam.toLowerCase() == "clicktag") {
-      fscUrl = ctVal;
-      fscUrlClickTagFound = true;
-    }
-    else if(!fscUrlClickTagFound) {
-      fscUrl = ctVal;
-    }
-    fv += "&" + ctParam + "=" + ctVal;
-  }
-}
-fv+='"';
-var bgo=(bg=="")?"":'<param name="bgcolor" value="#'+bg+'">';
-var bge=(bg=="")?"":' bgcolor="#'+bg+'"';
-function FSWin(){if((openWindow=="false")&&(id=="DCF0"))alert('openWindow is wrong.');
-var dcw = 800;
-var dch = 600;
-// IE
-if(!window.innerWidth)
-{
-  // strict mode
-  if(!(document.documentElement.clientWidth == 0))
-  {
-    dcw = document.documentElement.clientWidth;
-    dch = document.documentElement.clientHeight;
-  }
-  // quirks mode
-  else if(document.body)
-  {
-    dcw = document.body.clientWidth;
-    dch = document.body.clientHeight;
-  }
-}
-// w3c
-else
-{
-  dcw = window.innerWidth;
-  dch = window.innerHeight;
-}
-if(openWindow=="center"){winL=Math.floor((dcw-winW)/2);winT=Math.floor((dch-winH)/2);}window.open(unescape(fscUrl),id,"width="+winW+",height="+winH+",top="+winT+",left="+winL+",status=no,toolbar=no,menubar=no,location=no");}this.FSWin = FSWin;
-ua=navigator.userAgent;
-if(minV<=pVM&&(openWindow=="false"||(ua.indexOf("Mac")<0&&ua.indexOf("Opera")<0))){
-	var adcode='<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" id="'+id+'"'+FWH+'>'+
-		'<param name="movie" value="'+swf+'"><param name="flashvars" value='+fv+'><param name="quality" value="high"><param name="wmode" value="'+wmode+'"><param name="base" value="'+swf.substring(0,swf.lastIndexOf("/"))+'"><PARAM NAME="AllowScriptAccess" VALUE="'+dcallowscriptaccess+'">'+bgo+
-		'<embed src="'+swf+'" flashvars='+fv+bge+FWH+' type="application/x-shockwave-flash" quality="high" swliveconnect="true" wmode="'+wmode+'" name="'+id+'" base="'+swf.substring(0,swf.lastIndexOf("/"))+'" AllowScriptAccess="'+dcallowscriptaccess+'"></embed></object>';
-  if(('j'!="j")&&(typeof dclkFlashWrite!="undefined")){dclkFlashWrite(adcode);}else{document.write(adcode);}
-}else{
-	document.write('<a target="_blank" href="'+unescape(url)+'"><img src="'+gif+'"'+FWH+'border="0" alt="Advertisement" galleryimg="no"></a>');
-}}
-var pVM=0;var DCid=(isNaN("250514774"))?"DCF2":"DCF250514774";
-if(navigator.plugins && navigator.mimeTypes.length){
-  var x=navigator.plugins["Shockwave Flash"];if(x && x.description){var pVF=x.description;var y=pVF.indexOf("Flash ")+6;pVM=pVF.substring(y,pVF.indexOf(".",y));}}
-else if (window.ActiveXObject && window.execScript){
-  window.execScript('on error resume next\npVM=2\ndo\npVM=pVM+1\nset swControl = CreateObject("ShockwaveFlash.ShockwaveFlash."&pVM)\nloop while Err = 0\nOn Error Resume Next\npVM=pVM-1\nSub '+DCid+'_FSCommand(ByVal command, ByVal args)\nCall '+DCid+'_DoFSCommand(command, args)\nEnd Sub\n',"VBScript");}
-eval("function "+DCid+"_DoFSCommand(c,a){if(c=='openWindow')o"+DCid+".FSWin();}o"+DCid+"=new DCFlash('"+DCid+"',pVM);");
-//-->
-
-document.write('\r\n<noscript><a target=\"_blank\" href=\"http://ad.doubleclick.net/click%3Bh%3Dv8/3c6c/f/af/%2a/d%3B250514774%3B1-0%3B0%3B75119797%3B3454-728/90%3B40845829/40863616/1%3B%3B%7Esscs%3D%3fhttp://r1-ads.ace.advertising.com/click/site=0000784328/mnum=0001132723/cstr=59294813=_4fa47695,1178862486,784328_1132723_1183_0,1_/xsxdata=$xsxdata/bnum=59294813/optn=64?trg=http%3a%2f%2ft.mookie1.com/t/v1/clk%3FmigAgencyId%3D319%26migSource%3Dadsrv2%26migRandom%3D%5Btimestamp%5D%26migTrackDataExt%3D2450389%3B75119797%3B250514774%3B40845829%26migTrackFmtExt%3Dclient%3Bio%3Bad%3Bcrtv%26migUnencodedDest%3Dhttp%3A//learning.capella.edu/unilong%3Frevkey%3D171184%26csdartid%3D171184%26cssiteid%3D848198\"><img src=\"http://s0.2mdn.net/2450389/2-Capella_DR_standard_Grad_Programs_728x90.jpg\" width=\"728\" height=\"90\" border=\"0\" alt=\"Advertisement\" galleryimg=\"no\"></a></noscript>\r\n');
-
----End---
-
-Client writes to server
----------
-DefaultHttpRequest(chunked: false)
-GET http://ad.doubleclick.net/adj/N1558.140101.AD.COM/B6281161.4;sz=728x90;pc=[TPAS_ID];click=http://r1-ads.ace.advertising.com/click/site=0000784328/mnum=0001150286/cstr=22896050=_4fa4769c,6147036888,784328_1150286_1183_0,1_/xsxdata=$xsxdata/bnum=22896050/optn=64?trg=;ord=6147036888? HTTP/1.1
-Accept: application/javascript, */*;q=0.8
-Referer: http://www.bluesnews.com/inserts/bluesLeaderboard-fp.html
-Accept-Language: en-US
-User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)
-Accept-Encoding: gzip, deflate
-Host: ad.doubleclick.net
-Proxy-Connection: Keep-Alive
-Pragma: no-cache
-Cookie: id=221f9b0a7d01007f||t=1336178314|et=730|cs=002213fd4878a3225fe91a597d
----Content---
-
----End---
-
-Server writes to client
----------
-DefaultHttpResponse(chunked: false)
-HTTP/1.1 200 OK
-Server: DCLK-AdSvr
-Content-Type: application/x-javascript
-Date: Sat, 05 May 2012 00:38:52 GMT
-Content-Encoding: identity
-Content-Length: 6204
----Content---
-document.write('<!-- Copyright 2008 DoubleClick, a division of Google Inc. All rights reserved. -->\r\n<!-- Code auto-generated on Thu Jan 19 16:33:21 EST 2012 -->\r\n<script src=\"http://s0.2mdn.net/879366/flashwrite_1_2.js\"><\/script>');document.write('\r\n');
-
-function DCFlash(id,pVM){
-var swf = "http://s0.2mdn.net/1357971/728x90_CoreFeb2012_TreeHugger Records_020112_flash.swf";
-var gif = "http://s0.2mdn.net/1357971/728x90_CoreFeb2012_TreeHugger Records_020112_static.jpg";
-var minV = 8;
-var FWH = ' width="728" height="90" ';
-var url = escape("http://ad.doubleclick.net/click%3Bh%3Dv8/3c6c/f/af/%2a/l%3B252805943%3B1-0%3B0%3B76700362%3B3454-728/90%3B46212682/46229775/1%3B%3B%7Eokv%3D%3Bpc%3D%5BTPAS_ID%5D%3B%3B%7Esscs%3D%3fhttp://r1-ads.ace.advertising.com/click/site=0000784328/mnum=0001150286/cstr=22896050=_4fa4769c,6147036888,784328_1150286_1183_0,1_/xsxdata=$xsxdata/bnum=22896050/optn=64?trg=http%3a%2f%2fwww.ancestry.com/s36690/t10086/rd.ashx");
-var fscUrl = url;
-var fscUrlClickTagFound = false;
-var wmode = "opaque";
-var bg = "";
-var dcallowscriptaccess = "never";
-
-var openWindow = "false";
-var winW = 0;
-var winH = 0;
-var winL = 0;
-var winT = 0;
-
-var moviePath=swf.substring(0,swf.lastIndexOf("/"));
-var sm=new Array();
-
-
-var defaultCtVal = escape("http://ad.doubleclick.net/click%3Bh%3Dv8/3c6c/f/af/%2a/l%3B252805943%3B1-0%3B0%3B76700362%3B3454-728/90%3B46212682/46229775/1%3B%3B%7Eokv%3D%3Bpc%3D%5BTPAS_ID%5D%3B%3B%7Esscs%3D%3fhttp://r1-ads.ace.advertising.com/click/site=0000784328/mnum=0001150286/cstr=22896050=_4fa4769c,6147036888,784328_1150286_1183_0,1_/xsxdata=$xsxdata/bnum=22896050/optn=64?trg=http%3a%2f%2fwww.ancestry.com/s36690/t10086/rd.ashx");
-var ctp=new Array();
-var ctv=new Array();
-ctp[0] = "clickTag";
-ctv[0] = "";
-ctp[1] = "clickTAG";
-ctv[1] = "";
-
-
-var fv='"moviePath='+moviePath+'/'+'&moviepath='+moviePath+'/';
-for(i=1;i<sm.length;i++){if(sm[i]!=""){fv+="&submovie"+i+"="+escape(sm[i]);}}
-for(var ctIndex = 0; ctIndex < ctp.length; ctIndex++) {
-  var ctParam = ctp[ctIndex];
-  var ctVal = ctv[ctIndex];
-  if(ctVal != null && typeof(ctVal) == 'string') {
-    if(ctVal == "") {
-      ctVal = defaultCtVal;
-    }
-    else {
-      ctVal = escape("http://ad.doubleclick.net/click%3Bh%3Dv8/3c6c/f/af/%2a/l%3B252805943%3B1-0%3B0%3B76700362%3B3454-728/90%3B46212682/46229775/1%3B%3B%7Eokv%3D%3Bpc%3D%5BTPAS_ID%5D%3B%3B%7Esscs%3D%3fhttp://r1-ads.ace.advertising.com/click/site=0000784328/mnum=0001150286/cstr=22896050=_4fa4769c,6147036888,784328_1150286_1183_0,1_/xsxdata=$xsxdata/bnum=22896050/optn=64?trg=" + ctVal);
-    }
-    if(ctParam.toLowerCase() == "clicktag") {
-      fscUrl = ctVal;
-      fscUrlClickTagFound = true;
-    }
-    else if(!fscUrlClickTagFound) {
-      fscUrl = ctVal;
-    }
-    fv += "&" + ctParam + "=" + ctVal;
-  }
-}
-fv+='"';
-var bgo=(bg=="")?"":'<param name="bgcolor" value="#'+bg+'">';
-var bge=(bg=="")?"":' bgcolor="#'+bg+'"';
-function FSWin(){if((openWindow=="false")&&(id=="DCF0"))alert('openWindow is wrong.');
-var dcw = 800;
-var dch = 600;
-// IE
-if(!window.innerWidth)
-{
-  // strict mode
-  if(!(document.documentElement.clientWidth == 0))
-  {
-    dcw = document.documentElement.clientWidth;
-    dch = document.documentElement.clientHeight;
-  }
-  // quirks mode
-  else if(document.body)
-  {
-    dcw = document.body.clientWidth;
-    dch = document.body.clientHeight;
-  }
-}
-// w3c
-else
-{
-  dcw = window.innerWidth;
-  dch = window.innerHeight;
-}
-if(openWindow=="center"){winL=Math.floor((dcw-winW)/2);winT=Math.floor((dch-winH)/2);}window.open(unescape(fscUrl),id,"width="+winW+",height="+winH+",top="+winT+",left="+winL+",status=no,toolbar=no,menubar=no,location=no");}this.FSWin = FSWin;
-ua=navigator.userAgent;
-if(minV<=pVM&&(openWindow=="false"||(ua.indexOf("Mac")<0&&ua.indexOf("Opera")<0))){
-	var adcode='<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" id="'+id+'"'+FWH+'>'+
-		'<param name="movie" value="'+swf+'"><param name="flashvars" value='+fv+'><param name="quality" value="high"><param name="wmode" value="'+wmode+'"><param name="base" value="'+swf.substring(0,swf.lastIndexOf("/"))+'"><PARAM NAME="AllowScriptAccess" VALUE="'+dcallowscriptaccess+'">'+bgo+
-		'<embed src="'+swf+'" flashvars='+fv+bge+FWH+' type="application/x-shockwave-flash" quality="high" swliveconnect="true" wmode="'+wmode+'" name="'+id+'" base="'+swf.substring(0,swf.lastIndexOf("/"))+'" AllowScriptAccess="'+dcallowscriptaccess+'"></embed></object>';
-  if(('j'!="j")&&(typeof dclkFlashWrite!="undefined")){dclkFlashWrite(adcode);}else{document.write(adcode);}
-}else{
-	document.write('<a target="_blank" href="'+unescape(url)+'"><img src="'+gif+'"'+FWH+'border="0" alt="Advertisement" galleryimg="no"></a>');
-}}
-var pVM=0;var DCid=(isNaN("252805943"))?"DCF2":"DCF252805943";
-if(navigator.plugins && navigator.mimeTypes.length){
-  var x=navigator.plugins["Shockwave Flash"];if(x && x.description){var pVF=x.description;var y=pVF.indexOf("Flash ")+6;pVM=pVF.substring(y,pVF.indexOf(".",y));}}
-else if (window.ActiveXObject && window.execScript){
-  window.execScript('on error resume next\npVM=2\ndo\npVM=pVM+1\nset swControl = CreateObject("ShockwaveFlash.ShockwaveFlash."&pVM)\nloop while Err = 0\nOn Error Resume Next\npVM=pVM-1\nSub '+DCid+'_FSCommand(ByVal command, ByVal args)\nCall '+DCid+'_DoFSCommand(command, args)\nEnd Sub\n',"VBScript");}
-eval("function "+DCid+"_DoFSCommand(c,a){if(c=='openWindow')o"+DCid+".FSWin();}o"+DCid+"=new DCFlash('"+DCid+"',pVM);");
-//-->
-
-document.write('\r\n<noscript><a target=\"_blank\" href=\"http://ad.doubleclick.net/click%3Bh%3Dv8/3c6c/f/af/%2a/l%3B252805943%3B1-0%3B0%3B76700362%3B3454-728/90%3B46212682/46229775/1%3B%3B%7Eokv%3D%3Bpc%3D%5BTPAS_ID%5D%3B%3B%7Esscs%3D%3fhttp://r1-ads.ace.advertising.com/click/site=0000784328/mnum=0001150286/cstr=22896050=_4fa4769c,6147036888,784328_1150286_1183_0,1_/xsxdata=$xsxdata/bnum=22896050/optn=64?trg=http%3a%2f%2fwww.ancestry.com/s36690/t10086/rd.ashx\"><img src=\"http://s0.2mdn.net/1357971/728x90_CoreFeb2012_TreeHugger Records_020112_static.jpg\" width=\"728\" height=\"90\" border=\"0\" alt=\"Advertisement\" galleryimg=\"no\"></a></noscript>\r\n');
-
----End---
-

@@ -1,3757 +1,0 @@
-Client writes to server
----------
-DefaultHttpRequest(chunked: false)
-GET http://www.rhapsody.com/simple.js HTTP/1.1
-Accept: application/javascript, */*;q=0.8
-Referer: http://www.mtv.com/news/articles/1684550/adam-youch-mca-beastie-boys-fight-for-your-right.jhtml
-Accept-Language: en-US
-User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)
-Accept-Encoding: gzip, deflate
-Host: www.rhapsody.com
-Proxy-Connection: Keep-Alive
----Content---
-
----End---
-
-Server writes to client
----------
-DefaultHttpResponse(chunked: false)
-HTTP/1.1 200 OK
-Server: Apache Coyote/1.0
-P3P: CP="CAO DSP COR CUR DEV TAI PSA IVD CONo OUR DELi SAMi BUS PRE"
-Pragma: 
-RotwVersion: 01_42_00_175
-RotwBid: -1067563546
-RotwExpire: PageIdMatch(external-javascript-library)-Ttl(14400000)
-Content-Type: text/javascript
-Vary: Accept-Encoding
-Cneonction: close
-nnCoection: close
-Cache-Control: private, max-age=11312
-Expires: Sat, 05 May 2012 03:41:14 GMT
-Date: Sat, 05 May 2012 00:32:42 GMT
-Connection: keep-alive
-Content-Encoding: identity
-Content-Length: 6662
----Content---
-ges/overlays/btn_continueplaying.gif"></img><\/a><\/span><span style="padding-left: 8px;"><a href="' + subscribeJoinURL + '"><img src="http://static.rhap.com/rotw/images/overlays/btn_subscribenow.gif"></img><\/a><\/span><\/div>';
-var upgradeNowSection = '';
-var learnMoreLinkStyle = 'padding-bottom: 26px;';
-if(arrayCode[1] == '0'){
-upsellMsgDetail = 'Your set of 25 full-length plays has ended, but if you upgrade now, running out of music will never be a problem again.';
-upsellMsgDetailStyle = 'padding-right: 20px;';
-upsellHeaderClassSuffix = 'NoPlaysLeft';
-upSellMsgSubheaderContent = '';
-unlimitedAccessSubheader = '<div class="upsellUnlimitedAcc">Unlimited Access<\/div>';
-unlimitedAccessDetails = '<div><ul class="upsellBullet"><li>Unlimited full-length play of any song in the library<li>100+ ad-free Rhapsody Channels<li>Access to your music, anytime you want it<\/ul><\/div>';
-upSellMsgPricingContent = 'Upgrade to Rhapsody Unlimited and experience:';
-continueSubscribeButtons = '';
-upgradeNowSection = '<div style="padding-bottom: 14px;"><span><a href="' + subscribeJoinURL + '"><img src="http://static.rhap.com/rotw/images/overlays/btn_upgradenow.gif"></img><\/a><\/span><\/div>';
-upgradeNowSection += '<div style="padding-bottom: 22px;"><div class="rhapMember">No, thanks, I will <a style="text-decoration: underline;" href="#" onclick="ErrorModalDialogBox.destroyAndPlay(); return false;">keep listening<\/a> to 30 seconds samples.<\/div>';
-upgradeNowSection += '<div class="rhapMember">Rhapsody member? <a href="#" onclick="ErrorModalDialogBox.destroyAndSignIn(); return false;">Sign in<\/a> here.<\/div><\/div>';
-learnMoreLinkStyle = 'padding-bottom: 18px;';
-}
-errorHtmlContent = closeXSpanContinuePlay;
-errorHtmlContent += '<div class="embPlayerErrorDialogBody">';
-errorHtmlContent += '<div class="upsellHeader' + upsellHeaderClassSuffix + '">Join Now<\/div>';
-errorHtmlContent += upSellMsgSubheaderContent;
-errorHtmlContent += '<div class="upSellMsgDetail" style="' + upsellMsgDetailStyle + '">'+ upsellMsgDetail + '<\/div>';
-errorHtmlContent += unlimitedAccessSubheader;
-errorHtmlContent += '<div class="upSellMsgPricing">' + upSellMsgPricingContent + '<\/div>';
-errorHtmlContent += unlimitedAccessDetails;
-errorHtmlContent += continueSubscribeButtons;
-errorHtmlContent += '<div class="upSellLearnMoreLink" style="' + learnMoreLinkStyle + '"><a href="' + learnMoreURL + '">Learn more<\/a><\/div>';
-errorHtmlContent += upgradeNowSection;
-errorHtmlContent += '<div class="upsellPolicyTerms"><span><a href="' + privacyPolicyURL + '">Privacy Policy</a><\/span>|<span style="padding-left: 2px;"><a href="' + termsConditionsURL + '">Terms and Conditions</a><\/span><\/div>';
-errorHtmlContent += '<\/div>';
-}
-break;
-case('popupTip'):
-errorHtmlContent = closeXSpanContinuePlay;
-errorHtmlContent += '<div class="embPlayerErrorDialogBody" style="padding-left: 12px; height: 1%; overflow: hidden;">';
-errorHtmlContent += '<div class="popupTipHeader">Tip:<\/div>';
-errorHtmlContent += '<div class="popupTipContent">';
-errorHtmlContent += '<div class="popupTipWords">To keep playing music as you browse, pop out the player.<\/div>';
-errorHtmlContent += '<div class="popupTipImg"><img src="http://static.rhap.com/rotw/images/overlays/rhap_icon.gif"></img><\/div>';
-errorHtmlContent += '<\/div>';
-errorHtmlContent += '<div class="embPlayerImg"><img src="http://static.rhap.com/rotw/images/overlays/player.gif"></img><\/div>';
-errorHtmlContent += '<\/div>';
-break;
-default:
-break;
-}
-ErrorModalDialogBox.init(errorHtmlContent);
-}
-}
-}
-var checkPlayStateThreadHandle = null;
-function checkPlayStateThread() {
-var app = RhapsodyPlayer.getFlashApp("embedded");
-if( !app ) { return; }
-if( app.getPlayState()==4 ) { // if it's still PLAYING, set the cookie again...
-document.cookie = RhapsodyPlayer.LAST_STATE_COOKIE + "=" + (new Date().valueOf()) + "; domain=.rhapsody.com; path=/;";
-}
-checkPlayStateThreadHandle = setTimeout( "checkPlayStateThread()", 1000 );
-}
-function onPlayStateChanged( oldstate, newstate ) {
-if( newstate==0 ) { // Stopped
-if( checkPlayStateThreadHandle ) { clearTimeout(checkPlayStateThreadHandle); }
-document.cookie = RhapsodyPlayer.LAST_STATE_COOKIE + "=; domain=.rhapsody.com; path=/;";
-}
-if( newstate==4 ) { // Playing
-if( !checkPlayStateThreadHandle ) { checkPlayStateThreadHandle = setTimeout( "checkPlayStateThread()", 1000 ); }
-}
-}
-function sendControlMessage( target, message ) {
-if( target == "embedded" ) {
-RhapsodyPlayer.getRhapsodySwfObject("embedded").sendControlMessage(message);
-}
-if( target == "transportControl" ) {
-RhapsodyPlayer.getRhapsodySwfObject("chicklet").sendControlMessage(message);
-}
-}
-function openThis(id, type, title, remote, page, pageRegion, guid, origin){
-if( id.indexOf("action.")==0 ) {
-SignInOutDialogBox.showDialog(id.substring("action.".length));
-return;
-}
-var playerLocation = RhapsodySimple.environment+'/player';
-// Special case...
-if( (""+id).indexOf("mash.")==0 || (""+id).indexOf("mash1.")==0 ) {
-// Fix the id
-id = id.replace("mash.", "mash1.");
-playerLocation = RhapsodySimple.environment+'/player_redirector';
-}
-var successfulOpen = false;
-var wname="rhapPlayer";
-var width = 317;
-var height = 480;
-var trackingParameters = "";
-if( RhapsodyPlayer.OCODE ) { trackingParameters += "&ocode="+escape(RhapsodyPlayer.OCODE); }
-if( RhapsodyPlayer.PCODE || RhapsodyPlayer.PCODE_OVERRIDE ) { trackingParameters += "&pcode="+escape(RhapsodyPlayer.getPcode()); }
-if( RhapsodyPlayer.CPATH ) { trackingParameters += "&cpath="+escape(RhapsodyPlayer.CPATH); }
-if( RhapsodyPlayer.PLAYERNAME ) { trackingParameters += "&playername="+escape(RhapsodyPlayer.PLAYERNAME); }
-if (title) {
-playerLocation += "?type=" + type + "&id="+id +"&title="+title +"&remote="+remote + "&page=" + page + "&pageregion=" + pageRegion + "&guid=" + guid + "&from=" + origin + trackingParameters;
-} else {
-playerLocation += "?type=" + type + "&id="+id +"&remote="+remote + "&page=" + page + "&pageregion=" + pageRegion + "&guid=" + guid + "&from=" + origin + trackingParameters;
-}
-if( RhapsodyPlayer.CJ_PID ) {
-playerLocation = "http://www.tkqlhce.com/click-" + RhapsodyPlayer.CJ_PID + "-10436574?url=" + escape(playerLocation);
-}
-var openFunction=function(){
-rhapPlayer = window.open( playerLocation,wname,"width="+width+",height="+height+",toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=0,resizable,top=20,left="+RhapsodyUser.SIMPLE__openPlayerPosition+"" );
-if((rhapPlayer!=null) && (typeof rhapPlayer!="undefined")){
-if (!rhapPlayer.opener) rhapPlayer.opener = self;
-rhapPlayer.focus();
-return true;
-}
-}
-successfulOpen=openFunction();
-if(!successfulOpen){
-SimplePopUpBlockHandler.alertUser( openFunction );
-}
-}
----End---
-
-Client writes to server
----------
-DefaultHttpRequest(chunked: false)
-GET http://www.rhapsody.com/simple.js HTTP/1.1
-Accept: application/javascript, */*;q=0.8
-Referer: http://www.mtv.com/news/articles/1684550/adam-youch-mca-beastie-boys-fight-for-your-right.jhtml
-Accept-Language: en-US
-User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)
-Accept-Encoding: gzip, deflate
-Host: www.rhapsody.com
-Proxy-Connection: Keep-Alive
-Pragma: no-cache
----Content---
-
----End---
-
-Server writes to client
----------
-DefaultHttpResponse(chunked: false)
-HTTP/1.1 200 OK
-Server: Apache Coyote/1.0
-P3P: CP="CAO DSP COR CUR DEV TAI PSA IVD CONo OUR DELi SAMi BUS PRE"
-Pragma: 
-RotwVersion: 01_42_00_175
-RotwBid: -1067563546
-RotwExpire: PageIdMatch(external-javascript-library)-Ttl(14400000)
-Content-Type: text/javascript
-Vary: Accept-Encoding
-Cneonction: close
-nnCoection: close
-Cache-Control: private, max-age=11304
-Expires: Sat, 05 May 2012 03:41:14 GMT
-Date: Sat, 05 May 2012 00:32:50 GMT
-Connection: keep-alive
-Content-Encoding: identity
-Content-Length: 6662
----Content---
-ges/overlays/btn_continueplaying.gif"></img><\/a><\/span><span style="padding-left: 8px;"><a href="' + subscribeJoinURL + '"><img src="http://static.rhap.com/rotw/images/overlays/btn_subscribenow.gif"></img><\/a><\/span><\/div>';
-var upgradeNowSection = '';
-var learnMoreLinkStyle = 'padding-bottom: 26px;';
-if(arrayCode[1] == '0'){
-upsellMsgDetail = 'Your set of 25 full-length plays has ended, but if you upgrade now, running out of music will never be a problem again.';
-upsellMsgDetailStyle = 'padding-right: 20px;';
-upsellHeaderClassSuffix = 'NoPlaysLeft';
-upSellMsgSubheaderContent = '';
-unlimitedAccessSubheader = '<div class="upsellUnlimitedAcc">Unlimited Access<\/div>';
-unlimitedAccessDetails = '<div><ul class="upsellBullet"><li>Unlimited full-length play of any song in the library<li>100+ ad-free Rhapsody Channels<li>Access to your music, anytime you want it<\/ul><\/div>';
-upSellMsgPricingContent = 'Upgrade to Rhapsody Unlimited and experience:';
-continueSubscribeButtons = '';
-upgradeNowSection = '<div style="padding-bottom: 14px;"><span><a href="' + subscribeJoinURL + '"><img src="http://static.rhap.com/rotw/images/overlays/btn_upgradenow.gif"></img><\/a><\/span><\/div>';
-upgradeNowSection += '<div style="padding-bottom: 22px;"><div class="rhapMember">No, thanks, I will <a style="text-decoration: underline;" href="#" onclick="ErrorModalDialogBox.destroyAndPlay(); return false;">keep listening<\/a> to 30 seconds samples.<\/div>';
-upgradeNowSection += '<div class="rhapMember">Rhapsody member? <a href="#" onclick="ErrorModalDialogBox.destroyAndSignIn(); return false;">Sign in<\/a> here.<\/div><\/div>';
-learnMoreLinkStyle = 'padding-bottom: 18px;';
-}
-errorHtmlContent = closeXSpanContinuePlay;
-errorHtmlContent += '<div class="embPlayerErrorDialogBody">';
-errorHtmlContent += '<div class="upsellHeader' + upsellHeaderClassSuffix + '">Join Now<\/div>';
-errorHtmlContent += upSellMsgSubheaderContent;
-errorHtmlContent += '<div class="upSellMsgDetail" style="' + upsellMsgDetailStyle + '">'+ upsellMsgDetail + '<\/div>';
-errorHtmlContent += unlimitedAccessSubheader;
-errorHtmlContent += '<div class="upSellMsgPricing">' + upSellMsgPricingContent + '<\/div>';
-errorHtmlContent += unlimitedAccessDetails;
-errorHtmlContent += continueSubscribeButtons;
-errorHtmlContent += '<div class="upSellLearnMoreLink" style="' + learnMoreLinkStyle + '"><a href="' + learnMoreURL + '">Learn more<\/a><\/div>';
-errorHtmlContent += upgradeNowSection;
-errorHtmlContent += '<div class="upsellPolicyTerms"><span><a href="' + privacyPolicyURL + '">Privacy Policy</a><\/span>|<span style="padding-left: 2px;"><a href="' + termsConditionsURL + '">Terms and Conditions</a><\/span><\/div>';
-errorHtmlContent += '<\/div>';
-}
-break;
-case('popupTip'):
-errorHtmlContent = closeXSpanContinuePlay;
-errorHtmlContent += '<div class="embPlayerErrorDialogBody" style="padding-left: 12px; height: 1%; overflow: hidden;">';
-errorHtmlContent += '<div class="popupTipHeader">Tip:<\/div>';
-errorHtmlContent += '<div class="popupTipContent">';
-errorHtmlContent += '<div class="popupTipWords">To keep playing music as you browse, pop out the player.<\/div>';
-errorHtmlContent += '<div class="popupTipImg"><img src="http://static.rhap.com/rotw/images/overlays/rhap_icon.gif"></img><\/div>';
-errorHtmlContent += '<\/div>';
-errorHtmlContent += '<div class="embPlayerImg"><img src="http://static.rhap.com/rotw/images/overlays/player.gif"></img><\/div>';
-errorHtmlContent += '<\/div>';
-break;
-default:
-break;
-}
-ErrorModalDialogBox.init(errorHtmlContent);
-}
-}
-}
-var checkPlayStateThreadHandle = null;
-function checkPlayStateThread() {
-var app = RhapsodyPlayer.getFlashApp("embedded");
-if( !app ) { return; }
-if( app.getPlayState()==4 ) { // if it's still PLAYING, set the cookie again...
-document.cookie = RhapsodyPlayer.LAST_STATE_COOKIE + "=" + (new Date().valueOf()) + "; domain=.rhapsody.com; path=/;";
-}
-checkPlayStateThreadHandle = setTimeout( "checkPlayStateThread()", 1000 );
-}
-function onPlayStateChanged( oldstate, newstate ) {
-if( newstate==0 ) { // Stopped
-if( checkPlayStateThreadHandle ) { clearTimeout(checkPlayStateThreadHandle); }
-document.cookie = RhapsodyPlayer.LAST_STATE_COOKIE + "=; domain=.rhapsody.com; path=/;";
-}
-if( newstate==4 ) { // Playing
-if( !checkPlayStateThreadHandle ) { checkPlayStateThreadHandle = setTimeout( "checkPlayStateThread()", 1000 ); }
-}
-}
-function sendControlMessage( target, message ) {
-if( target == "embedded" ) {
-RhapsodyPlayer.getRhapsodySwfObject("embedded").sendControlMessage(message);
-}
-if( target == "transportControl" ) {
-RhapsodyPlayer.getRhapsodySwfObject("chicklet").sendControlMessage(message);
-}
-}
-function openThis(id, type, title, remote, page, pageRegion, guid, origin){
-if( id.indexOf("action.")==0 ) {
-SignInOutDialogBox.showDialog(id.substring("action.".length));
-return;
-}
-var playerLocation = RhapsodySimple.environment+'/player';
-// Special case...
-if( (""+id).indexOf("mash.")==0 || (""+id).indexOf("mash1.")==0 ) {
-// Fix the id
-id = id.replace("mash.", "mash1.");
-playerLocation = RhapsodySimple.environment+'/player_redirector';
-}
-var successfulOpen = false;
-var wname="rhapPlayer";
-var width = 317;
-var height = 480;
-var trackingParameters = "";
-if( RhapsodyPlayer.OCODE ) { trackingParameters += "&ocode="+escape(RhapsodyPlayer.OCODE); }
-if( RhapsodyPlayer.PCODE || RhapsodyPlayer.PCODE_OVERRIDE ) { trackingParameters += "&pcode="+escape(RhapsodyPlayer.getPcode()); }
-if( RhapsodyPlayer.CPATH ) { trackingParameters += "&cpath="+escape(RhapsodyPlayer.CPATH); }
-if( RhapsodyPlayer.PLAYERNAME ) { trackingParameters += "&playername="+escape(RhapsodyPlayer.PLAYERNAME); }
-if (title) {
-playerLocation += "?type=" + type + "&id="+id +"&title="+title +"&remote="+remote + "&page=" + page + "&pageregion=" + pageRegion + "&guid=" + guid + "&from=" + origin + trackingParameters;
-} else {
-playerLocation += "?type=" + type + "&id="+id +"&remote="+remote + "&page=" + page + "&pageregion=" + pageRegion + "&guid=" + guid + "&from=" + origin + trackingParameters;
-}
-if( RhapsodyPlayer.CJ_PID ) {
-playerLocation = "http://www.tkqlhce.com/click-" + RhapsodyPlayer.CJ_PID + "-10436574?url=" + escape(playerLocation);
-}
-var openFunction=function(){
-rhapPlayer = window.open( playerLocation,wname,"width="+width+",height="+height+",toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=0,resizable,top=20,left="+RhapsodyUser.SIMPLE__openPlayerPosition+"" );
-if((rhapPlayer!=null) && (typeof rhapPlayer!="undefined")){
-if (!rhapPlayer.opener) rhapPlayer.opener = self;
-rhapPlayer.focus();
-return true;
-}
-}
-successfulOpen=openFunction();
-if(!successfulOpen){
-SimplePopUpBlockHandler.alertUser( openFunction );
-}
-}
----End---
-
-Client writes to server
----------
-DefaultHttpRequest(chunked: false)
-GET http://www.rhapsody.com/simple.js HTTP/1.1
-Accept: application/javascript, */*;q=0.8
-Referer: http://www.mtv.com/news/articles/1684550/adam-youch-mca-beastie-boys-fight-for-your-right.jhtml
-Accept-Language: en-US
-User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)
-Accept-Encoding: gzip, deflate
-Host: www.rhapsody.com
-Proxy-Connection: Keep-Alive
----Content---
-
----End---
-
-Client writes to server
----------
-DefaultHttpRequest(chunked: false)
-GET http://www.rhapsody.com/simple.js HTTP/1.1
-Accept: application/javascript, */*;q=0.8
-Referer: http://www.mtv.com/news/articles/1684550/adam-youch-mca-beastie-boys-fight-for-your-right.jhtml
-Accept-Language: en-US
-User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)
-Accept-Encoding: gzip, deflate
-Host: www.rhapsody.com
-Proxy-Connection: Keep-Alive
----Content---
-
----End---
-
-Server writes to client
----------
-DefaultHttpResponse(chunked: true)
-HTTP/1.1 200 OK
-Server: Apache Coyote/1.0
-P3P: CP="CAO DSP COR CUR DEV TAI PSA IVD CONo OUR DELi SAMi BUS PRE"
-Pragma: 
-RotwVersion: 01_42_00_175
-RotwBid: -1067563546
-RotwExpire: PageIdMatch(external-javascript-library)-Ttl(14400000)
-Content-Type: text/javascript
-Vary: Accept-Encoding
-Cneonction: close
-nnCoection: close
-Content-Length: 18300
-Cache-Control: private, max-age=10964
-Expires: Sat, 05 May 2012 03:41:14 GMT
-Date: Sat, 05 May 2012 00:38:30 GMT
-Connection: keep-alive
-Content-Encoding: identity
----Content---
-
----End---
-
-Server writes a chunk to client
----------
-org.jboss.netty.handler.codec.http.DefaultHttpChunk@7342054
----Content---
-
-var rhapPlayer;
-/** Beginning of Rhapsody SWFObject.js ... **/
-/**
-* SWFObject v1.4: Flash Player detection and embed - http://blog.deconcept.com/swfobject/
-*
-* SWFObject is (c) 2006 Geoff Stearns and is released under the MIT License:
-* http://www.opensource.org/licenses/mit-license.php
-*
-* **SWFObject is the SWF embed script formarly known as FlashObject. The name was changed for
-* legal reasons.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-* THE SOFTWARE.
-*
-* N.B. -- This version of SWFObject replaces deconcept with Rhapsody_deconcept to avoid
-* naming collisions with other versions of swfobject.js that might be on the
-* same page.
-*/
-if(typeof Rhapsody_deconcept=="undefined"){var Rhapsody_deconcept=new Object();}
-if(typeof Rhapsody_deconcept.util=="undefined"){Rhapsody_deconcept.util=new Object();}
-if(typeof Rhapsody_deconcept.SWFObjectUtil=="undefined"){Rhapsody_deconcept.SWFObjectUtil=new Object();}
-Rhapsody_deconcept.SWFObject=function(_1,id,w,h,_5,c,_7,_8,_9,_a,_b){
-if(!document.createElement||!document.getElementById){return;}
-this.DETECT_KEY=_b?_b:"detectflash";
-this.skipDetect=Rhapsody_deconcept.util.getRequestParameter(this.DETECT_KEY);
-this.params=new Object();
-this.variables=new Object();
-this.attributes=new Array();
-if(_1){this.setAttribute("swf",_1);}
-if(id){this.setAttribute("id",id);}
-if(w){this.setAttribute("width",w);}
-if(h){this.setAttribute("height",h);}
-if(_5){this.setAttribute("version",new Rhapsody_deconcept.PlayerVersion(_5.toString().split(".")));}
-this.installedVer=Rhapsody_deconcept.SWFObjectUtil.getPlayerVersion(this.getAttribute("version"),_7);
-if(c){this.addParam("bgcolor",c);}
-var q=_8?_8:"high";
-this.addParam("quality",q);
-this.setAttribute("useExpressInstall",_7);
-this.setAttribute("doExpressInstall",false);
-var _d=(_9)?_9:window.location;
-this.setAttribute("xiRedirectUrl",_d);
-this.setAttribute("redirectUrl","");
-if(_a){this.setAttribute("redirectUrl",_a);}};
-Rhapsody_deconcept.SWFObject.prototype={setAttribute:function(_e,_f){
-this.attributes[_e]=_f;
-},getAttribute:function(_10){
-return this.attributes[_10];
-},addParam:function(_11,_12){
-this.params[_11]=_12;
-},getParams:function(){
-return this.params;
-},addVariable:function(_13,_14){
-this.variables[_13]=_14;
-},getVariable:function(_15){
-return this.variables[_15];
-},getVariables:function(){
-return this.variables;
-},getVariablePairs:function(){
-var _16=new Array();
-var key;
-var _18=this.getVariables();
-for(key in _18){
-_16.push(key+"="+_18[key]);}
-return _16;
-},getSWFHTML:function(){
-var _19="";
-if(navigator.plugins&&navigator.mimeTypes&&navigator.mimeTypes.length){
-if(this.getAttribute("doExpressInstall")){this.addVariable("MMplayerType","PlugIn");}
-_19="<embed type=\"application/x-shockwave-flash\" src=\""+this.getAttribute("swf")+"\" width=\""+this.getAttribute("width")+"\" height=\""+this.getAttribute("height")+"\"";
-_19+=" id=\""+this.getAttribute("id")+"\" name=\""+this.getAttribute("id")+"\" ";
-var _1a=this.getParams();
-for(var key in _1a){_19+=[key]+"=\""+_1a[key]+"\" ";}
-var _1c=this.getVariablePairs().join("&");
-if(_1c.length>0){_19+="flashvars=\""+_1c+"\"";}
-_19+="/>";
-}else{
-if(this.getAttribute("doExpressInstall")){this.addVariable("MMplayerType","ActiveX");}
-_19="<object id=\""+this.getAttribute("id")+"\" classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" width=\""+this.getAttribute("width")+"\" height=\""+this.getAttribute("height")+"\">";
-_19+="<param name=\"movie\" value=\""+this.getAttribute("swf")+"\" />";
-var _1d=this.getParams();
-for(var key in _1d){_19+="<param name=\""+key+"\" value=\""+_1d[key]+"\" />";}
-var _1f=this.getVariablePairs().join("&");
-if(_1f.length>0){_19+="<param name=\"flashvars\" value=\""+_1f+"\" />";}
-_19+="</object>";}
-return _19;
-},write:function(_20){
-if(this.getAttribute("useExpressInstall")){
-var _21=new Rhapsody_deconcept.PlayerVersion([6,0,65]);
-if(this.installedVer.versionIsValid(_21)&&!this.installedVer.versionIsValid(this.getAttribute("version"))){
-this.setAttribute("doExpressInstall",true);
-this.addVariable("MMredirectURL",escape(this.getAttribute("xiRedirectUrl")));
-document.title=document.title.slice(0,47)+" - Flash Player Installation";
-this.addVariable("MMdoctitle",document.title);}}
-if(this.skipDetect||this.getAttribute("doExpressInstall")||this.installedVer.versionIsValid(this.getAttribute("version"))){
-var n=(typeof _20=="string")?document.getElementById(_20):_20;
-n.innerHTML=this.getSWFHTML();
-return true;
-}else{
-if(this.getAttribute("redirectUrl")!=""){document.location.replace(this.getAttribute("redirectUrl"));}}
-return false;}};
-Rhapsody_deconcept.SWFObjectUtil.getPlayerVersion=function(_23,_24){
-var _25=new Rhapsody_deconcept.PlayerVersion([0,0,0]);
-if(navigator.plugins&&navigator.mimeTypes.length){
-var x=navigator.plugins["Shockwave Flash"];
-if(x&&x.description){_25=new Rhapsody_deconcept.PlayerVersion(x.description.replace(/([a-z]|[A-Z]|\s)+/,"").replace(/(\s+r|\s+b[0-9]+)/,".").split("."));}
-}else{try{
-var axo=new ActiveXObject("ShockwaveFlash.ShockwaveFlash");
-for(var i=3;axo!=null;i++){
-axo=new ActiveXObject("ShockwaveFlash.ShockwaveFlash."+i);
-_25=new Rhapsody_deconcept.PlayerVersion([i,0,0]);}}
-catch(e){}
-if(_23&&_25.major>_23.major){return _25;}
-if(!_23||((_23.minor!=0||_23.rev!=0)&&_25.major==_23.major)||_25.major!=6||_24){
-try{_25=new Rhapsody_deconcept.PlayerVersion(axo.GetVariable("$version").split(" ")[1].split(","));}
-catch(e){}}}
-return _25;};
-Rhapsody_deconcept.PlayerVersion=function(_29){
-this.major=parseInt(_29[0])!=null?parseInt(_29[0]):0;
-this.minor=parseInt(_29[1])||0;
-this.rev=parseInt(_29[2])||0;};
-Rhapsody_deconcept.PlayerVersion.prototype.versionIsValid=function(fv){
-if(this.major<fv.major){return false;}
-if(this.major>fv.major){return true;}
-if(this.minor<fv.minor){return false;}
-if(this.minor>fv.minor){return true;}
-if(this.rev<fv.rev){return false;}return true;};
-Rhapsody_deconcept.util={getRequestParameter:function(_2b){
-var q=document.location.search||document.location.hash;
-if(q){
-var _2d=q.indexOf(_2b+"=");
-var _2e=(q.indexOf("&",_2d)>-1)?q.indexOf("&",_2d):q.length;
-if(q.length>1&&_2d>-1){
-return q.substring(q.indexOf("=",_2d)+1,_2e);
-}}return "";}};
-if(Array.prototype.push==null){
-Array.prototype.push=function(_2f){
-this[this.length]=_2f;
-return this.length;};}
-var Rhapsody_getQueryParamValue=Rhapsody_deconcept.util.getRequestParameter;
-var Rhapsody_FlashObject=Rhapsody_deconcept.SWFObject; // for backwards compatibility
-var Rhapsody_SWFObject=Rhapsody_deconcept.SWFObject;
-/** ... End of Rhapsody SWFObject.js . **/
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-For information on how to use this file, please see our
-SDK under "Developers Guide" at http://webservices.rhapsody.com/
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-var RhapsodySimple = {
-Version: '0.4',
-environment: 'http://www.rhapsody.com',
-DEBUG_LEVEL: 3, /* 1: alerts and throws error, 2: throws only, 3: alerts only */
-instances: 0,
-load: function(){
-if(typeof rhapsodySimple != 'undefined') SimpleRhapsodyUtility.alertRhapsodyErrors("Rhapsody Simple may be included more than once on the page.");
-rhapsodySimple = new Object();
-/* Not currently requireing prototype.js
-if((typeof Prototype=='undefined') ||
-parseFloat( (Prototype.Version.split(".")[0] + "." + Prototype.Version.split(".")[1]) ) < 1.4)
-alert("Rhapsody Simple requires v1.4.0 or higher of the Prototype JavaScript framework"); */
-}
-}
-var RhapsodyUser = {
-SIMPLE__openPlayerPosition: screen.width - 290,
-detectObject: function(ClassID, desc, ext, mime, name ){
-if (this.UserAgent.isIE()){
-if (this.IEDetectObject(ClassID, name)) return true;
-else return false;
-}
-if(navigator.plugins){
-if(this.NavDetectObject(desc, ext, mime, name)) return true;
-else return false;
-}
-return false;
-},
-IEDetectObject: function(ClassID, name){
-var result = true;
-// Internet explorer on windows
-if (this.UserAgent.isIE() && this.UserAgent.isWin()){
-document.write('<SCRIPT LANGUAGE=VBScript\> \n');
-document.write('on error resume next \n');
-document.write('result = IsObject(CreateObject("' + ClassID + '")) \n');
-document.writeln(' If (err) then');
-document.writeln(' result = False');
-document.writeln(' End If');
-document.write('</SCRIPT\> \n');
-}
-return result;
-},
-NavDetectObject: function(desc, ext, mime, name){
-var numPlugins = 0;
-if(navigator.plugins) navigator.plugins.refresh();
-numPlugins = navigator.plugins.length;
-if (numPlugins == 0) return false;
-for (var i=0; i < numPlugins; i++){
-currentPlugin = navigator.plugins[i];
-if (currentPlugin.name == name || currentPlugin.description == desc) return true;
-// The number of mime-types associated with this plugin
-numTypes = currentPlugin.length
-// Write the mime-types
-for (j = 0; j < numTypes; j++){
-if (currentPlugin[j].type == mime || currentPlugin[j].suffixes == ext ) return true;
-}
-}
-return false;
-},
-UserAgent: {
-isIE: function(){
-return (navigator.userAgent.toLowerCase().indexOf("msie") != -1);
-},
-isNav: function(){
-var agt = navigator.userAgent.toLowerCase();
-return ((agt.indexOf('mozilla')!=-1) && ((agt.indexOf('spoofer')==-1) && (agt.indexOf('compatible') == -1)) && (agt.indexOf('opera')==-1));
-},
-isWin: function(){
-var agt = navigator.userAgent.toLowerCase();
-return ((agt.indexOf("win")!=-1) || (agt.indexOf("16bit")!=-1));
-},
-isMac: function(){
-var agt = navigator.userAgent.toLowerCase();
-return (agt.indexOf("macintosh") != -1);
-},
-major: function(){
-return navigator.appVersion;
-}
-}
-}
-/* * * * RhapsodyPlayer * * * * * * * * * * * * * * *
-A Static Object for launching the
-RhapWeb Player Remotely
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-var RhapsodyPlayer = {
-POPOUT_STATE_COOKIE: "embeddedPlayerPopoutState",
-LAST_STATE_COOKIE: "lastEmbeddedPlayerState",
-INTERRUPTED_PLAY_DURATION_SECONDS: 15,
-shouldShowInterruptedPlaybackOverlay: false,
-ALREADY_SHOWED_EMBEDDED_PLAYER: false,
-FLASH_PLAYER_REQUIRED_COOKIE: "flashPlayerRequiredMsgOverlay",
-PCODE: "rn",
-PCODE_OVERRIDE: "",
-DEFAULT_EMBEDDED_CPATH: "rcom_efp",
-DEFAULT_EMBEDDED_SRC: "rcom_efp",
-OCODE: null,
-CPATH: null,
-SRC: null,
-CJ_PID: null,
-PLAYERNAME: null,
-USE_EMBEDDED_PLAYER: false,
-EMBEDDED_PLAYER_ID: null,
-EMBEDDED_PLAYER_PRELOAD_COMMAND: "show_blank|||Play anything on this page|",
-SWF_OBJECTS: new Array(),
-PENDING_COMMAND: null,
-savedFlashArgs: null,
-savedMessages: new Array(),
-hasntSentPreloadedPlayEvent: false, // For omniture event
-currentPlayerMode: 'embedded',
-getRhapsodySwfObject: function( name ) {
-return this.SWF_OBJECTS[name];
-},
-setUseEmbeddedPlayer: function( useEmbeddedPlayer, preloadCommand ) {
-this.USE_EMBEDDED_PLAYER = useEmbeddedPlayer;
-if( preloadCommand ) this.EMBEDDED_PLAYER_PRELOAD_COMMAND = preloadCommand;
-// Check to see if the playback had been interrupted in a previous page...
-try{
-if( !( CookieManager.hasCookie( 'RhapPlayer.hasSeenPopupTip', CookieManager.SESSION ) ) ){
-if( RhapsodyPlayer.playbackWasInterrupted() ) {
-RhapsodyPlayer.shouldShowInterruptedPlaybackOverlay = true;
-}
-}
-}
-catch(e){ /* nothing */ }
-if( preloadCommand ) {
-RhapsodyPlayer.hasntSentPreloadedPlayEvent = true;
-RhapsodyPlayer.initializeAndShowEmbeddedPlayer();
-}
-else {
-RhapsodyPlayer.embedPlayerEngine();
-}
-},
-playbackWasInterrupted: function() {
-try {
-var lastPlayState = CookieManager.getCookie( RhapsodyPlayer.LAST_STATE_COOKIE );
-return ( lastPlayState && (new Date().valueOf()-lastPlayState) < (1000 * RhapsodyPlayer.INTERRUPTED_PLAY_DURATION_SECONDS) );
-}
-catch(e) { return false; }
-},
-isFirefox: function() {
-return navigator.userAgent.toLowerCase().indexOf("firefox")>=0;
-},
-registerPagePlayButton: function() {
-if( !RhapsodyPlayer.ALREADY_SHOWED_EMBEDDED_PLAYER ) {
-RhapsodyPlayer.ALREADY_SHOWED_EMBEDDED_PLAYER = true;
-RhapsodyPlayer.initializeAndShowEmbeddedPlayer();
-}
-},
-useEmbeddedPlayer: function() {
-return this.USE_EMBEDDED_PLAYER; // May need some more logic here...
-},
-test: function(msg){
-alert(msg);
-},
-queueTrack: function(prId){
-RhapsodyPlayer.throwContent( "queue", prId, "track" );
-},
-queueAlbum: function(prId){
-RhapsodyPlayer.throwContent( "queue", prId, "album" );
-},
-queuePlaylist: function(prId){
-RhapsodyPlayer.throwContent( "queue", prId, "playlist" );
-},
-playTrack: function(prId){
-this.playRhapsody( { id:prId, type:'track' } );
-},
-playAlbum: function(prId){
-this.playRhapsody( { id:prId, type:'album' } );
-},
-/** playRadio() IS DEPRECATED. PLEASE USE playChannel() INSTEAD. **/
-playRadio: function(prId){
-this.playRhapsody( { id:prId, type:'radio' } );
-},
-/** playArtistRadio() IS DEPRECATED. PLEASE USE playArtistChannel() INSTEAD. **/
-playArtistRadio: function(prId){
-this.playRhapsody( { id:prId, type:'artistradio' } );
-},
-playChannel: function(prId){
-this.playRhapsody( { id:prId, type:'radio' } );
-},
-playArtistChannel: function(prId){
-this.playRhapsody( { id:prId, type:'artistradio' } );
-},
-playPlaylist:function(prId){
-this.playRhapsody( { id:prId, type:'playlist' } );
-},
-queueRcid: function(prId){
-if( SimpleRhapsodyUtility.isArray(prId) ){
-prId = this._createTrackListString( prId );
-}
-RhapsodyPlayer.throwContent( "queue", prId, "" );
-},
-openSignInOut: function(actionName){
-var prObj = new Object();
-prObj=this.createPlayRhapsodyObjectFromRcid( "action."+actionName );
-this.playRhapsody(prObj);
-},
-sendMessage: function( message, targetPlayerId, forceTarget ) {
-// if no flash installed or flash player version not supported, don't play song
-if(!RhapsodyPlayer.isFlashSupported()) return;
-RhapsodyPlayer.hasntSentPreloadedPlayEvent = false;
-var app = RhapsodyPlayer.getFlashApp("engine");
-var messageId = new Date().valueOf();
-RhapsodyPlayer.savedMessages[messageId] = message;
-var theTargetId = targetPlayerId ? targetPlayerId : RhapsodyPlayer.EMBEDDED_PLAYER_ID;
-app.sendMessage( {"messageId":messageId, "message":message, "targetPlayerId":theTargetId, "forceTarget":forceTarget} );
-try{
-var splitmessage = message.split("|");
-var action = splitmessage[0];
-var obj = this.createPlayRhapsodyObjectFromRcid(splitmessage[1]);
-SimpleTracking.reportPlayAdd( action, obj.type, obj.id );
-} catch( e ){}
-},
-playRcid: function(prId){
-var prObj = new Object();
-if( SimpleRhapsodyUtility.isArray( prId ) ) prObj = { id: prId, type: 'track' };
-else prObj = this.createPlayRhapsodyObjectFromRcid( prId );
-this.playRhapsody(prObj);
-},
-setTrackingCodes: function(pcode,ocode,cpath){
-this.PCODE = pcode;
-this.OCODE = ocode;
-this.CPATH = cpath;
-},
-setCommissionJunctionPID: function( cj_pid ){
-this.CJ_PID = cj_pid;
-this.PCODE = "cj";
-this.OCODE = "affiliate";
-this.CPATH = "aff";
-},
-setPlayerName: function( name ) {
-this.PLAYERNAME = name;
-},
-playRhapsody: function(prObj){
-var playRhapsodyValid = this.isValidPlayRhapsody(prObj);
-if(playRhapsodyValid && playRhapsodyValid != "valid"){
-SimpleRhapsodyUtility.alertRhapsodyErrors(playRhapsodyValid);
-} else {
-if( SimpleRhapsodyUtility.isArray(prObj.id) ){
-prObj.id = this._createTrackListString( prObj.id );
-} else if( typeof prObj.id == 'string' ){
-prObj.id = this._stripMoniker( prObj.id );
-}
-else {
-prObj.id = prObj.id + "";
-}
-SIMPLE__openPlayer(prObj.id, prObj.type);
-}
-},
-getFlashApp: function( type ) {
-return document.getElementById( "popoutPlayer_" + type );
-},
-isValidPlayRhapsody: function(prObj){
-if( prObj && prObj.id && (""+prObj.id).indexOf("action.")==0 ) { return "valid"; }
-var isValid = false;
-var ERRORS = new Array(
-"No Object passed to playRhapsody function",
-"The playRhapsody function requires an id and a type property\n(simplified functions often require only an id)",
-"The playRhapsody id property should be a Number, an RCID string, or an Array of numbers (when type='track').",
-"The playRhapsody type property should be a String",
-"The playRhapsody type property should have one of the following values:",
-"The playRhapsody rcid string property should start with one of the following monikers:"
-)
-var playRhapsodyErrors = new Array();
-var validRhapsodyType;
-var validRcidMoniker;
-if( prObj ){
-if( !prObj.id || !prObj.type ){
-playRhapsodyErrors.push(ERRORS[1]);
-} else if( ( typeof prObj.id != "number" ) && ( typeof prObj.id != "string" ) && ( !SimpleRhapsodyUtility.isArray(prObj.id ) && ( prObj.type == 'track' ) ) ){
-playRhapsodyErrors.push(ERRORS[2]);
-} else if( ( typeof prObj.id == "string" ) && ( ( validRcidMoniker = this.isValidRcidMoniker( prObj.id ) ) != "valid" ) ){
-playRhapsodyErrors.push(ERRORS[5] + validRcidMoniker);
-} else if( typeof prObj.type != "string" ){
-playRhapsodyErrors.push(ERRORS[3]);
-} else if( ( validPlayRhapsodyType = this.isValidPlayRhapsodyType( prObj.type ) ) != "valid" ){
-playRhapsodyErrors.push(ERRORS[4] + validPlayRhapsodyType);
-} else return "valid";
-} else playRhapsodyErrors.push(ERRORS[0]);
-return playRhapsodyErrors;
-},
-createPlayRhapsodyObjectFromRcid: function( prId ){
-var prObj = new Object();
-if( this._getMonikerPrefix( prId ) == 'alb') prObj.type = 'album';
-else if( this._getMonikerPrefix( prId ) == 'art') prObj.type = 'artistradio';
-else if( this._getMonikerPrefix( prId ) == 'sta') prObj.type = 'radio';
-else if( this._getMonikerPrefix( prId ) == 'ply') prObj.type = 'playlist';
-else if( this._getMonikerPrefix( prId ) == 'mp') prObj.type = 'mp';
-else prObj.type = 'track';
-prObj.id = prId;
-return prObj;
-},
-getPcode: function() {
-return RhapsodyPlayer.PCODE_OVERRIDE?RhapsodyPlayer.PCODE_OVERRIDE:RhapsodyPlayer.PCODE;
-},
-getCpath: function() {
-return RhapsodyPlayer.CPATH;
-},
-getSrc: function() {
-return RhapsodyPlayer.SRC;
-},
-getEmbeddedCpath: function() {
-return RhapsodyPlayer.CPATH ? RhapsodyPlayer.CPATH : RhapsodyPlayer.DEFAULT_EMBEDDED_CPATH;
-},
-getEmbeddedSrc: function() {
-return RhapsodyPlayer.SRC ? RhapsodyPlayer.SRC : RhapsodyPlayer.DEFAULT_EMBEDDED_SRC;
-},
-isValidPlayRhapsodyType: function( type ){
-var validTypes = [ 'track', 'album', 'radio', 'playlist', 'artistradio', 'mp' ];
-var validTypeString = "";
-for( var i=0; i<validTypes.length; i++ ){
-if( type == validTypes[ i ] ) return "valid";
-else validTypeString += "\n" + validTypes[ i ];
-}
-return validTypeString;
-},
-_stripMoniker: function( idString ){
-return idString; // return idString.split( ".")[1];
-},
-_stripMonikers: function( idArray ){
-var strippedIdArray = new Array();
-for( var i=0; i<idArray.length; i++ ){
-strippedIdArray.push( this._stripMoniker( idArray[i] ) );
-}
-return strippedIdArray;
-},
-_rcidMonikers: [ 'tra.', 'alb.', 'sta.', 'ply.', 'art.', 'mp.', 'mash.', 'mash1.' ],
-isValidRcidMoniker: function( rcidMoniker ){
-// this cound be just a plain id so check and return valid if it is
-if ((""+rcidMoniker).search(/^[0-9]/) > -1) return "valid";
-var validRcidMonikers = this._rcidMonikers;
-var validRcidMonikerString = "";
-for( var i=0; i<validRcidMonikers.length; i++ ){
-if( rcidMoniker.toLowerCase().indexOf( validRcidMonikers[ i ] ) > -1 ) return "valid";
-else validRcidMonikerString += "\n" + validRcidMonikers[ i ];
-}
-return validRcidMonikerString;
-},
-_getMonikerPrefix: function( rcid ){
-if( this.isValidRcidMoniker( rcid ) == 'valid' ) return ( "" + rcid ).split( "." )[0].toLowerCase();
-},
-_getTypeStringByMoniker: function( rcid ){
-var moniker = this._getMonikerPrefix( rcid );
-switch( moniker ) {
-case 'tra': return "track";
-case 'mash': return "track";
-case 'mash1': return "track";
-case 'alb': return "album";
-case 'ply': return "playlist";
-case 'sta': return "radio";
-case 'art': return "artistradio";
-case 'mp': return "user playlist";
-default: return "";
-}
-},
-_createTrackListString: function( prIdArray ){
-var trackListString = "";
-var skippedCounter = 0;
-for( var i=0; i<prIdArray.length; i++ ){
-if( typeof prIdArray[i] == "number" ){
-trackListString += prIdArray[i] + "+";
-} else if( ( typeof prIdArray[i] == "string" ) && ( this.isValidRcidMoniker( prIdArray[i] ) == 'valid' ) ){
-trackListString += this._stripMoniker( prIdArray[i] ) + "+";
-}else skippedCounter++;
-}
-if( skippedCounter > 0 ) SimpleRhapsodyUtility.alertRhapsodyErrors( skippedCounter + " non-number or invalid moniker string array items were dropped from the Tracklist array." );
-return trackListString;
-},
-throwContent: function( action, rcid, type ) {
-RhapsodyPlayer.hasntSentPreloadedPlayEvent = false;
-if( (''+rcid).indexOf("action.")==0 ) {
-SIMPLE__openPlayerWindow(rcid, type);
-}
-else if( (''+rcid).indexOf("mash.")==0 || (''+rcid).indexOf("mash1.")==0 ) {
-// Force close, then open a new window...
-var app = RhapsodyPlayer.getFlashApp("engine");
-if( !app ) {
-RhapsodyPlayer.PENDING_COMMAND = "RhapsodyPlayer.throwContent('"+action+"','"+rcid+"','"+type+"')";
-RhapsodyPlayer.embedPlayerEngine();
-RhapsodyPlayer.waitThenFirePendingCommand();
-return;
-}
-try { app.sendMessage({message:'closePopout|'}); } catch(e) {}
-setTimeout( "SIMPLE__openPlayerWindow('"+rcid+"', '"+type+"')", 1000 );
-}
-else {
-RhapsodyPlayer.tryFlashPlayer( action, rcid, type, "", false, "", "", "", "" );
-}
-try{
-SimpleTracking.reportPlayAdd( action, type, rcid );
-} catch( e ){}
-},
-waitThenFirePendingCommand: function() {
-var app = RhapsodyPlayer.getFlashApp("engine");
-if( app ) {
-if( RhapsodyPlayer.PENDING_COMMAND ) {
-setTimeout("eval(RhapsodyPlayer.PENDING_COMMAND)",1000);
-}
-}
-else {
-setTimeout("RhapsodyPlayer.waitThenFirePendingCommand()",100);
-}
-},
-tryFlashPlayer: function( action, id, type, title, remote, page, pageRegion, guid, origin ) {
-var app = RhapsodyPlayer.getFlashApp("engine");
-RhapsodyPlayer.savedFlashArgs = new Array();
-RhapsodyPlayer.savedFlashArgs['id'] = id;
-RhapsodyPlayer.savedFlashArgs['type'] = type;
-RhapsodyPlayer.savedFlashArgs['title'] = title;
-RhapsodyPlayer.savedFlashArgs['remote'] = remote;
-RhapsodyPlayer.savedFlashArgs['page'] = page;
-RhapsodyPlayer.savedFlashArgs['pageRegion'] = pageRegion;
-RhapsodyPlayer.savedFlashArgs['guid'] = guid;
-RhapsodyPlayer.savedFlashArgs['origin'] = origin;
-if( !app ) {
-RhapsodyPlayer.PENDING_COMMAND = "SIMPLE_trySendingFlashMessage('"+action+"','"+id+"')";
-RhapsodyPlayer.embedPlayerEngine();
-RhapsodyPlayer.waitThenFirePendingCommand();
-return;
-}
-SIMPLE_trySendingFlashMessage(action,id);
-},
-restoreEmbeddedPlayer: function() {
-var app = RhapsodyPlayer.getFlashApp("engine");
-app.sendMessage({message:'closePopout|'});
-RhapsodyEmbeddedPlayerManager.setPlayerMode();
-RhapsodyPlayer.currentPlayerMode = 'embedded';
-RhapsodyPlayer.showEmbeddedPlayer();
-try{
-SimpleTracking.reportRestoreEmbeddedPlayer();
-} catch( e ){};
-},
-initializeAndShowEmbeddedPlayer: function() {
-var theDiv = document.getElementById("topNavEmbeddedPlayerContainer");
-if( !theDiv || !rhapsodyMember ) {
-setTimeout( "RhapsodyPlayer.initializeAndShowEmbeddedPlayer()", 100 );
-return;
-}
-try {
-var popoutStateCookie = CookieManager.getCookie( RhapsodyPlayer.POPOUT_STATE_COOKIE );
-RhapsodyEmbeddedPlayerManager.setSliverMode();
-RhapsodyPlayer.showEmbeddedPlayer();
-}
-catch(e) { /** Nothing **/ }
-},
-showEmbeddedPlayer: function() {
-if( RhapsodyEmbeddedPlayerManager.isSliverMode ) {
-// If we're in sliver mode, and we need to preload a "play" URL, throw it...
-if( RhapsodyPlayer.EMBEDDED_PLAYER_PRELOAD_COMMAND && RhapsodyPlayer.EMBEDDED_PLAYER_PRELOAD_COMMAND.indexOf("play|")==0 ) {
-var id = RhapsodyPlayer.EMBEDDED_PLAYER_PRELOAD_COMMAND.split("|")[1];
-SIMPLE__tryFlashPlayer( "play", id );
-}
-}
-if( !RhapsodyEmbeddedPlayerManager.isSliverMode ) {
-// Generate a player ID...
-RhapsodyPlayer.EMBEDDED_PLAYER_ID = "embedded_" + (new Date()).valueOf();
-var embeddedFlashVars = { "autologin":false, "targetId":RhapsodyPlayer.EMBEDDED_PLAYER_ID };
-var chickletFlashVars = { "autologin":false, "targetId":"chicklet" };
-if( window.location.search && window.location.search.indexOf("restorePlayerState=true") ) {
-embeddedFlashVars["restorePlayerState"] = true;
-}
-var rhapSwfObjectEmbed = RhapsodyPlayer.getRhapsodySwfObject( "embedded", RhapsodyEmbeddedPlayerManager.EMBEDDED_DIV_ID, "opaque", embeddedFlashVars );
-var rhapSwfObjectChicklet = RhapsodyPlayer.getRhapsodySwfObject( "chicklet", RhapsodyEmbeddedPlayerManager.CHICKLET_DIV_ID, "opaque", chickletFlashVars );
-}
-RhapsodyPlayer.embedPlayerEngine();
-RhapsodyPlayer.ALREADY_SHOWED_EMBEDDED_PLAYER = true;
-},
-isFlashSupported: function() {
-var rhapSwfObjectEngine = RhapsodyPlayer.getRhapsodySwfObject( "engine", RhapsodyEmbeddedPlayerManager.ENGINE_DIV_ID, "window", { "autologin":false } );
-if( rhapSwfObjectEngine.getEmbedStatus() ) {
-return false;
-}
-else
-return true;
-},
-embedPlayerEngine: function() {
-var engineDiv = document.getElementById(RhapsodyEmbeddedPlayerManager.ENGINE_DIV_ID);
-if (!engineDiv)
-{
-setTimeout("RhapsodyPlayer.embedPlayerEngine()", 100);
-return;
-}
-try
-{
-if (!RhapsodyPlayer.isFlashSupported())
-{
-if (CookieManager.hasCookie(RhapsodyPlayer.FLASH_PLAYER_REQUIRED_COOKIE, CookieManager.PERMANENT))
-{
-RhapsodyEmbeddedPlayerManager.setSliverModeWhenNoFlash();
-}
-else
-{
-if (typeof flashRequired != "undefined" && !flashRequired)
-return;
-onEmbeddedPlayerError('flashNotInstalled');
-}
-}
-else
-{
-CookieManager.setCookie(RhapsodyPlayer.FLASH_PLAYER_REQUIRED_COOKIE, null);
-CookieManager.deleteCookie(RhapsodyPlayer.FLASH_PLAYER_REQUIRED_COOKIE);
-}
-}
-catch(e)
-{
-//
-}
-},
-getRhapsodySwfObject: function( type, elementName, wMode, flashVars ) {
-if( RhapsodyPlayer.SWF_OBJECTS[ type ] && RhapsodyPlayer.SWF_OBJECTS[ type ].isEmbedded() ) {
-return RhapsodyPlayer.SWF_OBJECTS[ type ];
-}
-else {
-return new SimpleRhapsodySwfObject( type, elementName, wMode, flashVars );
-}
-}
-}
-/**
-*** This is for backward-compatability for rollingstone.com ... Nobody should be using this, and this method
-*** can be removed once rollingstone.com has fixed their bug (BUG #241873)
-**/
-function SIMPLE__tryFlashPlayer( action, id, type, title, remote, page, pageRegion, guid, origin ) {
-RhapsodyPlayer.tryFlashPlayer( action, id, type, title, remote, page, pageRegion, guid, origin );
-}
-var RhapsodyEmbeddedPlayerManager= {
-CHICKLET_DIV_ID: "SimpleEmbeddedPlayerLeftDiv",
-EMBEDDED_DIV_ID: "SimpleEmbeddedPlayerRightDiv",
-ENGINE_DIV_ID: "launchFlashEmbedProxyDiv",
-isSliverMode: true,
-isScrollingMode: false,
-embeddedPlayerWidth: 600,
-embeddedPlayerHeight: 150,
-embeddedPlayerBigBrotherOffset: 50,
-chickletDisplayMode: "absolute",
-alreadySetUpWindowEvents: false,
-setScrollingMode: function( val ) {
-if( RhapsodyEmbeddedPlayerManager.isScrollingMode == val ) { return; }
-RhapsodyEmbeddedPlayerManager.isScrollingMode = val;
-RhapsodyEmbeddedPlayerManager.refreshEmbeddedPlayer();
-},
-setPlayerMode: function() {
-document.cookie = RhapsodyPlayer.POPOUT_STATE_COOKIE + "=player; domain=.rhapsody.com; path=/;";
-this.isSliverMode = false;
-this.doRender();
-},
-setSliverMode: function() {
-document.cookie = RhapsodyPlayer.POPOUT_STATE_COOKIE + "=sliver; domain=.rhapsody.com; path=/;";
-this.isSliverMode = true;
-this.doRender();
-},
-setSliverModeWhenNoFlash: function() {
-this.doRender();
-},
-embeddedPlayerMoveBigBrother : function( h ) {
-RhapsodyEmbeddedPlayerManager.embeddedPlayerBigBrotherOffset = h;
-RhapsodyEmbeddedPlayerManager.refreshEmbeddedPlayer();
-},
-onEmbeddedPlayerResize : function( w, h ) {
-RhapsodyEmbeddedPlayerManager.embeddedPlayerWidth = w;
-RhapsodyEmbeddedPlayerManager.embeddedPlayerHeight = h;
-RhapsodyEmbeddedPlayerManager.refreshEmbeddedPlayer();
-},
-/*
-@method: isPageBeingScrolled
-@description: This function indicates that the scroller is not at the top. I.e.: it has been scrolled down from the top.
-@return: true when the page has been scrolled below the big brother's container's original position;
-false when the page has not been scrolled below the big brother's container's original position;
-@note: This function is extracted from the refreshEmbeddedPlayer because revealPlayer needs to know whether the page has been scrolled or not and revealPlayer then calls refreshEmbeddedPlayer
-So we cannot wait for the refreshEmbeddedPlayer to set a flag to indicate that the page has been scrolled.
-This function helps fixing BZ246940 where Ads and several other elements of pages flicker then disappear completely.
-*/
-isPageBeingScrolled : function() {
-var scroll = RhapsodyEmbeddedPlayerManager.getScrollXY();
-var theContainerDiv = document.getElementById("topNavEmbeddedPlayerContainer");
-// Calculate the "container top" by going up the dom tree...
-var theContainerTop = 0;
-for( var containerElementTemp = theContainerDiv ; containerElementTemp.offsetParent ; containerElementTemp = containerElementTemp.offsetParent ) {
-theContainerTop += containerElementTemp.offsetTop;
-}
-if( scroll[1]>theContainerTop && RhapsodyEmbeddedPlayerManager.isScrollingMode )
-return true;
-else
-return false;
-},
-refreshEmbeddedPlayer : function() {
-var offsetY = -2;
-var scroll = RhapsodyEmbeddedPlayerManager.getScrollXY();
-var theContainerDiv = document.getElementById("topNavEmbeddedPlayerContainer");
-var theChickletDiv = document.getElementById( RhapsodyEmbeddedPlayerManager.CHICKLET_DIV_ID );
-var theChickletSwf = document.getElementById( "popoutPlayer_chicklet" );
-var theBigBrotherDiv = document.getElementById( RhapsodyEmbeddedPlayerManager.EMBEDDED_DIV_ID );
-// Calculate the "container top" by going up the dom tree...
-var theContainerTop = 0;
-for( var containerElementTemp = theContainerDiv ; containerElementTemp.offsetParent ; containerElementTemp = containerElementTemp.offsetParent ) {
-theContainerTop += containerElementTemp.offsetTop;
-}
-if( scroll[1]>theContainerTop && RhapsodyEmbeddedPlayerManager.isScrollingMode ) {
-if( !RhapsodyEmbeddedPlayerManager.embeddedPlayerBigBrotherOffset ) {
-theBigBrotherDiv.style.top = (theContainerTop) + "px";
-}
-else {
-var targetHeight = scroll[1] - 50 + RhapsodyEmbeddedPlayerManager.embeddedPlayerBigBrotherOffset;
-if( targetHeight<theContainerTop ) targetHeight = theContainerTop;
-theBigBrotherDiv.style.top = (targetHeight) + "px";
-}
-if( RhapsodyEmbeddedPlayerManager.chickletDisplayMode != "fixed" ) {
-if( RhapsodyPlayer.isFirefox() ) {
-theChickletSwf.style.opacity = ".01";
-theChickletSwf.style.filter = "alpha( opacity=01 )";
-}
-theChickletDiv.style.opacity = ".80";
-theChickletDiv.style.filter = "alpha( opacity=80 )";
-theChickletDiv.style.top = "0px";
-if(!RhapsodyUtility.Client.isIE6()){
-theChickletDiv.style.position = "fixed";
-RhapsodyEmbeddedPlayerManager.chickletDisplayMode = "fixed";
-}
-if(RhapsodyUtility.Client.isIE6()){
-var targetHeight = scroll[1];
-theChickletDiv.style.top = (targetHeight) + "px";
-theChickletDiv.style.opacity = ".85";
-theChickletDiv.style.filter = "alpha( opacity=85 )";
-}
-}
-}
-else {
-if(theBigBrotherDiv != null && theBigBrotherDiv != 'undefined') {
-theBigBrotherDiv.style.top = (theContainerTop) + "px";
-}
-if(theChickletDiv != null && theChickletDiv != 'undefined'){
-if( RhapsodyEmbeddedPlayerManager.chickletDisplayMode != "absolute" ) {
-if( RhapsodyPlayer.isFirefox() ) {
-theChickletSwf.style.opacity = ".01";
-theChickletSwf.style.filter = "alpha( opacity=01 )";
-}
-theChickletDiv.style.opacity = "1.00";
-theChickletDiv.style.filter = "alpha( opacity=100 )";
-theChickletDiv.style.top = ( theContainerTop ) + "px";
-if(!RhapsodyUtility.Client.isIE6()){
-theChickletDiv.style.position = "absolute";
-RhapsodyEmbeddedPlayerManager.chickletDisplayMode = "absolute";
-}
-}else if(RhapsodyUtility.Client.isIE6()){
-theChickletDiv.style.top = ( theContainerTop ) + "px";
-}
-}
-}
-if(theChickletDiv != null && theChickletDiv != 'undefined')
-theChickletDiv.style.visibility = "visible";
-},
-getBodyWidth : function() { return RhapsodyUser.UserAgent.isIE() ? document.documentElement.clientWidth : window.innerWidth; },
-getBodyHeight : function() { return RhapsodyUser.UserAgent.isIE() ? document.documentElement.clientHeight : window.innerHeight; },
-getScrollXY : function() {
-var scrOfX = 0, scrOfY = 0;
-if( typeof( window.pageYOffset ) == 'number' ) {
-//Netscape compliant
-scrOfY = window.pageYOffset;
-scrOfX = window.pageXOffset;
-} else if( document.body && ( document.body.scrollLeft || document.body.scrollTop ) ) {
-//DOM compliant
-scrOfY = document.body.scrollTop;
-scrOfX = document.body.scrollLeft;
-} else if( document.documentElement && ( document.documentElement.scrollLeft || document.documentElement.scrollTop ) ) {
-//IE6 standards compliant mode
-scrOfY = document.documentElement.scrollTop;
-scrOfX = document.documentElement.scrollLeft;
-}
-return [ scrOfX, scrOfY ];
-},
-/***** If we need to slide the player into view for a few seconds, this method will be called... *****/
-revealPlayer : function() {
-if( RhapsodyEmbeddedPlayerManager.isSliverMode ) { return; }
-var bigBrotherSlideOffset = 5000;
-var alreadyHideMeddlesomeElements = false; // A flag to keep track if the meddlesome elements have been hidden. This is to address the use case when the user hasn't scrolled the page, the meddlesome elements shouldn't be toggled.
-if(RhapsodyEmbeddedPlayerManager.isPageBeingScrolled()) {
-RhapsodyUtility.toggleMeddlesomeElements(); //toggle meddlesome elements once at the beginning of the sliding of the big brother, if the page is being scrolled during the first 5 seconds of the song play.
-alreadyHideMeddlesomeElements = true; // set the flag to remind us to show the meddlesome elements after the 5 sec sliding of the big brother.
-}
-RhapsodyEmbeddedPlayerManager.embeddedPlayerMoveBigBrother(50);
-var i=0;
-for( i=0 ; i<10 ; i++ ) {
-setTimeout( "RhapsodyEmbeddedPlayerManager.embeddedPlayerMoveBigBrother("+(50-i*5)+")", bigBrotherSlideOffset + i*100 );
-}
-var finishSlidingBigBrother = function() {
-RhapsodyEmbeddedPlayerManager.embeddedPlayerMoveBigBrother(0);
-if(alreadyHideMeddlesomeElements)
-RhapsodyUtility.toggleMeddlesomeElements(); //toggle meddlesome elements again once at the end of the sliding of the big brother
-}
-setTimeout( finishSlidingBigBrother, bigBrotherSlideOffset + i*100 );
-},
-setUpWindowEvents: function() {
-if( RhapsodyEmbeddedPlayerManager.alreadySetUpWindowEvents ) { return; }
-if( window.addEventListener ){ window.addEventListener( 'scroll', RhapsodyEmbeddedPlayerManager.refreshEmbeddedPlayer, false ); }
-else if( window.attachEvent ){ window.attachEvent( "onscroll", RhapsodyEmbeddedPlayerManager.refreshEmbeddedPlayer ); }
-if( window.addEventListener ){ window.addEventListener( 'resize', RhapsodyEmbeddedPlayerManager.refreshEmbeddedPlayer, false ); }
-else if( window.attachEvent ){ window.attachEvent( "onresize", RhapsodyEmbeddedPlayerManager.refreshEmbeddedPlayer ); }
-RhapsodyEmbeddedPlayerManager.alreadySetUpWindowEvents = true;
-},
-renderEmbeddedPlayer : function() {
-var theDiv = document.getElementById("topNavEmbeddedPlayerContainer");
-var theHtml =
-'<div id="' + RhapsodyEmbeddedPlayerManager.CHICKLET_DIV_ID + '" class="chicklet" ' +
-' style="background:transparent url(http://static.rhap.com/rotw/images/chicklet_screenshot_background.jpg) no-repeat scroll 0 0;"><\/div>' +
-'<div id="' + RhapsodyEmbeddedPlayerManager.EMBEDDED_DIV_ID + '" class="bigBrother"><\/div>';
-theDiv.style.display="block";
-theDiv.style.height="57px";
-theDiv.style.backgroundColor = "#EFEFEF";
-theDiv.style.margin = "0 10px";
-theDiv.innerHTML = theHtml;
-RhapsodyEmbeddedPlayerManager.setUpWindowEvents();
-},
-renderSliver : function() {
-return; // no nothing now...
-},
-doRender : function() {
-if( RhapsodyEmbeddedPlayerManager.isSliverMode || !RhapsodyPlayer.isFlashSupported() ) {
-// Only render the sliver for signed-out or signed-in-free users... or if the sliver needs to display the "latest flash required" message
-if( !rhapsodyMember || !rhapsodyMember.isPremiumUser ) {
-RhapsodyEmbeddedPlayerManager.renderSliver();
-}
-else {
-return;
-}
-}
-else {
-RhapsodyEmbeddedPlayerManager.renderEmbeddedPlayer();
-}
-},
-showInterruptedPlaybackOverlay : function(){
-onEmbeddedPlayerError('popupTip');
-}
-}
-function SimpleRhapsodySwfObject( type, elementName, wMode, flashVars ) {
-this.type = type;
-this.elementName = elementName;
-this.flashVars = flashVars;
-this.wMode = wMode;
-if( !this.flashVars ) { this.flashVars = new Array(); }
-// Set the pcode, honor what comes in with the flashvars if there, otherwise do the other thing...
-if(this.flashVars["pcode"] != null && this.flashVars["pcode"] != "" && this.flashVars["pcode"] != "undefined"){
-this.flashVars["pcode"] = this.flashVars["pcode"];
-}else{
-this.flashVars["pcode"] = RhapsodyPlayer.getPcode();
-}
-if( type=="embedded" ) {
-this.flashVars["cpath"] = RhapsodyPlayer.getEmbeddedCpath();
-this.flashVars["src"] = RhapsodyPlayer.getEmbeddedSrc();
-}
-else {
-this.flashVars["cpath"] = RhapsodyPlayer.getCpath();
-this.flashVars["src"] = RhapsodyPlayer.getSrc();
-}
-// Set the user token...
-this.flashVars["token"] = "noToken";
-this.flashVars["autoAnonCreate"] = false;
-try {
-this.flashVars["token"] = CookieManager.getCookieMemberByName( "RhapWeb.FlashToken", "token", null );
-if( !this.flashVars["token"] ) { this.flashVars["token"] = "noToken"; }
-else {
-this.flashVars["token"] = escape(this.flashVars["token"]);
-this.flashVars["token"] = this.flashVars["token"].replace(/\+/g,"%2B");
-}
-}
-catch(e) { /* do nothing here */ }
-// Register this instance with RhapsodyPlayer...
-RhapsodyPlayer.SWF_OBJECTS[ this.type ] = this;
-//
-// Status Codes:
-// -1 - uninitialized / error
-// 0 - ok
-// 1 - need to upgrade flash
-// 2 - other exception
-//
-this.lastEmbedStatus = -1;
-this.swfObject = null;
-this.savedMessages = new Array();
-this.getEmbedStatus = function() { return this.lastEmbedStatus; }
-this.isEmbedded = function() { return this.getSwf() != null; }
-this.getSwf = function() { return document.getElementById( "popoutPlayer_" + this.type ); }
-this.setSwfObject = function( obj ) {
-this.swfObject = obj;
-};
-this.sendControlMessage = function( message ) {
-// If the thing isn't embedded yet, keep the message for later...
-if( this.lastEmbedStatus == -1 ) {
-this.savedMessages.push( message );
-}
-// If the thing has been successfully loaded, send the message
-else if( this.lastEmbedStatus == 0 ) {
-if( this.getSwf()==null ) { this.savedMessages.push( message ); return; }
-this.getSwf().sendControlMessage( message );
-}
-};
-this.embedSwf = function ( ) {
-var flashUrl=null;
-var fpContext=null;
-var swfObj_width = "100%";
-var swfObj_height = "100%";
-if( this.type=="popout" ) {
-flashUrl = "http://playback-ns.rhapsody.com/-static/players/popout/rhapsodyPopoutPlayer.swf";
-fpContext = "popout";
-this.flashVars["autoAnonCreate"] = true;
-}
-if( this.type=="fullsize_embedded" ) {
-flashUrl = "http://playback-ns.rhapsody.com/-static/players/popout/rhapsodyPopoutPlayer.swf";
-this.flashVars["autoAnonCreate"] = true;
-}
-if( this.type=="engine" ) {
-flashUrl = "http://playback-ns.rhapsody.com/-static/players/engine/rhapsodyPlaybackEngine.swf";
-fpContext = "embeddedProxy";
-}
-if( this.type=="signin" ) {
-flashUrl = "http://playback-ns.rhapsody.com/-static/widgets/login/login.swf";
-}
-if( this.type=="embedded" ) {
-flashUrl = "http://playback-ns.rhapsody.com/-static/players/PureMVCPlayer/embedded/latest_build/rhapsodyPlayer.swf";
-swfObj_width = "784px";
-swfObj_height = "57px";
-}
-if( this.type=="chicklet" ) {
-flashUrl = "http://playback-ns.rhapsody.com/-static/players/PureMVCPlayer/embedded/latest_build/TransportControls.swf";
-swfObj_width = "124px";
-swfObj_height = "57px";
-}
-if( !flashUrl ) return;
-var d = new Date();
-var yyyy = d.getFullYear().toString();
-var mm = (d.getMonth() + 1 < 10 ? "0" : "") + (d.getMonth() + 1).toString();
-var dd = (d.getDate() < 10 ? "0" : "") + d.getDate().toString();
-var ts = yyyy + mm + dd + "-" + Math.ceil(d.getHours() / 4).toString();
-var bid = "";
-flashUrl += "?bid=" + bid + "&ts=" + ts;
-var theSwfObject = new Rhapsody_SWFObject( flashUrl, "popoutPlayer_"+this.type, swfObj_width, swfObj_height, "9", "#EFEFEF" );
-if( !theSwfObject.installedVer.versionIsValid(new Rhapsody_deconcept.PlayerVersion([9,0,115])) ) {
-this.lastEmbedStatus = 1;
-return 1;
-}
-theSwfObject.addParam("scale", "noscale");
-theSwfObject.addParam("allowScriptAccess", "always");
-theSwfObject.addParam("scale", "noscale");
-theSwfObject.addParam("wmode", this.wMode);
-theSwfObject.addVariable("env", "production");
-theSwfObject.addVariable("fp_context", fpContext);
-theSwfObject.addVariable("navigatorUserAgent", navigator.userAgent);
-theSwfObject.addVariable("navigatorAppVersion", navigator.appVersion);
-theSwfObject.addVariable("navigatorVendor", navigator.vendor);
-theSwfObject.addVariable("prop", window.opera);
-if( this.flashVars ) {
-for( flashVarName in this.flashVars ) {
-theSwfObject.addVariable( flashVarName, this.flashVars[flashVarName] );
-}
-}
-try {
-theSwfObject.write(this.elementName);
-}
-catch( e ) {
-this.setSwfObject(null);
-this.lastEmbedStatus = 2;
-return 2;
-}
-this.setSwfObject(theSwfObject);
-this.lastEmbedStatus = 0;
-return 0;
-};
-// As soon as this object is ready, try to embed it...
-this.embedSwf();
-}
-/* * * * SimpleRhapsodyUtility * * * * * * * * * * * * * * * * *
-A Static Object for encapsulating
-commonly used Utilities
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-var SimpleRhapsodyUtility = {
-alertRhapsodyErrors: function(errors){
-var errorString = "";
-if( SimpleRhapsodyUtility.isArray( errors ) ){
-for( var i=0; i<errors.length; i++ ){
-errorString += errors[ i ] + "\n";
-}
-}
-else if( typeof errors == 'string' ) errorString = errors;
-if(RhapsodySimple.DEBUG_LEVEL == 1 || RhapsodySimple.DEBUG_LEVEL == 3) alert(errorString);
-if(RhapsodySimple.DEBUG_LEVEL < 3) throw(errorString);
-return false;
-},
-addLoadEvent: function(func){
-var oldonload = window.onload;
-if (typeof window.onload != 'function') {
-window.onload = func;
-} else {
-window.onload = function() {
-oldonload();
-func();
-}
-}
-},
-addEvent: function( theElement, theEvent, theCallback ){
-if( theElement.addEventListener ){
-theElement.addEventListener( theEvent, theCallback, false );
-}
-else if( theElement.attachEvent ){
-theElement.attachEvent( "on" + theEvent, theCallback );
-} else return;
-},
-isArray: function(arr){
-if( ( typeof arr == 'object' ) && ( typeof arr.pop != 'undefined' ) ) return true;
-else return false;
-}
-}
-var SimpleTracking = {
-reportPlayAdd: function( action, type, rcid ){
-if( rcid && ( rcid.indexOf( "action." ) == 0 ) ) { return; }
-var type = ( type == '' )?RhapsodyPlayer._getTypeStringByMoniker( rcid ):type;
-RhapsodyTracking.sendLinkEvent( {
-eVar17: 'Audio Req : ' + action + " : " + type,
-prop18: 'E: Audio Req : ' + action + " : " + type,
-eVar18: RhapsodyTracking?RhapsodyTracking.getPageName():"",
-eVar31: RhapsodyTracking.getCustomMetric( "primaryContentId" )?RhapsodyTracking.getCustomMetric( "primaryContentId" ):"",
-eVar32: RhapsodyTracking.getCustomMetric( "primaryContentName" )?RhapsodyTracking.getCustomMetric( "primaryContentName" ):"",
-eVar33: RhapsodyTracking.getCustomMetric( "artistId" )?RhapsodyTracking.getCustomMetric( "artistId" ):"",
-eVar34: RhapsodyTracking.getCustomMetric( "artistName" )?RhapsodyTracking.getCustomMetric( "artistName" ):"",
-eVar35: RhapsodyTracking.getCustomMetric( "albumId" )?RhapsodyTracking.getCustomMetric( "albumId" ):"",
-eVar36: RhapsodyTracking.getCustomMetric( "albumName" )?RhapsodyTracking.getCustomMetric( "albumName" ):""
-}, {
-type: 'custom',
-linkName: 'Audio Play Request',
-events: 'event1'
-} );
-},
-reportPlayerPopout: function(){
-RhapsodyTracking.sendLinkEvent( {
-eVar17: 'Nav: Click: Pop-out',
-prop18: 'E: Nav: Click: Pop-out'
-},
-{
-type: 'custom',
-linkName: 'Navigation',
-events: 'event8'
-} );
-},
-reportRestoreEmbeddedPlayer: function(){
-RhapsodyPlayer.hasntSentPreloadedPlayEvent = false;
-RhapsodyTracking.sendLinkEvent( {
-eVar17: 'Nav: Click: Embed',
-prop18: 'E: Nav: Click: Embed'
-},
-{
-type: 'custom',
-linkName: 'Navigation',
-events: 'event8'
-} );
-},
-reportClickToStore: function( gotoUrl ){
-RhapsodyTracking.sendLinkEvent( {
-eVar17: 'Link: Store: track',
-prop18: 'E: Link: Store: track'
-},
-{
-type: 'custom',
-linkName: 'Store Link',
-events: 'event8'
-},
-gotoUrl
-);
-}
-}
-var SimplePopUpBlockHandler = {
-tripped: false,
-stallTilPageLoad: false,
-tryAgainFunction: null,
-popUpBlockerDialogBox: null,
-message: "A pop-up blocker has interfered with our ability to deliver the content you\'ve requested.",
-messageSupplemental: "\nIf you continue to have problems, please restart your browser and try again. ",
-alertUser: function( blockedFunction ){
-var alertMessage = this.message;
-if( !this.tripped ){
-try{
-if( this.stallTilPageLoad ) SimpleRhapsodyUtility.addLoadEvent( function(){ SimplePopUpBlockHandler.buildAlertDiv( blockedFunction ); } );
-else this.buildAlertDiv( blockedFunction );
-} catch(e) {
-alertMessage += this.messageSupplemental;
-alert( alertMessage );
-this.tripped = true;
-}
-}
-},
-destroyDialogBox: function(){
-this.popUpBlockerDialogBox.toggleMeddlesomeElements( true );
-this.popUpBlockerDialogBox.destroy();
-this.popUpBlockerDialogBox = null;
-this.tripped = false;
-this.stallTilPageLoad = false;
-},
-buildAlertDiv: function(blockedFunction){
-var alertDiv = document.createElement( "DIV" );
-this.tryAgainFunction = function(){
-blockedFunction();
-this.destroyDialogBox();
-return false;
-}
-alertDiv.setAttribute("id", "popUpBlockHolder");
-this.popUpBlockerDialogBox = new DialogBox();
-this.popUpBlockerDialogBox.setWidth( 433 );
-this.popUpBlockerDialogBox.setMask( true );
-this.popUpBlockerDialogBox.centerInPage();
-this.popUpBlockerDialogBox.toggleMeddlesomeElements();
-this.popUpBlockerDialogBox.getHoldingElement().appendChild(alertDiv);
-SimpleRhapsodyUtility.addEvent( window, 'scroll', function(e){ this.popUpBlockerDialogBox.centerInPage(); });
-alertDiv.innerHTML =
-'<b class="xtop">' +
-'<b class="xb1"><\/b>' +
-'<b class="xb2"><\/b>' +
-'<b class="xb3"><\/b>' +
-'<b class="xb4"><\/b>' +
-'<\/b>' +
-'<h2 class="boxHeader">Pop-Up Blocker Detected<\/h2>' +
-'<div class="popUpBlockMessage">' +
-'<p>' + this.message + ' Click \'View Content\' to spawn the blocked window.<\/p>' +
-'<div style="text-align: center; padding-top: 15px;">' +
-'<div style="width: 10px; height: 23px; float: right; font-size: 0.1em;">&nbsp;<\/div>' +
-'<div class="whiteButtonRight" style="width: 7px; height: 23px; float: right; font-size: 0.1em;" onClick="SimplePopUpBlockHandler.destroyDialogBox(); return false;">&nbsp;<\/div>' +
-'<div class="whiteButton" style="float: right; line-height: 23px; width: 40px;">' +
-'<a href="#" title="Cancel" onClick="SimplePopUpBlockHandler.destroyDialogBox(); return false;" class="boldWhiteLink"><b>Cancel<\/b><\/a>' +
-'<\/div>' +
-'<div class="whiteButtonLeft" style="width: 7px; height: 23px; float: right; font-size: 0.1em;" onClick="SimplePopUpBlockHandler.destroyDialogBox(); return false;">&nbsp;<\/div>' +
-'<div style="width: 10px; height: 23px; float: right; font-size: 0.1em;">&nbsp;<\/div>' +
-'<div class="whiteButtonRight" style="width: 7px; height: 23px; float: right; font-size: 0.1em;" onClick="window.location=\'' + RhapsodySimple.environment + '/-popuphelp\'">&nbsp;<\/div>' +
-'<div class="whiteButton" style="float: right; line-height: 23px; width: 40px;">' +
-'<a href="' + RhapsodySimple.environment + '/-popuphelp" title="Help" class="boldWhiteLink"><b>Help<\/b><\/a>' +
-'<\/div>' +
-'<div class="whiteButtonLeft" style="width: 7px; height: 23px; float: right; font-size: 0.1em;" onClick="window.location=\'' + RhapsodySimple.environment + '/-popuphelp\'">&nbsp;<\/div>' +
-'<div style="width: 10px; height: 23px; float: right; font-size: 0.1em;">&nbsp;<\/div>' +
-'<div class="whiteButtonRight" style="width: 7px; height: 23px; float: right; font-size: 0.1em;" onClick="SimplePopUpBlockHandler.tryAgainFunction(); return false;">&nbsp;<\/div>' +
-'<div class="whiteButton" style="float: right; line-height: 23px; width: 80px;">' +
-'<a href="#" title="View Content" onClick="SimplePopUpBlockHandler.tryAgainFunction(); return false;" class="boldWhiteLink"><b>View Content<\/b><\/a>' +
-'<\/div>' +
-'<div class="whiteButtonLeft" style="width: 7px; height: 23px; float: right; font-size: 0.1em;" onClick="SimplePopUpBlockHandler.tryAgainFunction(); return false;">&nbsp;<\/div>' +
-'<\/div>' +
-'<\/div>';
-this.tripped = true;
-}
-}
-var ErrorModalDialogBox = {
-embPlayerDialogBoxInstance: null,
-init: function(errorHtmlContent){
-if(errorHtmlContent != null && errorHtmlContent != 'undefined' && errorHtmlContent != ''){
-this.embPlayerDialogBoxInstance = new DialogBox(
-{
-width: '330px',
-height: 'auto',
-maskOpacityPercent: 60,
-holdingElementBgColor: '#363636',
-zIndex: '999999999',
-maskBgColor: '#000',
-maskZIndex: '10000',
-htmlContent: errorHtmlContent
-}
-);
-this.embPlayerDialogBoxInstance.centerInPage( .85 );
-this.embPlayerDialogBoxInstance.setMask( true );
-this.embPlayerDialogBoxInstance.setShadow( true );
-this.embPlayerDialogBoxInstance.toggleMeddlesomeElements();
-SimpleRhapsodyUtility.addEvent( window, 'scroll', function(e){ ErrorModalDialogBox.embPlayerDialogBoxInstance.centerInPage( .90 ); ErrorModalDialogBox.embPlayerDialogBoxInstance.setMask( true ); } );
-SimpleRhapsodyUtility.addEvent( window, 'resize', function(e){ ErrorModalDialogBox.embPlayerDialogBoxInstance.centerInPage( .90 ); ErrorModalDialogBox.embPlayerDialogBoxInstance.setMask( true ); } );
-}
-},
-destroyAndPlay: function(){
-ErrorModalDialogBox.embPlayerDialogBoxInstance.toggleMeddlesomeElements();
-ErrorModalDialogBox.embPlayerDialogBoxInstance.destroy();
-var app = RhapsodyPlayer.getFlashApp("embedded");
-if(app != null && app != 'undefined'){
-app.doPlay();
-}
-ErrorModalDialogBox.embPlayerDialogBoxInstance = null;
-},
-destroyNoPlay: function(){
-ErrorModalDialogBox
-ErrorModalDialogBox.embPlayerDialogBoxInstance.toggleMeddlesomeElements();
-ErrorModalDialogBox.embPlayerDialogBoxInstance.destroy();
-ErrorModalDialogBox.embPlayerDialogBoxInstance = null;
-},
-destroyNoFlashNoPlay: function(){
-ErrorModalDialogBox.embPlayerDialogBoxInstance.toggleMeddlesomeElements();
-ErrorModalDialogBox.embPlayerDialogBoxInstance.destroy();
-ErrorModalDialogBox.embPlayerDialogBoxInstance = null;
-CookieManager.setCookie( RhapsodyPlayer.FLASH_PLAYER_REQUIRED_COOKIE, "true" );
-RhapsodyEmbeddedPlayerManager.setSliverModeWhenNoFlash();
-},
-destroyAndSignIn: function(){
-ErrorModalDialogBox.destroyNoPlay();
-signInOut( 'signin');
-}
-}
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-Free floating Utilties DEPRECATED
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-function playTrack(prId){
-RhapsodyPlayer.playRhapsody( { id:prId, type:'track' } );
-}
-function playAlbum(prId){
-RhapsodyPlayer.playRhapsody( { id:prId, type:'album' } );
-}
-function playRadio(prId){
-RhapsodyPlayer.playRhapsody( { id:prId, type:'radio' } );
-}
-function playPlaylist(prId){
-RhapsodyPlayer.playRhapsody( { id:prId, type:'playlist' } );
-}
-function playRhapsody(prObj){
-RhapsodyPlayer.playRhapsody(prObj);
-}
-document.write('<div id="' + RhapsodyEmbeddedPlayerManager.ENGINE_DIV_ID + '" class="embPlayerEngine" style="position:absolute; z-index:-2; height:0.001px;"><\/div>\n');
-function SIMPLE_trySendingFlashMessage( action, id ) {
-var app = RhapsodyPlayer.getFlashApp("engine");
-if( app ) {
-// If we think there should be an embedded player, make sure there is one first...
-if( RhapsodyPlayer.EMBEDDED_PLAYER_ID ) {
-var appEmbed = RhapsodyPlayer.getFlashApp("embedded");
-if( !appEmbed ) {
-setTimeout( "SIMPLE_trySendingFlashMessage('"+action+"','"+id+"')", 500 );
-return;
-}
-}
-try {
-app.sendMessage( {"messageId":new Date().valueOf(), "message":action+"|"+id, "targetId":"popupPlayer", "targetPlayerId":RhapsodyPlayer.EMBEDDED_PLAYER_ID} );
-return;
-}
-catch(e) {}
-}
-SIMPLE_openFromSavedFlashCall();
-}
-function onTargetMessageReceived( messageId, success ) {
-if( !success ) {
-if( RhapsodyPlayer.savedMessages[messageId] ) {
-var splitup = RhapsodyPlayer.savedMessages[messageId].split("|");
-var id = splitup[1];
-SIMPLE__openPlayerWindow( id );
-}
-else {
-SIMPLE_openFromSavedFlashCall();
-}
-}
-}
-function SIMPLE_openFromSavedFlashCall() {
-SIMPLE__openPlayerWindow(
-RhapsodyPlayer.savedFlashArgs['id'],
-RhapsodyPlayer.savedFlashArgs['type'],
-RhapsodyPlayer.savedFlashArgs['title'],
-RhapsodyPlayer.savedFlashArgs['remote'],
-RhapsodyPlayer.savedFlashArgs['page'],
-RhapsodyPlayer.savedFlashArgs['pageRegion'],
-RhapsodyPlayer.savedFlashArgs['guid'],
-RhapsodyPlayer.savedFlashArgs['origin'] );
-}
-/* Below this comment are Functions copied from global.js */
-function SIMPLE__openPlayer(id,type,title,page,pageRegion,guid,origin) {
-RhapsodyPlayer.throwContent( "play", id, type );
-}
-function SIMPLE__openPlayerWindow(id, type, title, remote, page, pageRegion, guid, origin) {
-try {
-if (!rhapPlayer || rhapPlayer.closed) {
-openThis(id, type, title, remote, page, pageRegion, guid, origin)
-} else {
-rhapPlayer.getMetaData(type,id,title,remote);
-rhapPlayer.location.setParameter('page',page);
-rhapPlayer.focus();
-}
-} catch (e) {
-openThis(id, type, title, remote, page, pageRegion, guid, origin);
-}
-}
-function onTrackOpened( rcid ) {
-/** Try to do this, but it might fail on pages without embedded player... **/
-try {
-RhapsodyEmbeddedPlayerManager.setScrollingMode(true);
-RhapsodyEmbeddedPlayerManager.revealPlayer();
-}
-catch(e) { }
-if( RhapsodyPlayer.hasntSentPreloadedPlayEvent ) {
-RhapsodyPlayer.hasntSentPreloadedPlayEvent = false;
-try{
-SimpleTracking.reportPlayAdd( 'play', 'pre-load' );
-} catch( e ){}
-}
-/** In the full player window, we need this to be called "on track open"... **/
-try { rhapsodyPlayerOnTrackOpened( rcid ); } catch(e) { }
-setRhapFlashInstalledCookie();
-}
-function onEmbeddedPlayerBuyMP3( rcid ) {
-var storeLink = "http://mp3.rhapsody.com/goto?rcid=" + rcid + "&lsrc=traEmbP&src=traEmbP&addToCart=" + rcid;
-try{
-SimpleTracking.reportClickToStore( storeLink );
-} catch( e ){ document.location.href = storeLink; }
-}
-function onPlayerReady( playerId ) {
-if( playerId == "chicklet" ) {
-var theChickletSwf = document.getElementById( "popoutPlayer_chicklet" );
-theChickletSwf.style.opacity = "1.00";
-theChickletSwf.style.filter = "alpha( opacity=100 )";
-RhapsodyPlayer.getFlashApp("embedded").resetControlState();
-return;
-}
-if( playerId == RhapsodyPlayer.EMBEDDED_PLAYER_ID != playerId ) {
-if( RhapsodyPlayer.EMBEDDED_PLAYER_PRELOAD_COMMAND ) {
-var app = RhapsodyPlayer.getFlashApp("engine");
-app.sendMessage( {
-messageId:new Date(),
-message:RhapsodyPlayer.EMBEDDED_PLAYER_PRELOAD_COMMAND,
-targetPlayerId:playerId,
-forceTarget:true} );
-}
-if( RhapsodyPlayer.shouldShowInterruptedPlaybackOverlay ) {
-RhapsodyEmbeddedPlayerManager.showInterruptedPlaybackOverlay();
-if( CookieManager && typeof CookieManager != 'undefined' ) CookieManager.setCookie( 'RhapPlayer.hasSeenPopupTip', 'true' );
-RhapsodyPlayer.shouldShowInterruptedPlaybackOverlay = false;
-}
-}
-}
-function onEmbeddedPlayerPopout(){
-try{
-SimpleTracking.reportPlayerPopout();
-} catch( e ){};
-RhapsodyPlayer.hasntSentPreloadedPlayEvent = false;
-RhapsodyPlayer.currentPlayerMode = 'popout';
-RhapsodyEmbeddedPlayerManager.setSliverMode();
-SIMPLE__openPlayerWindow( "player.restore", null );
-}
-function onEmbeddedPlayerError(code) {
-var errorHtmlContent = '';
-var learnMoreURL = 'http://learn.rhapsody.com/?src=rcom_efp_lm&pcode=rn&cpath=rcom_efp';
-var subscribeJoinURL = 'http://learn.rhapsody.com/plans/unlimited?src=rcom_efp&pcode=rn&cpath=rcom_efp&ocode=rn';
-var privacyPolicyURL = 'http://www.rhapsody.com/-privacy_policy';
-var termsConditionsURL = 'http://www.rhapsody.com/-terms_of_use';
-var flashPlayerDnldURL = 'http://www.adobe.com/products/flashplayer/';
-var closeXSpanContinuePlay = '<div class="embPlayerErrorDialogClose"><a href="#" onclick="ErrorModalDialogBox.destroyAndPlay(); return false;">Close <span>X<\/span><\/a><\/div>';
-var closeXSpanNoPlay = '<div class="embPlayerErrorDialogClose"><a href="#" onclick="ErrorModalDialogBox.destroyNoPlay(); return false;">Close <span>X<\/span><\/a><\/div>';
-var closeXSpanNoFlashNoPlay = '<div class="embPlayerErrorDialogClose"><a href="#" onclick="ErrorModalDialogBox.destroyNoFlashNoPlay(); return false;">Close <span>X<\/span><\/a><\/div>';
-var bottomFiller = '<div class="embPlayerErrorDialogClose">&nbsp;<\/div>';
-if( code != null && typeof code != 'undefined'){
-var arrayCode = code.split('|');
-if(arrayCode[0] != null && typeof arrayCode[0] != 'undefined'){
-switch(arrayCode[0]){
-case('geoBlocked'):
-//var otherCountryClickHandler = 'http://uk.real.com/partners/rhapsody/rhap_pop_redirect.html?src=rhapsody_embed_nonus&rsrc=rhapsody_embed_nonus';
-//background: url(http://static.rhap.com/assets/rn/img/4/8/9/2/28872984.jpg);
-var customizedBkgnd = '<img src="http://static.rhap.com/rotw/images/overlays/us-only_bg.jpg"></img>'.split('"');
-var imgSrc = customizedBkgnd[1];
-errorHtmlContent = closeXSpanNoPlay;
-errorHtmlContent += '<div class="embPlayerErrorDialogBody" style="padding: 18px 18px 0px 15px; margin-bottom: 0px; background: url('+ imgSrc +');">';
-errorHtmlContent += '<div class="geoBlockedHeader">U.S. Only<\/div>';
-errorHtmlContent += '<div class="geoBlockedContent" style="padding-bottom: 18px; text-align: justify;">We are sorry. Rhapsody is currently only available in the United States.<\/div>';
-errorHtmlContent += '<div class="geoBlockedContent" style="padding-bottom: 18px; text-align: center;">Why not try RealMusic ?<\/div>';
-errorHtmlContent += '<div class="geoBlockedContent" style="padding-bottom: 28px; text-align: justify;">Hundreds of interactive stations and radio from around the globe.<\/div>';
-errorHtmlContent += '<div style="padding-bottom: 18px; text-align: center;"><a href="http://uk.real.com/partners/rhapsody/rhap_pop_redirect.html?src=rhapsody_embed_nonus&rsrc=rhapsody_embed_nonus"><img src="http://static.rhap.com/rotw/images/overlays/btn_us_only_RealMusic.jpg"></img><\/a><\/div>';
-errorHtmlContent += '<\/div>';
-errorHtmlContent += bottomFiller;
-break;
-case('flashNotInstalled'):
-errorHtmlContent = closeXSpanNoFlashNoPlay;
-errorHtmlContent += '<div class="embPlayerErrorDialogBody" style="padding: 18px 30px 72px 15px;">';
-errorHtmlContent += '<div class="flashNotInstalledHeader">Latest Flash Player Required<\/div>';
-errorHtmlContent += '<div class="flashNotInstalledSubheader">For the best experience, please install the <a class="getLatestFlash" href="' + flashPlayerDnldURL + '">latest Adobe Flash player<\/a>.<\/div>';
-errorHtmlContent += '<\/div>';
-break;
-case('playsLeftUpsell'):
-if(arrayCode[1] != null && typeof arrayCode[1] != 'undefined' && arrayCode[1] != ''){
-var upsellMsgDetail = 'We offer 25 plays a month for free. If you want to upgrade now, you can listen all you want, whenever you want.';
-var upsellMsgDetailStyle = 'padding-right: 10px;';
-var upsellHeaderClassSuffix = '';
-var upSellMsgSubheaderContent = '<div class="upSellMsgSubheader">You have <span class="numUpsellLeft">' + arrayCode[1] + '<\/span> free plays left this month.<\/div>'
-var unlimitedAccessSubheader = '';
-var unlimitedAccessDetails = '';
-var upSellMsgPricingContent = 'Get unlimited access for $12.99/month';
-var continueSubscribeButtons = '<div style="padding-bottom: 8px;"><span><a href="#" onclick="ErrorModalDialogBox.destroyAndPlay(); return false;"><img src="http://static.rhap.com/rotw/ima
----End---
-
-Server writes a chunk to client
----------
-org.jboss.netty.handler.codec.http.DefaultHttpChunk@6f366e7d
----Content---
-ges/overlays/btn_continueplaying.gif"></img><\/a><\/span><span style="padding-left: 8px;"><a href="' + subscribeJoinURL + '"><img src="http://static.rhap.com/rotw/images/overlays/btn_subscribenow.gif"></img><\/a><\/span><\/div>';
-var upgradeNowSection = '';
-var learnMoreLinkStyle = 'padding-bottom: 26px;';
-if(arrayCode[1] == '0'){
-upsellMsgDetail = 'Your set of 25 full-length plays has ended, but if you upgrade now, running out of music will never be a problem again.';
-upsellMsgDetailStyle = 'padding-right: 20px;';
-upsellHeaderClassSuffix = 'NoPlaysLeft';
-upSellMsgSubheaderContent = '';
-unlimitedAccessSubheader = '<div class="upsellUnlimitedAcc">Unlimited Access<\/div>';
-unlimitedAccessDetails = '<div><ul class="upsellBullet"><li>Unlimited full-length play of any song in the library<li>100+ ad-free Rhapsody Channels<li>Access to your music, anytime you want it<\/ul><\/div>';
-upSellMsgPricingContent = 'Upgrade to Rhapsody Unlimited and experience:';
-continueSubscribeButtons = '';
-upgradeNowSection = '<div style="padding-bottom: 14px;"><span><a href="' + subscribeJoinURL + '"><img src="http://static.rhap.com/rotw/images/overlays/btn_upgradenow.gif"></img><\/a><\/span><\/div>';
-upgradeNowSection += '<div style="padding-bottom: 22px;"><div class="rhapMember">No, thanks, I will <a style="text-decoration: underline;" href="#" onclick="ErrorModalDialogBox.destroyAndPlay(); return false;">keep listening<\/a> to 30 seconds samples.<\/div>';
-upgradeNowSection += '<div class="rhapMember">Rhapsody member? <a href="#" onclick="ErrorModalDialogBox.destroyAndSignIn(); return false;">Sign in<\/a> here.<\/div><\/div>';
-learnMoreLinkStyle = 'padding-bottom: 18px;';
-}
-errorHtmlContent = closeXSpanContinuePlay;
-errorHtmlContent += '<div class="embPlayerErrorDialogBody">';
-errorHtmlContent += '<div class="upsellHeader' + upsellHeaderClassSuffix + '">Join Now<\/div>';
-errorHtmlContent += upSellMsgSubheaderContent;
-errorHtmlContent += '<div class="upSellMsgDetail" style="' + upsellMsgDetailStyle + '">'+ upsellMsgDetail + '<\/div>';
-errorHtmlContent += unlimitedAccessSubheader;
-errorHtmlContent += '<div class="upSellMsgPricing">' + upSellMsgPricingContent + '<\/div>';
-errorHtmlContent += unlimitedAccessDetails;
-errorHtmlContent += continueSubscribeButtons;
-errorHtmlContent += '<div class="upSellLearnMoreLink" style="' + learnMoreLinkStyle + '"><a href="' + learnMoreURL + '">Learn more<\/a><\/div>';
-errorHtmlContent += upgradeNowSection;
-errorHtmlContent += '<div class="upsellPolicyTerms"><span><a href="' + privacyPolicyURL + '">Privacy Policy</a><\/span>|<span style="padding-left: 2px;"><a href="' + termsConditionsURL + '">Terms and Conditions</a><\/span><\/div>';
-errorHtmlContent += '<\/div>';
-}
-break;
-case('popupTip'):
-errorHtmlContent = closeXSpanContinuePlay;
-errorHtmlContent += '<div class="embPlayerErrorDialogBody" style="padding-left: 12px; height: 1%; overflow: hidden;">';
-errorHtmlContent += '<div class="popupTipHeader">Tip:<\/div>';
-errorHtmlContent += '<div class="popupTipContent">';
-errorHtmlContent += '<div class="popupTipWords">To keep playing music as you browse, pop out the player.<\/div>';
-errorHtmlContent += '<div class="popupTipImg"><img src="http://static.rhap.com/rotw/images/overlays/rhap_icon.gif"></img><\/div>';
-errorHtmlContent += '<\/div>';
-errorHtmlContent += '<div class="embPlayerImg"><img src="http://static.rhap.com/rotw/images/overlays/player.gif"></img><\/div>';
-errorHtmlContent += '<\/div>';
-break;
-default:
-break;
-}
-ErrorModalDialogBox.init(errorHtmlContent);
-}
-}
-}
-var checkPlayStateThreadHandle = null;
-function checkPlayStateThread() {
-var app = RhapsodyPlayer.getFlashApp("embedded");
-if( !app ) { return; }
-if( app.getPlayState()==4 ) { // if it's still PLAYING, set the cookie again...
-document.cookie = RhapsodyPlayer.LAST_STATE_COOKIE + "=" + (new Date().valueOf()) + "; domain=.rhapsody.com; path=/;";
-}
-checkPlayStateThreadHandle = setTimeout( "checkPlayStateThread()", 1000 );
-}
-function onPlayStateChanged( oldstate, newstate ) {
-if( newstate==0 ) { // Stopped
-if( checkPlayStateThreadHandle ) { clearTimeout(checkPlayStateThreadHandle); }
-document.cookie = RhapsodyPlayer.LAST_STATE_COOKIE + "=; domain=.rhapsody.com; path=/;";
-}
-if( newstate==4 ) { // Playing
-if( !checkPlayStateThreadHandle ) { checkPlayStateThreadHandle = setTimeout( "checkPlayStateThread()", 1000 ); }
-}
-}
-function sendControlMessage( target, message ) {
-if( target == "embedded" ) {
-RhapsodyPlayer.getRhapsodySwfObject("embedded").sendControlMessage(message);
-}
-if( target == "transportControl" ) {
-RhapsodyPlayer.getRhapsodySwfObject("chicklet").sendControlMessage(message);
-}
-}
-function openThis(id, type, title, remote, page, pageRegion, guid, origin){
-if( id.indexOf("action.")==0 ) {
-SignInOutDialogBox.showDialog(id.substring("action.".length));
-return;
-}
-var playerLocation = RhapsodySimple.environment+'/player';
-// Special case...
-if( (""+id).indexOf("mash.")==0 || (""+id).indexOf("mash1.")==0 ) {
-// Fix the id
-id = id.replace("mash.", "mash1.");
-playerLocation = RhapsodySimple.environment+'/player_redirector';
-}
-var successfulOpen = false;
-var wname="rhapPlayer";
-var width = 317;
-var height = 480;
-var trackingParameters = "";
-if( RhapsodyPlayer.OCODE ) { trackingParameters += "&ocode="+escape(RhapsodyPlayer.OCODE); }
-if( RhapsodyPlayer.PCODE || RhapsodyPlayer.PCODE_OVERRIDE ) { trackingParameters += "&pcode="+escape(RhapsodyPlayer.getPcode()); }
-if( RhapsodyPlayer.CPATH ) { trackingParameters += "&cpath="+escape(RhapsodyPlayer.CPATH); }
-if( RhapsodyPlayer.PLAYERNAME ) { trackingParameters += "&playername="+escape(RhapsodyPlayer.PLAYERNAME); }
-if (title) {
-playerLocation += "?type=" + type + "&id="+id +"&title="+title +"&remote="+remote + "&page=" + page + "&pageregion=" + pageRegion + "&guid=" + guid + "&from=" + origin + trackingParameters;
-} else {
-playerLocation += "?type=" + type + "&id="+id +"&remote="+remote + "&page=" + page + "&pageregion=" + pageRegion + "&guid=" + guid + "&from=" + origin + trackingParameters;
-}
-if( RhapsodyPlayer.CJ_PID ) {
-playerLocation = "http://www.tkqlhce.com/click-" + RhapsodyPlayer.CJ_PID + "-10436574?url=" + escape(playerLocation);
-}
-var openFunction=function(){
-rhapPlayer = window.open( playerLocation,wname,"width="+width+",height="+height+",toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=0,resizable,top=20,left="+RhapsodyUser.SIMPLE__openPlayerPosition+"" );
-if((rhapPlayer!=null) && (typeof rhapPlayer!="undefined")){
-if (!rhapPlayer.opener) rhapPlayer.opener = self;
-rhapPlayer.focus();
-return true;
-}
-}
-successfulOpen=openFunction();
-if(!successfulOpen){
-SimplePopUpBlockHandler.alertUser( openFunction );
-}
-}
----End---
-
-Server writes a chunk to client
----------
-org.jboss.netty.handler.codec.http.HttpChunk$1@194266e5
----Content---
-
----End---
-
-Client writes to server
----------
-DefaultHttpRequest(chunked: false)
-GET http://www.rhapsody.com/simple.js HTTP/1.1
-Accept: application/javascript, */*;q=0.8
-Referer: http://www.mtv.com/news/articles/1684488/adam-yauch-mca-beastie-boys-dead.jhtml
-Accept-Language: en-US
-User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)
-Accept-Encoding: gzip, deflate
-Host: www.rhapsody.com
-Proxy-Connection: Keep-Alive
----Content---
-
----End---
-
-Server writes to client
----------
-DefaultHttpResponse(chunked: true)
-HTTP/1.1 200 OK
-Server: Apache Coyote/1.0
-P3P: CP="CAO DSP COR CUR DEV TAI PSA IVD CONo OUR DELi SAMi BUS PRE"
-Pragma: 
-RotwVersion: 01_42_00_175
-RotwBid: -1067563546
-RotwExpire: PageIdMatch(external-javascript-library)-Ttl(14400000)
-Content-Type: text/javascript
-Vary: Accept-Encoding
-Cneonction: close
-nnCoection: close
-Content-Length: 18300
-Cache-Control: private, max-age=10961
-Expires: Sat, 05 May 2012 03:41:14 GMT
-Date: Sat, 05 May 2012 00:38:33 GMT
-Connection: keep-alive
-Content-Encoding: identity
----Content---
-
----End---
-
-Server writes a chunk to client
----------
-org.jboss.netty.handler.codec.http.DefaultHttpChunk@26057079
----Content---
-
-var rhapPlayer;
-/** Beginning of Rhapsody SWFObject.js ... **/
-/**
-* SWFObject v1.4: Flash Player detection and embed - http://blog.deconcept.com/swfobject/
-*
-* SWFObject is (c) 2006 Geoff Stearns and is released under the MIT License:
-* http://www.opensource.org/licenses/mit-license.php
-*
-* **SWFObject is the SWF embed script formarly known as FlashObject. The name was changed for
-* legal reasons.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-* THE SOFTWARE.
-*
-* N.B. -- This version of SWFObject replaces deconcept with Rhapsody_deconcept to avoid
-* naming collisions with other versions of swfobject.js that might be on the
-* same page.
-*/
-if(typeof Rhapsody_deconcept=="undefined"){var Rhapsody_deconcept=new Object();}
-if(typeof Rhapsody_deconcept.util=="undefined"){Rhapsody_deconcept.util=new Object();}
-if(typeof Rhapsody_deconcept.SWFObjectUtil=="undefined"){Rhapsody_deconcept.SWFObjectUtil=new Object();}
-Rhapsody_deconcept.SWFObject=function(_1,id,w,h,_5,c,_7,_8,_9,_a,_b){
-if(!document.createElement||!document.getElementById){return;}
-this.DETECT_KEY=_b?_b:"detectflash";
-this.skipDetect=Rhapsody_deconcept.util.getRequestParameter(this.DETECT_KEY);
-this.params=new Object();
-this.variables=new Object();
-this.attributes=new Array();
-if(_1){this.setAttribute("swf",_1);}
-if(id){this.setAttribute("id",id);}
-if(w){this.setAttribute("width",w);}
-if(h){this.setAttribute("height",h);}
-if(_5){this.setAttribute("version",new Rhapsody_deconcept.PlayerVersion(_5.toString().split(".")));}
-this.installedVer=Rhapsody_deconcept.SWFObjectUtil.getPlayerVersion(this.getAttribute("version"),_7);
-if(c){this.addParam("bgcolor",c);}
-var q=_8?_8:"high";
-this.addParam("quality",q);
-this.setAttribute("useExpressInstall",_7);
-this.setAttribute("doExpressInstall",false);
-var _d=(_9)?_9:window.location;
-this.setAttribute("xiRedirectUrl",_d);
-this.setAttribute("redirectUrl","");
-if(_a){this.setAttribute("redirectUrl",_a);}};
-Rhapsody_deconcept.SWFObject.prototype={setAttribute:function(_e,_f){
-this.attributes[_e]=_f;
-},getAttribute:function(_10){
-return this.attributes[_10];
-},addParam:function(_11,_12){
-this.params[_11]=_12;
-},getParams:function(){
-return this.params;
-},addVariable:function(_13,_14){
-this.variables[_13]=_14;
-},getVariable:function(_15){
-return this.variables[_15];
-},getVariables:function(){
-return this.variables;
-},getVariablePairs:function(){
-var _16=new Array();
-var key;
-var _18=this.getVariables();
-for(key in _18){
-_16.push(key+"="+_18[key]);}
-return _16;
-},getSWFHTML:function(){
-var _19="";
-if(navigator.plugins&&navigator.mimeTypes&&navigator.mimeTypes.length){
-if(this.getAttribute("doExpressInstall")){this.addVariable("MMplayerType","PlugIn");}
-_19="<embed type=\"application/x-shockwave-flash\" src=\""+this.getAttribute("swf")+"\" width=\""+this.getAttribute("width")+"\" height=\""+this.getAttribute("height")+"\"";
-_19+=" id=\""+this.getAttribute("id")+"\" name=\""+this.getAttribute("id")+"\" ";
-var _1a=this.getParams();
-for(var key in _1a){_19+=[key]+"=\""+_1a[key]+"\" ";}
-var _1c=this.getVariablePairs().join("&");
-if(_1c.length>0){_19+="flashvars=\""+_1c+"\"";}
-_19+="/>";
-}else{
-if(this.getAttribute("doExpressInstall")){this.addVariable("MMplayerType","ActiveX");}
-_19="<object id=\""+this.getAttribute("id")+"\" classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" width=\""+this.getAttribute("width")+"\" height=\""+this.getAttribute("height")+"\">";
-_19+="<param name=\"movie\" value=\""+this.getAttribute("swf")+"\" />";
-var _1d=this.getParams();
-for(var key in _1d){_19+="<param name=\""+key+"\" value=\""+_1d[key]+"\" />";}
-var _1f=this.getVariablePairs().join("&");
-if(_1f.length>0){_19+="<param name=\"flashvars\" value=\""+_1f+"\" />";}
-_19+="</object>";}
-return _19;
-},write:function(_20){
-if(this.getAttribute("useExpressInstall")){
-var _21=new Rhapsody_deconcept.PlayerVersion([6,0,65]);
-if(this.installedVer.versionIsValid(_21)&&!this.installedVer.versionIsValid(this.getAttribute("version"))){
-this.setAttribute("doExpressInstall",true);
-this.addVariable("MMredirectURL",escape(this.getAttribute("xiRedirectUrl")));
-document.title=document.title.slice(0,47)+" - Flash Player Installation";
-this.addVariable("MMdoctitle",document.title);}}
-if(this.skipDetect||this.getAttribute("doExpressInstall")||this.installedVer.versionIsValid(this.getAttribute("version"))){
-var n=(typeof _20=="string")?document.getElementById(_20):_20;
-n.innerHTML=this.getSWFHTML();
-return true;
-}else{
-if(this.getAttribute("redirectUrl")!=""){document.location.replace(this.getAttribute("redirectUrl"));}}
-return false;}};
-Rhapsody_deconcept.SWFObjectUtil.getPlayerVersion=function(_23,_24){
-var _25=new Rhapsody_deconcept.PlayerVersion([0,0,0]);
-if(navigator.plugins&&navigator.mimeTypes.length){
-var x=navigator.plugins["Shockwave Flash"];
-if(x&&x.description){_25=new Rhapsody_deconcept.PlayerVersion(x.description.replace(/([a-z]|[A-Z]|\s)+/,"").replace(/(\s+r|\s+b[0-9]+)/,".").split("."));}
-}else{try{
-var axo=new ActiveXObject("ShockwaveFlash.ShockwaveFlash");
-for(var i=3;axo!=null;i++){
-axo=new ActiveXObject("ShockwaveFlash.ShockwaveFlash."+i);
-_25=new Rhapsody_deconcept.PlayerVersion([i,0,0]);}}
-catch(e){}
-if(_23&&_25.major>_23.major){return _25;}
-if(!_23||((_23.minor!=0||_23.rev!=0)&&_25.major==_23.major)||_25.major!=6||_24){
-try{_25=new Rhapsody_deconcept.PlayerVersion(axo.GetVariable("$version").split(" ")[1].split(","));}
-catch(e){}}}
-return _25;};
-Rhapsody_deconcept.PlayerVersion=function(_29){
-this.major=parseInt(_29[0])!=null?parseInt(_29[0]):0;
-this.minor=parseInt(_29[1])||0;
-this.rev=parseInt(_29[2])||0;};
-Rhapsody_deconcept.PlayerVersion.prototype.versionIsValid=function(fv){
-if(this.major<fv.major){return false;}
-if(this.major>fv.major){return true;}
-if(this.minor<fv.minor){return false;}
-if(this.minor>fv.minor){return true;}
-if(this.rev<fv.rev){return false;}return true;};
-Rhapsody_deconcept.util={getRequestParameter:function(_2b){
-var q=document.location.search||document.location.hash;
-if(q){
-var _2d=q.indexOf(_2b+"=");
-var _2e=(q.indexOf("&",_2d)>-1)?q.indexOf("&",_2d):q.length;
-if(q.length>1&&_2d>-1){
-return q.substring(q.indexOf("=",_2d)+1,_2e);
-}}return "";}};
-if(Array.prototype.push==null){
-Array.prototype.push=function(_2f){
-this[this.length]=_2f;
-return this.length;};}
-var Rhapsody_getQueryParamValue=Rhapsody_deconcept.util.getRequestParameter;
-var Rhapsody_FlashObject=Rhapsody_deconcept.SWFObject; // for backwards compatibility
-var Rhapsody_SWFObject=Rhapsody_deconcept.SWFObject;
-/** ... End of Rhapsody SWFObject.js . **/
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-For information on how to use this file, please see our
-SDK under "Developers Guide" at http://webservices.rhapsody.com/
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-var RhapsodySimple = {
-Version: '0.4',
-environment: 'http://www.rhapsody.com',
-DEBUG_LEVEL: 3, /* 1: alerts and throws error, 2: throws only, 3: alerts only */
-instances: 0,
-load: function(){
-if(typeof rhapsodySimple != 'undefined') SimpleRhapsodyUtility.alertRhapsodyErrors("Rhapsody Simple may be included more than once on the page.");
-rhapsodySimple = new Object();
-/* Not currently requireing prototype.js
-if((typeof Prototype=='undefined') ||
-parseFloat( (Prototype.Version.split(".")[0] + "." + Prototype.Version.split(".")[1]) ) < 1.4)
-alert("Rhapsody Simple requires v1.4.0 or higher of the Prototype JavaScript framework"); */
-}
-}
-var RhapsodyUser = {
-SIMPLE__openPlayerPosition: screen.width - 290,
-detectObject: function(ClassID, desc, ext, mime, name ){
-if (this.UserAgent.isIE()){
-if (this.IEDetectObject(ClassID, name)) return true;
-else return false;
-}
-if(navigator.plugins){
-if(this.NavDetectObject(desc, ext, mime, name)) return true;
-else return false;
-}
-return false;
-},
-IEDetectObject: function(ClassID, name){
-var result = true;
-// Internet explorer on windows
-if (this.UserAgent.isIE() && this.UserAgent.isWin()){
-document.write('<SCRIPT LANGUAGE=VBScript\> \n');
-document.write('on error resume next \n');
-document.write('result = IsObject(CreateObject("' + ClassID + '")) \n');
-document.writeln(' If (err) then');
-document.writeln(' result = False');
-document.writeln(' End If');
-document.write('</SCRIPT\> \n');
-}
-return result;
-},
-NavDetectObject: function(desc, ext, mime, name){
-var numPlugins = 0;
-if(navigator.plugins) navigator.plugins.refresh();
-numPlugins = navigator.plugins.length;
-if (numPlugins == 0) return false;
-for (var i=0; i < numPlugins; i++){
-currentPlugin = navigator.plugins[i];
-if (currentPlugin.name == name || currentPlugin.description == desc) return true;
-// The number of mime-types associated with this plugin
-numTypes = currentPlugin.length
-// Write the mime-types
-for (j = 0; j < numTypes; j++){
-if (currentPlugin[j].type == mime || currentPlugin[j].suffixes == ext ) return true;
-}
-}
-return false;
-},
-UserAgent: {
-isIE: function(){
-return (navigator.userAgent.toLowerCase().indexOf("msie") != -1);
-},
-isNav: function(){
-var agt = navigator.userAgent.toLowerCase();
-return ((agt.indexOf('mozilla')!=-1) && ((agt.indexOf('spoofer')==-1) && (agt.indexOf('compatible') == -1)) && (agt.indexOf('opera')==-1));
-},
-isWin: function(){
-var agt = navigator.userAgent.toLowerCase();
-return ((agt.indexOf("win")!=-1) || (agt.indexOf("16bit")!=-1));
-},
-isMac: function(){
-var agt = navigator.userAgent.toLowerCase();
-return (agt.indexOf("macintosh") != -1);
-},
-major: function(){
-return navigator.appVersion;
-}
-}
-}
-/* * * * RhapsodyPlayer * * * * * * * * * * * * * * *
-A Static Object for launching the
-RhapWeb Player Remotely
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-var RhapsodyPlayer = {
-POPOUT_STATE_COOKIE: "embeddedPlayerPopoutState",
-LAST_STATE_COOKIE: "lastEmbeddedPlayerState",
-INTERRUPTED_PLAY_DURATION_SECONDS: 15,
-shouldShowInterruptedPlaybackOverlay: false,
-ALREADY_SHOWED_EMBEDDED_PLAYER: false,
-FLASH_PLAYER_REQUIRED_COOKIE: "flashPlayerRequiredMsgOverlay",
-PCODE: "rn",
-PCODE_OVERRIDE: "",
-DEFAULT_EMBEDDED_CPATH: "rcom_efp",
-DEFAULT_EMBEDDED_SRC: "rcom_efp",
-OCODE: null,
-CPATH: null,
-SRC: null,
-CJ_PID: null,
-PLAYERNAME: null,
-USE_EMBEDDED_PLAYER: false,
-EMBEDDED_PLAYER_ID: null,
-EMBEDDED_PLAYER_PRELOAD_COMMAND: "show_blank|||Play anything on this page|",
-SWF_OBJECTS: new Array(),
-PENDING_COMMAND: null,
-savedFlashArgs: null,
-savedMessages: new Array(),
-hasntSentPreloadedPlayEvent: false, // For omniture event
-currentPlayerMode: 'embedded',
-getRhapsodySwfObject: function( name ) {
-return this.SWF_OBJECTS[name];
-},
-setUseEmbeddedPlayer: function( useEmbeddedPlayer, preloadCommand ) {
-this.USE_EMBEDDED_PLAYER = useEmbeddedPlayer;
-if( preloadCommand ) this.EMBEDDED_PLAYER_PRELOAD_COMMAND = preloadCommand;
-// Check to see if the playback had been interrupted in a previous page...
-try{
-if( !( CookieManager.hasCookie( 'RhapPlayer.hasSeenPopupTip', CookieManager.SESSION ) ) ){
-if( RhapsodyPlayer.playbackWasInterrupted() ) {
-RhapsodyPlayer.shouldShowInterruptedPlaybackOverlay = true;
-}
-}
-}
-catch(e){ /* nothing */ }
-if( preloadCommand ) {
-RhapsodyPlayer.hasntSentPreloadedPlayEvent = true;
-RhapsodyPlayer.initializeAndShowEmbeddedPlayer();
-}
-else {
-RhapsodyPlayer.embedPlayerEngine();
-}
-},
-playbackWasInterrupted: function() {
-try {
-var lastPlayState = CookieManager.getCookie( RhapsodyPlayer.LAST_STATE_COOKIE );
-return ( lastPlayState && (new Date().valueOf()-lastPlayState) < (1000 * RhapsodyPlayer.INTERRUPTED_PLAY_DURATION_SECONDS) );
-}
-catch(e) { return false; }
-},
-isFirefox: function() {
-return navigator.userAgent.toLowerCase().indexOf("firefox")>=0;
-},
-registerPagePlayButton: function() {
-if( !RhapsodyPlayer.ALREADY_SHOWED_EMBEDDED_PLAYER ) {
-RhapsodyPlayer.ALREADY_SHOWED_EMBEDDED_PLAYER = true;
-RhapsodyPlayer.initializeAndShowEmbeddedPlayer();
-}
-},
-useEmbeddedPlayer: function() {
-return this.USE_EMBEDDED_PLAYER; // May need some more logic here...
-},
-test: function(msg){
-alert(msg);
-},
-queueTrack: function(prId){
-RhapsodyPlayer.throwContent( "queue", prId, "track" );
-},
-queueAlbum: function(prId){
-RhapsodyPlayer.throwContent( "queue", prId, "album" );
-},
-queuePlaylist: function(prId){
-RhapsodyPlayer.throwContent( "queue", prId, "playlist" );
-},
-playTrack: function(prId){
-this.playRhapsody( { id:prId, type:'track' } );
-},
-playAlbum: function(prId){
-this.playRhapsody( { id:prId, type:'album' } );
-},
-/** playRadio() IS DEPRECATED. PLEASE USE playChannel() INSTEAD. **/
-playRadio: function(prId){
-this.playRhapsody( { id:prId, type:'radio' } );
-},
-/** playArtistRadio() IS DEPRECATED. PLEASE USE playArtistChannel() INSTEAD. **/
-playArtistRadio: function(prId){
-this.playRhapsody( { id:prId, type:'artistradio' } );
-},
-playChannel: function(prId){
-this.playRhapsody( { id:prId, type:'radio' } );
-},
-playArtistChannel: function(prId){
-this.playRhapsody( { id:prId, type:'artistradio' } );
-},
-playPlaylist:function(prId){
-this.playRhapsody( { id:prId, type:'playlist' } );
-},
-queueRcid: function(prId){
-if( SimpleRhapsodyUtility.isArray(prId) ){
-prId = this._createTrackListString( prId );
-}
-RhapsodyPlayer.throwContent( "queue", prId, "" );
-},
-openSignInOut: function(actionName){
-var prObj = new Object();
-prObj=this.createPlayRhapsodyObjectFromRcid( "action."+actionName );
-this.playRhapsody(prObj);
-},
-sendMessage: function( message, targetPlayerId, forceTarget ) {
-// if no flash installed or flash player version not supported, don't play song
-if(!RhapsodyPlayer.isFlashSupported()) return;
-RhapsodyPlayer.hasntSentPreloadedPlayEvent = false;
-var app = RhapsodyPlayer.getFlashApp("engine");
-var messageId = new Date().valueOf();
-RhapsodyPlayer.savedMessages[messageId] = message;
-var theTargetId = targetPlayerId ? targetPlayerId : RhapsodyPlayer.EMBEDDED_PLAYER_ID;
-app.sendMessage( {"messageId":messageId, "message":message, "targetPlayerId":theTargetId, "forceTarget":forceTarget} );
-try{
-var splitmessage = message.split("|");
-var action = splitmessage[0];
-var obj = this.createPlayRhapsodyObjectFromRcid(splitmessage[1]);
-SimpleTracking.reportPlayAdd( action, obj.type, obj.id );
-} catch( e ){}
-},
-playRcid: function(prId){
-var prObj = new Object();
-if( SimpleRhapsodyUtility.isArray( prId ) ) prObj = { id: prId, type: 'track' };
-else prObj = this.createPlayRhapsodyObjectFromRcid( prId );
-this.playRhapsody(prObj);
-},
-setTrackingCodes: function(pcode,ocode,cpath){
-this.PCODE = pcode;
-this.OCODE = ocode;
-this.CPATH = cpath;
-},
-setCommissionJunctionPID: function( cj_pid ){
-this.CJ_PID = cj_pid;
-this.PCODE = "cj";
-this.OCODE = "affiliate";
-this.CPATH = "aff";
-},
-setPlayerName: function( name ) {
-this.PLAYERNAME = name;
-},
-playRhapsody: function(prObj){
-var playRhapsodyValid = this.isValidPlayRhapsody(prObj);
-if(playRhapsodyValid && playRhapsodyValid != "valid"){
-SimpleRhapsodyUtility.alertRhapsodyErrors(playRhapsodyValid);
-} else {
-if( SimpleRhapsodyUtility.isArray(prObj.id) ){
-prObj.id = this._createTrackListString( prObj.id );
-} else if( typeof prObj.id == 'string' ){
-prObj.id = this._stripMoniker( prObj.id );
-}
-else {
-prObj.id = prObj.id + "";
-}
-SIMPLE__openPlayer(prObj.id, prObj.type);
-}
-},
-getFlashApp: function( type ) {
-return document.getElementById( "popoutPlayer_" + type );
-},
-isValidPlayRhapsody: function(prObj){
-if( prObj && prObj.id && (""+prObj.id).indexOf("action.")==0 ) { return "valid"; }
-var isValid = false;
-var ERRORS = new Array(
-"No Object passed to playRhapsody function",
-"The playRhapsody function requires an id and a type property\n(simplified functions often require only an id)",
-"The playRhapsody id property should be a Number, an RCID string, or an Array of numbers (when type='track').",
-"The playRhapsody type property should be a String",
-"The playRhapsody type property should have one of the following values:",
-"The playRhapsody rcid string property should start with one of the following monikers:"
-)
-var playRhapsodyErrors = new Array();
-var validRhapsodyType;
-var validRcidMoniker;
-if( prObj ){
-if( !prObj.id || !prObj.type ){
-playRhapsodyErrors.push(ERRORS[1]);
-} else if( ( typeof prObj.id != "number" ) && ( typeof prObj.id != "string" ) && ( !SimpleRhapsodyUtility.isArray(prObj.id ) && ( prObj.type == 'track' ) ) ){
-playRhapsodyErrors.push(ERRORS[2]);
-} else if( ( typeof prObj.id == "string" ) && ( ( validRcidMoniker = this.isValidRcidMoniker( prObj.id ) ) != "valid" ) ){
-playRhapsodyErrors.push(ERRORS[5] + validRcidMoniker);
-} else if( typeof prObj.type != "string" ){
-playRhapsodyErrors.push(ERRORS[3]);
-} else if( ( validPlayRhapsodyType = this.isValidPlayRhapsodyType( prObj.type ) ) != "valid" ){
-playRhapsodyErrors.push(ERRORS[4] + validPlayRhapsodyType);
-} else return "valid";
-} else playRhapsodyErrors.push(ERRORS[0]);
-return playRhapsodyErrors;
-},
-createPlayRhapsodyObjectFromRcid: function( prId ){
-var prObj = new Object();
-if( this._getMonikerPrefix( prId ) == 'alb') prObj.type = 'album';
-else if( this._getMonikerPrefix( prId ) == 'art') prObj.type = 'artistradio';
-else if( this._getMonikerPrefix( prId ) == 'sta') prObj.type = 'radio';
-else if( this._getMonikerPrefix( prId ) == 'ply') prObj.type = 'playlist';
-else if( this._getMonikerPrefix( prId ) == 'mp') prObj.type = 'mp';
-else prObj.type = 'track';
-prObj.id = prId;
-return prObj;
-},
-getPcode: function() {
-return RhapsodyPlayer.PCODE_OVERRIDE?RhapsodyPlayer.PCODE_OVERRIDE:RhapsodyPlayer.PCODE;
-},
-getCpath: function() {
-return RhapsodyPlayer.CPATH;
-},
-getSrc: function() {
-return RhapsodyPlayer.SRC;
-},
-getEmbeddedCpath: function() {
-return RhapsodyPlayer.CPATH ? RhapsodyPlayer.CPATH : RhapsodyPlayer.DEFAULT_EMBEDDED_CPATH;
-},
-getEmbeddedSrc: function() {
-return RhapsodyPlayer.SRC ? RhapsodyPlayer.SRC : RhapsodyPlayer.DEFAULT_EMBEDDED_SRC;
-},
-isValidPlayRhapsodyType: function( type ){
-var validTypes = [ 'track', 'album', 'radio', 'playlist', 'artistradio', 'mp' ];
-var validTypeString = "";
-for( var i=0; i<validTypes.length; i++ ){
-if( type == validTypes[ i ] ) return "valid";
-else validTypeString += "\n" + validTypes[ i ];
-}
-return validTypeString;
-},
-_stripMoniker: function( idString ){
-return idString; // return idString.split( ".")[1];
-},
-_stripMonikers: function( idArray ){
-var strippedIdArray = new Array();
-for( var i=0; i<idArray.length; i++ ){
-strippedIdArray.push( this._stripMoniker( idArray[i] ) );
-}
-return strippedIdArray;
-},
-_rcidMonikers: [ 'tra.', 'alb.', 'sta.', 'ply.', 'art.', 'mp.', 'mash.', 'mash1.' ],
-isValidRcidMoniker: function( rcidMoniker ){
-// this cound be just a plain id so check and return valid if it is
-if ((""+rcidMoniker).search(/^[0-9]/) > -1) return "valid";
-var validRcidMonikers = this._rcidMonikers;
-var validRcidMonikerString = "";
-for( var i=0; i<validRcidMonikers.length; i++ ){
-if( rcidMoniker.toLowerCase().indexOf( validRcidMonikers[ i ] ) > -1 ) return "valid";
-else validRcidMonikerString += "\n" + validRcidMonikers[ i ];
-}
-return validRcidMonikerString;
-},
-_getMonikerPrefix: function( rcid ){
-if( this.isValidRcidMoniker( rcid ) == 'valid' ) return ( "" + rcid ).split( "." )[0].toLowerCase();
-},
-_getTypeStringByMoniker: function( rcid ){
-var moniker = this._getMonikerPrefix( rcid );
-switch( moniker ) {
-case 'tra': return "track";
-case 'mash': return "track";
-case 'mash1': return "track";
-case 'alb': return "album";
-case 'ply': return "playlist";
-case 'sta': return "radio";
-case 'art': return "artistradio";
-case 'mp': return "user playlist";
-default: return "";
-}
-},
-_createTrackListString: function( prIdArray ){
-var trackListString = "";
-var skippedCounter = 0;
-for( var i=0; i<prIdArray.length; i++ ){
-if( typeof prIdArray[i] == "number" ){
-trackListString += prIdArray[i] + "+";
-} else if( ( typeof prIdArray[i] == "string" ) && ( this.isValidRcidMoniker( prIdArray[i] ) == 'valid' ) ){
-trackListString += this._stripMoniker( prIdArray[i] ) + "+";
-}else skippedCounter++;
-}
-if( skippedCounter > 0 ) SimpleRhapsodyUtility.alertRhapsodyErrors( skippedCounter + " non-number or invalid moniker string array items were dropped from the Tracklist array." );
-return trackListString;
-},
-throwContent: function( action, rcid, type ) {
-RhapsodyPlayer.hasntSentPreloadedPlayEvent = false;
-if( (''+rcid).indexOf("action.")==0 ) {
-SIMPLE__openPlayerWindow(rcid, type);
-}
-else if( (''+rcid).indexOf("mash.")==0 || (''+rcid).indexOf("mash1.")==0 ) {
-// Force close, then open a new window...
-var app = RhapsodyPlayer.getFlashApp("engine");
-if( !app ) {
-RhapsodyPlayer.PENDING_COMMAND = "RhapsodyPlayer.throwContent('"+action+"','"+rcid+"','"+type+"')";
-RhapsodyPlayer.embedPlayerEngine();
-RhapsodyPlayer.waitThenFirePendingCommand();
-return;
-}
-try { app.sendMessage({message:'closePopout|'}); } catch(e) {}
-setTimeout( "SIMPLE__openPlayerWindow('"+rcid+"', '"+type+"')", 1000 );
-}
-else {
-RhapsodyPlayer.tryFlashPlayer( action, rcid, type, "", false, "", "", "", "" );
-}
-try{
-SimpleTracking.reportPlayAdd( action, type, rcid );
-} catch( e ){}
-},
-waitThenFirePendingCommand: function() {
-var app = RhapsodyPlayer.getFlashApp("engine");
-if( app ) {
-if( RhapsodyPlayer.PENDING_COMMAND ) {
-setTimeout("eval(RhapsodyPlayer.PENDING_COMMAND)",1000);
-}
-}
-else {
-setTimeout("RhapsodyPlayer.waitThenFirePendingCommand()",100);
-}
-},
-tryFlashPlayer: function( action, id, type, title, remote, page, pageRegion, guid, origin ) {
-var app = RhapsodyPlayer.getFlashApp("engine");
-RhapsodyPlayer.savedFlashArgs = new Array();
-RhapsodyPlayer.savedFlashArgs['id'] = id;
-RhapsodyPlayer.savedFlashArgs['type'] = type;
-RhapsodyPlayer.savedFlashArgs['title'] = title;
-RhapsodyPlayer.savedFlashArgs['remote'] = remote;
-RhapsodyPlayer.savedFlashArgs['page'] = page;
-RhapsodyPlayer.savedFlashArgs['pageRegion'] = pageRegion;
-RhapsodyPlayer.savedFlashArgs['guid'] = guid;
-RhapsodyPlayer.savedFlashArgs['origin'] = origin;
-if( !app ) {
-RhapsodyPlayer.PENDING_COMMAND = "SIMPLE_trySendingFlashMessage('"+action+"','"+id+"')";
-RhapsodyPlayer.embedPlayerEngine();
-RhapsodyPlayer.waitThenFirePendingCommand();
-return;
-}
-SIMPLE_trySendingFlashMessage(action,id);
-},
-restoreEmbeddedPlayer: function() {
-var app = RhapsodyPlayer.getFlashApp("engine");
-app.sendMessage({message:'closePopout|'});
-RhapsodyEmbeddedPlayerManager.setPlayerMode();
-RhapsodyPlayer.currentPlayerMode = 'embedded';
-RhapsodyPlayer.showEmbeddedPlayer();
-try{
-SimpleTracking.reportRestoreEmbeddedPlayer();
-} catch( e ){};
-},
-initializeAndShowEmbeddedPlayer: function() {
-var theDiv = document.getElementById("topNavEmbeddedPlayerContainer");
-if( !theDiv || !rhapsodyMember ) {
-setTimeout( "RhapsodyPlayer.initializeAndShowEmbeddedPlayer()", 100 );
-return;
-}
-try {
-var popoutStateCookie = CookieManager.getCookie( RhapsodyPlayer.POPOUT_STATE_COOKIE );
-RhapsodyEmbeddedPlayerManager.setSliverMode();
-RhapsodyPlayer.showEmbeddedPlayer();
-}
-catch(e) { /** Nothing **/ }
-},
-showEmbeddedPlayer: function() {
-if( RhapsodyEmbeddedPlayerManager.isSliverMode ) {
-// If we're in sliver mode, and we need to preload a "play" URL, throw it...
-if( RhapsodyPlayer.EMBEDDED_PLAYER_PRELOAD_COMMAND && RhapsodyPlayer.EMBEDDED_PLAYER_PRELOAD_COMMAND.indexOf("play|")==0 ) {
-var id = RhapsodyPlayer.EMBEDDED_PLAYER_PRELOAD_COMMAND.split("|")[1];
-SIMPLE__tryFlashPlayer( "play", id );
-}
-}
-if( !RhapsodyEmbeddedPlayerManager.isSliverMode ) {
-// Generate a player ID...
-RhapsodyPlayer.EMBEDDED_PLAYER_ID = "embedded_" + (new Date()).valueOf();
-var embeddedFlashVars = { "autologin":false, "targetId":RhapsodyPlayer.EMBEDDED_PLAYER_ID };
-var chickletFlashVars = { "autologin":false, "targetId":"chicklet" };
-if( window.location.search && window.location.search.indexOf("restorePlayerState=true") ) {
-embeddedFlashVars["restorePlayerState"] = true;
-}
-var rhapSwfObjectEmbed = RhapsodyPlayer.getRhapsodySwfObject( "embedded", RhapsodyEmbeddedPlayerManager.EMBEDDED_DIV_ID, "opaque", embeddedFlashVars );
-var rhapSwfObjectChicklet = RhapsodyPlayer.getRhapsodySwfObject( "chicklet", RhapsodyEmbeddedPlayerManager.CHICKLET_DIV_ID, "opaque", chickletFlashVars );
-}
-RhapsodyPlayer.embedPlayerEngine();
-RhapsodyPlayer.ALREADY_SHOWED_EMBEDDED_PLAYER = true;
-},
-isFlashSupported: function() {
-var rhapSwfObjectEngine = RhapsodyPlayer.getRhapsodySwfObject( "engine", RhapsodyEmbeddedPlayerManager.ENGINE_DIV_ID, "window", { "autologin":false } );
-if( rhapSwfObjectEngine.getEmbedStatus() ) {
-return false;
-}
-else
-return true;
-},
-embedPlayerEngine: function() {
-var engineDiv = document.getElementById(RhapsodyEmbeddedPlayerManager.ENGINE_DIV_ID);
-if (!engineDiv)
-{
-setTimeout("RhapsodyPlayer.embedPlayerEngine()", 100);
-return;
-}
-try
-{
-if (!RhapsodyPlayer.isFlashSupported())
-{
-if (CookieManager.hasCookie(RhapsodyPlayer.FLASH_PLAYER_REQUIRED_COOKIE, CookieManager.PERMANENT))
-{
-RhapsodyEmbeddedPlayerManager.setSliverModeWhenNoFlash();
-}
-else
-{
-if (typeof flashRequired != "undefined" && !flashRequired)
-return;
-onEmbeddedPlayerError('flashNotInstalled');
-}
-}
-else
-{
-CookieManager.setCookie(RhapsodyPlayer.FLASH_PLAYER_REQUIRED_COOKIE, null);
-CookieManager.deleteCookie(RhapsodyPlayer.FLASH_PLAYER_REQUIRED_COOKIE);
-}
-}
-catch(e)
-{
-//
-}
-},
-getRhapsodySwfObject: function( type, elementName, wMode, flashVars ) {
-if( RhapsodyPlayer.SWF_OBJECTS[ type ] && RhapsodyPlayer.SWF_OBJECTS[ type ].isEmbedded() ) {
-return RhapsodyPlayer.SWF_OBJECTS[ type ];
-}
-else {
-return new SimpleRhapsodySwfObject( type, elementName, wMode, flashVars );
-}
-}
-}
-/**
-*** This is for backward-compatability for rollingstone.com ... Nobody should be using this, and this method
-*** can be removed once rollingstone.com has fixed their bug (BUG #241873)
-**/
-function SIMPLE__tryFlashPlayer( action, id, type, title, remote, page, pageRegion, guid, origin ) {
-RhapsodyPlayer.tryFlashPlayer( action, id, type, title, remote, page, pageRegion, guid, origin );
-}
-var RhapsodyEmbeddedPlayerManager= {
-CHICKLET_DIV_ID: "SimpleEmbeddedPlayerLeftDiv",
-EMBEDDED_DIV_ID: "SimpleEmbeddedPlayerRightDiv",
-ENGINE_DIV_ID: "launchFlashEmbedProxyDiv",
-isSliverMode: true,
-isScrollingMode: false,
-embeddedPlayerWidth: 600,
-embeddedPlayerHeight: 150,
-embeddedPlayerBigBrotherOffset: 50,
-chickletDisplayMode: "absolute",
-alreadySetUpWindowEvents: false,
-setScrollingMode: function( val ) {
-if( RhapsodyEmbeddedPlayerManager.isScrollingMode == val ) { return; }
-RhapsodyEmbeddedPlayerManager.isScrollingMode = val;
-RhapsodyEmbeddedPlayerManager.refreshEmbeddedPlayer();
-},
-setPlayerMode: function() {
-document.cookie = RhapsodyPlayer.POPOUT_STATE_COOKIE + "=player; domain=.rhapsody.com; path=/;";
-this.isSliverMode = false;
-this.doRender();
-},
-setSliverMode: function() {
-document.cookie = RhapsodyPlayer.POPOUT_STATE_COOKIE + "=sliver; domain=.rhapsody.com; path=/;";
-this.isSliverMode = true;
-this.doRender();
-},
-setSliverModeWhenNoFlash: function() {
-this.doRender();
-},
-embeddedPlayerMoveBigBrother : function( h ) {
-RhapsodyEmbeddedPlayerManager.embeddedPlayerBigBrotherOffset = h;
-RhapsodyEmbeddedPlayerManager.refreshEmbeddedPlayer();
-},
-onEmbeddedPlayerResize : function( w, h ) {
-RhapsodyEmbeddedPlayerManager.embeddedPlayerWidth = w;
-RhapsodyEmbeddedPlayerManager.embeddedPlayerHeight = h;
-RhapsodyEmbeddedPlayerManager.refreshEmbeddedPlayer();
-},
-/*
-@method: isPageBeingScrolled
-@description: This function indicates that the scroller is not at the top. I.e.: it has been scrolled down from the top.
-@return: true when the page has been scrolled below the big brother's container's original position;
-false when the page has not been scrolled below the big brother's container's original position;
-@note: This function is extracted from the refreshEmbeddedPlayer because revealPlayer needs to know whether the page has been scrolled or not and revealPlayer then calls refreshEmbeddedPlayer
-So we cannot wait for the refreshEmbeddedPlayer to set a flag to indicate that the page has been scrolled.
-This function helps fixing BZ246940 where Ads and several other elements of pages flicker then disappear completely.
-*/
-isPageBeingScrolled : function() {
-var scroll = RhapsodyEmbeddedPlayerManager.getScrollXY();
-var theContainerDiv = document.getElementById("topNavEmbeddedPlayerContainer");
-// Calculate the "container top" by going up the dom tree...
-var theContainerTop = 0;
-for( var containerElementTemp = theContainerDiv ; containerElementTemp.offsetParent ; containerElementTemp = containerElementTemp.offsetParent ) {
-theContainerTop += containerElementTemp.offsetTop;
-}
-if( scroll[1]>theContainerTop && RhapsodyEmbeddedPlayerManager.isScrollingMode )
-return true;
-else
-return false;
-},
-refreshEmbeddedPlayer : function() {
-var offsetY = -2;
-var scroll = RhapsodyEmbeddedPlayerManager.getScrollXY();
-var theContainerDiv = document.getElementById("topNavEmbeddedPlayerContainer");
-var theChickletDiv = document.getElementById( RhapsodyEmbeddedPlayerManager.CHICKLET_DIV_ID );
-var theChickletSwf = document.getElementById( "popoutPlayer_chicklet" );
-var theBigBrotherDiv = document.getElementById( RhapsodyEmbeddedPlayerManager.EMBEDDED_DIV_ID );
-// Calculate the "container top" by going up the dom tree...
-var theContainerTop = 0;
-for( var containerElementTemp = theContainerDiv ; containerElementTemp.offsetParent ; containerElementTemp = containerElementTemp.offsetParent ) {
-theContainerTop += containerElementTemp.offsetTop;
-}
-if( scroll[1]>theContainerTop && RhapsodyEmbeddedPlayerManager.isScrollingMode ) {
-if( !RhapsodyEmbeddedPlayerManager.embeddedPlayerBigBrotherOffset ) {
-theBigBrotherDiv.style.top = (theContainerTop) + "px";
-}
-else {
-var targetHeight = scroll[1] - 50 + RhapsodyEmbeddedPlayerManager.embeddedPlayerBigBrotherOffset;
-if( targetHeight<theContainerTop ) targetHeight = theContainerTop;
-theBigBrotherDiv.style.top = (targetHeight) + "px";
-}
-if( RhapsodyEmbeddedPlayerManager.chickletDisplayMode != "fixed" ) {
-if( RhapsodyPlayer.isFirefox() ) {
-theChickletSwf.style.opacity = ".01";
-theChickletSwf.style.filter = "alpha( opacity=01 )";
-}
-theChickletDiv.style.opacity = ".80";
-theChickletDiv.style.filter = "alpha( opacity=80 )";
-theChickletDiv.style.top = "0px";
-if(!RhapsodyUtility.Client.isIE6()){
-theChickletDiv.style.position = "fixed";
-RhapsodyEmbeddedPlayerManager.chickletDisplayMode = "fixed";
-}
-if(RhapsodyUtility.Client.isIE6()){
-var targetHeight = scroll[1];
-theChickletDiv.style.top = (targetHeight) + "px";
-theChickletDiv.style.opacity = ".85";
-theChickletDiv.style.filter = "alpha( opacity=85 )";
-}
-}
-}
-else {
-if(theBigBrotherDiv != null && theBigBrotherDiv != 'undefined') {
-theBigBrotherDiv.style.top = (theContainerTop) + "px";
-}
-if(theChickletDiv != null && theChickletDiv != 'undefined'){
-if( RhapsodyEmbeddedPlayerManager.chickletDisplayMode != "absolute" ) {
-if( RhapsodyPlayer.isFirefox() ) {
-theChickletSwf.style.opacity = ".01";
-theChickletSwf.style.filter = "alpha( opacity=01 )";
-}
-theChickletDiv.style.opacity = "1.00";
-theChickletDiv.style.filter = "alpha( opacity=100 )";
-theChickletDiv.style.top = ( theContainerTop ) + "px";
-if(!RhapsodyUtility.Client.isIE6()){
-theChickletDiv.style.position = "absolute";
-RhapsodyEmbeddedPlayerManager.chickletDisplayMode = "absolute";
-}
-}else if(RhapsodyUtility.Client.isIE6()){
-theChickletDiv.style.top = ( theContainerTop ) + "px";
-}
-}
-}
-if(theChickletDiv != null && theChickletDiv != 'undefined')
-theChickletDiv.style.visibility = "visible";
-},
-getBodyWidth : function() { return RhapsodyUser.UserAgent.isIE() ? document.documentElement.clientWidth : window.innerWidth; },
-getBodyHeight : function() { return RhapsodyUser.UserAgent.isIE() ? document.documentElement.clientHeight : window.innerHeight; },
-getScrollXY : function() {
-var scrOfX = 0, scrOfY = 0;
-if( typeof( window.pageYOffset ) == 'number' ) {
-//Netscape compliant
-scrOfY = window.pageYOffset;
-scrOfX = window.pageXOffset;
-} else if( document.body && ( document.body.scrollLeft || document.body.scrollTop ) ) {
-//DOM compliant
-scrOfY = document.body.scrollTop;
-scrOfX = document.body.scrollLeft;
-} else if( document.documentElement && ( document.documentElement.scrollLeft || document.documentElement.scrollTop ) ) {
-//IE6 standards compliant mode
-scrOfY = document.documentElement.scrollTop;
-scrOfX = document.documentElement.scrollLeft;
-}
-return [ scrOfX, scrOfY ];
-},
-/***** If we need to slide the player into view for a few seconds, this method will be called... *****/
-revealPlayer : function() {
-if( RhapsodyEmbeddedPlayerManager.isSliverMode ) { return; }
-var bigBrotherSlideOffset = 5000;
-var alreadyHideMeddlesomeElements = false; // A flag to keep track if the meddlesome elements have been hidden. This is to address the use case when the user hasn't scrolled the page, the meddlesome elements shouldn't be toggled.
-if(RhapsodyEmbeddedPlayerManager.isPageBeingScrolled()) {
-RhapsodyUtility.toggleMeddlesomeElements(); //toggle meddlesome elements once at the beginning of the sliding of the big brother, if the page is being scrolled during the first 5 seconds of the song play.
-alreadyHideMeddlesomeElements = true; // set the flag to remind us to show the meddlesome elements after the 5 sec sliding of the big brother.
-}
-RhapsodyEmbeddedPlayerManager.embeddedPlayerMoveBigBrother(50);
-var i=0;
-for( i=0 ; i<10 ; i++ ) {
-setTimeout( "RhapsodyEmbeddedPlayerManager.embeddedPlayerMoveBigBrother("+(50-i*5)+")", bigBrotherSlideOffset + i*100 );
-}
-var finishSlidingBigBrother = function() {
-RhapsodyEmbeddedPlayerManager.embeddedPlayerMoveBigBrother(0);
-if(alreadyHideMeddlesomeElements)
-RhapsodyUtility.toggleMeddlesomeElements(); //toggle meddlesome elements again once at the end of the sliding of the big brother
-}
-setTimeout( finishSlidingBigBrother, bigBrotherSlideOffset + i*100 );
-},
-setUpWindowEvents: function() {
-if( RhapsodyEmbeddedPlayerManager.alreadySetUpWindowEvents ) { return; }
-if( window.addEventListener ){ window.addEventListener( 'scroll', RhapsodyEmbeddedPlayerManager.refreshEmbeddedPlayer, false ); }
-else if( window.attachEvent ){ window.attachEvent( "onscroll", RhapsodyEmbeddedPlayerManager.refreshEmbeddedPlayer ); }
-if( window.addEventListener ){ window.addEventListener( 'resize', RhapsodyEmbeddedPlayerManager.refreshEmbeddedPlayer, false ); }
-else if( window.attachEvent ){ window.attachEvent( "onresize", RhapsodyEmbeddedPlayerManager.refreshEmbeddedPlayer ); }
-RhapsodyEmbeddedPlayerManager.alreadySetUpWindowEvents = true;
-},
-renderEmbeddedPlayer : function() {
-var theDiv = document.getElementById("topNavEmbeddedPlayerContainer");
-var theHtml =
-'<div id="' + RhapsodyEmbeddedPlayerManager.CHICKLET_DIV_ID + '" class="chicklet" ' +
-' style="background:transparent url(http://static.rhap.com/rotw/images/chicklet_screenshot_background.jpg) no-repeat scroll 0 0;"><\/div>' +
-'<div id="' + RhapsodyEmbeddedPlayerManager.EMBEDDED_DIV_ID + '" class="bigBrother"><\/div>';
-theDiv.style.display="block";
-theDiv.style.height="57px";
-theDiv.style.backgroundColor = "#EFEFEF";
-theDiv.style.margin = "0 10px";
-theDiv.innerHTML = theHtml;
-RhapsodyEmbeddedPlayerManager.setUpWindowEvents();
-},
-renderSliver : function() {
-return; // no nothing now...
-},
-doRender : function() {
-if( RhapsodyEmbeddedPlayerManager.isSliverMode || !RhapsodyPlayer.isFlashSupported() ) {
-// Only render the sliver for signed-out or signed-in-free users... or if the sliver needs to display the "latest flash required" message
-if( !rhapsodyMember || !rhapsodyMember.isPremiumUser ) {
-RhapsodyEmbeddedPlayerManager.renderSliver();
-}
-else {
-return;
-}
-}
-else {
-RhapsodyEmbeddedPlayerManager.renderEmbeddedPlayer();
-}
-},
-showInterruptedPlaybackOverlay : function(){
-onEmbeddedPlayerError('popupTip');
-}
-}
-function SimpleRhapsodySwfObject( type, elementName, wMode, flashVars ) {
-this.type = type;
-this.elementName = elementName;
-this.flashVars = flashVars;
-this.wMode = wMode;
-if( !this.flashVars ) { this.flashVars = new Array(); }
-// Set the pcode, honor what comes in with the flashvars if there, otherwise do the other thing...
-if(this.flashVars["pcode"] != null && this.flashVars["pcode"] != "" && this.flashVars["pcode"] != "undefined"){
-this.flashVars["pcode"] = this.flashVars["pcode"];
-}else{
-this.flashVars["pcode"] = RhapsodyPlayer.getPcode();
-}
-if( type=="embedded" ) {
-this.flashVars["cpath"] = RhapsodyPlayer.getEmbeddedCpath();
-this.flashVars["src"] = RhapsodyPlayer.getEmbeddedSrc();
-}
-else {
-this.flashVars["cpath"] = RhapsodyPlayer.getCpath();
-this.flashVars["src"] = RhapsodyPlayer.getSrc();
-}
-// Set the user token...
-this.flashVars["token"] = "noToken";
-this.flashVars["autoAnonCreate"] = false;
-try {
-this.flashVars["token"] = CookieManager.getCookieMemberByName( "RhapWeb.FlashToken", "token", null );
-if( !this.flashVars["token"] ) { this.flashVars["token"] = "noToken"; }
-else {
-this.flashVars["token"] = escape(this.flashVars["token"]);
-this.flashVars["token"] = this.flashVars["token"].replace(/\+/g,"%2B");
-}
-}
-catch(e) { /* do nothing here */ }
-// Register this instance with RhapsodyPlayer...
-RhapsodyPlayer.SWF_OBJECTS[ this.type ] = this;
-//
-// Status Codes:
-// -1 - uninitialized / error
-// 0 - ok
-// 1 - need to upgrade flash
-// 2 - other exception
-//
-this.lastEmbedStatus = -1;
-this.swfObject = null;
-this.savedMessages = new Array();
-this.getEmbedStatus = function() { return this.lastEmbedStatus; }
-this.isEmbedded = function() { return this.getSwf() != null; }
-this.getSwf = function() { return document.getElementById( "popoutPlayer_" + this.type ); }
-this.setSwfObject = function( obj ) {
-this.swfObject = obj;
-};
-this.sendControlMessage = function( message ) {
-// If the thing isn't embedded yet, keep the message for later...
-if( this.lastEmbedStatus == -1 ) {
-this.savedMessages.push( message );
-}
-// If the thing has been successfully loaded, send the message
-else if( this.lastEmbedStatus == 0 ) {
-if( this.getSwf()==null ) { this.savedMessages.push( message ); return; }
-this.getSwf().sendControlMessage( message );
-}
-};
-this.embedSwf = function ( ) {
-var flashUrl=null;
-var fpContext=null;
-var swfObj_width = "100%";
-var swfObj_height = "100%";
-if( this.type=="popout" ) {
-flashUrl = "http://playback-ns.rhapsody.com/-static/players/popout/rhapsodyPopoutPlayer.swf";
-fpContext = "popout";
-this.flashVars["autoAnonCreate"] = true;
-}
-if( this.type=="fullsize_embedded" ) {
-flashUrl = "http://playback-ns.rhapsody.com/-static/players/popout/rhapsodyPopoutPlayer.swf";
-this.flashVars["autoAnonCreate"] = true;
-}
-if( this.type=="engine" ) {
-flashUrl = "http://playback-ns.rhapsody.com/-static/players/engine/rhapsodyPlaybackEngine.swf";
-fpContext = "embeddedProxy";
-}
-if( this.type=="signin" ) {
-flashUrl = "http://playback-ns.rhapsody.com/-static/widgets/login/login.swf";
-}
-if( this.type=="embedded" ) {
-flashUrl = "http://playback-ns.rhapsody.com/-static/players/PureMVCPlayer/embedded/latest_build/rhapsodyPlayer.swf";
-swfObj_width = "784px";
-swfObj_height = "57px";
-}
-if( this.type=="chicklet" ) {
-flashUrl = "http://playback-ns.rhapsody.com/-static/players/PureMVCPlayer/embedded/latest_build/TransportControls.swf";
-swfObj_width = "124px";
-swfObj_height = "57px";
-}
-if( !flashUrl ) return;
-var d = new Date();
-var yyyy = d.getFullYear().toString();
-var mm = (d.getMonth() + 1 < 10 ? "0" : "") + (d.getMonth() + 1).toString();
-var dd = (d.getDate() < 10 ? "0" : "") + d.getDate().toString();
-var ts = yyyy + mm + dd + "-" + Math.ceil(d.getHours() / 4).toString();
-var bid = "";
-flashUrl += "?bid=" + bid + "&ts=" + ts;
-var theSwfObject = new Rhapsody_SWFObject( flashUrl, "popoutPlayer_"+this.type, swfObj_width, swfObj_height, "9", "#EFEFEF" );
-if( !theSwfObject.installedVer.versionIsValid(new Rhapsody_deconcept.PlayerVersion([9,0,115])) ) {
-this.lastEmbedStatus = 1;
-return 1;
-}
-theSwfObject.addParam("scale", "noscale");
-theSwfObject.addParam("allowScriptAccess", "always");
-theSwfObject.addParam("scale", "noscale");
-theSwfObject.addParam("wmode", this.wMode);
-theSwfObject.addVariable("env", "production");
-theSwfObject.addVariable("fp_context", fpContext);
-theSwfObject.addVariable("navigatorUserAgent", navigator.userAgent);
-theSwfObject.addVariable("navigatorAppVersion", navigator.appVersion);
-theSwfObject.addVariable("navigatorVendor", navigator.vendor);
-theSwfObject.addVariable("prop", window.opera);
-if( this.flashVars ) {
-for( flashVarName in this.flashVars ) {
-theSwfObject.addVariable( flashVarName, this.flashVars[flashVarName] );
-}
-}
-try {
-theSwfObject.write(this.elementName);
-}
-catch( e ) {
-this.setSwfObject(null);
-this.lastEmbedStatus = 2;
-return 2;
-}
-this.setSwfObject(theSwfObject);
-this.lastEmbedStatus = 0;
-return 0;
-};
-// As soon as this object is ready, try to embed it...
-this.embedSwf();
-}
-/* * * * SimpleRhapsodyUtility * * * * * * * * * * * * * * * * *
-A Static Object for encapsulating
-commonly used Utilities
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-var SimpleRhapsodyUtility = {
-alertRhapsodyErrors: function(errors){
-var errorString = "";
-if( SimpleRhapsodyUtility.isArray( errors ) ){
-for( var i=0; i<errors.length; i++ ){
-errorString += errors[ i ] + "\n";
-}
-}
-else if( typeof errors == 'string' ) errorString = errors;
-if(RhapsodySimple.DEBUG_LEVEL == 1 || RhapsodySimple.DEBUG_LEVEL == 3) alert(errorString);
-if(RhapsodySimple.DEBUG_LEVEL < 3) throw(errorString);
-return false;
-},
-addLoadEvent: function(func){
-var oldonload = window.onload;
-if (typeof window.onload != 'function') {
-window.onload = func;
-} else {
-window.onload = function() {
-oldonload();
-func();
-}
-}
-},
-addEvent: function( theElement, theEvent, theCallback ){
-if( theElement.addEventListener ){
-theElement.addEventListener( theEvent, theCallback, false );
-}
-else if( theElement.attachEvent ){
-theElement.attachEvent( "on" + theEvent, theCallback );
-} else return;
-},
-isArray: function(arr){
-if( ( typeof arr == 'object' ) && ( typeof arr.pop != 'undefined' ) ) return true;
-else return false;
-}
-}
-var SimpleTracking = {
-reportPlayAdd: function( action, type, rcid ){
-if( rcid && ( rcid.indexOf( "action." ) == 0 ) ) { return; }
-var type = ( type == '' )?RhapsodyPlayer._getTypeStringByMoniker( rcid ):type;
-RhapsodyTracking.sendLinkEvent( {
-eVar17: 'Audio Req : ' + action + " : " + type,
-prop18: 'E: Audio Req : ' + action + " : " + type,
-eVar18: RhapsodyTracking?RhapsodyTracking.getPageName():"",
-eVar31: RhapsodyTracking.getCustomMetric( "primaryContentId" )?RhapsodyTracking.getCustomMetric( "primaryContentId" ):"",
-eVar32: RhapsodyTracking.getCustomMetric( "primaryContentName" )?RhapsodyTracking.getCustomMetric( "primaryContentName" ):"",
-eVar33: RhapsodyTracking.getCustomMetric( "artistId" )?RhapsodyTracking.getCustomMetric( "artistId" ):"",
-eVar34: RhapsodyTracking.getCustomMetric( "artistName" )?RhapsodyTracking.getCustomMetric( "artistName" ):"",
-eVar35: RhapsodyTracking.getCustomMetric( "albumId" )?RhapsodyTracking.getCustomMetric( "albumId" ):"",
-eVar36: RhapsodyTracking.getCustomMetric( "albumName" )?RhapsodyTracking.getCustomMetric( "albumName" ):""
-}, {
-type: 'custom',
-linkName: 'Audio Play Request',
-events: 'event1'
-} );
-},
-reportPlayerPopout: function(){
-RhapsodyTracking.sendLinkEvent( {
-eVar17: 'Nav: Click: Pop-out',
-prop18: 'E: Nav: Click: Pop-out'
-},
-{
-type: 'custom',
-linkName: 'Navigation',
-events: 'event8'
-} );
-},
-reportRestoreEmbeddedPlayer: function(){
-RhapsodyPlayer.hasntSentPreloadedPlayEvent = false;
-RhapsodyTracking.sendLinkEvent( {
-eVar17: 'Nav: Click: Embed',
-prop18: 'E: Nav: Click: Embed'
-},
-{
-type: 'custom',
-linkName: 'Navigation',
-events: 'event8'
-} );
-},
-reportClickToStore: function( gotoUrl ){
-RhapsodyTracking.sendLinkEvent( {
-eVar17: 'Link: Store: track',
-prop18: 'E: Link: Store: track'
-},
-{
-type: 'custom',
-linkName: 'Store Link',
-events: 'event8'
-},
-gotoUrl
-);
-}
-}
-var SimplePopUpBlockHandler = {
-tripped: false,
-stallTilPageLoad: false,
-tryAgainFunction: null,
-popUpBlockerDialogBox: null,
-message: "A pop-up blocker has interfered with our ability to deliver the content you\'ve requested.",
-messageSupplemental: "\nIf you continue to have problems, please restart your browser and try again. ",
-alertUser: function( blockedFunction ){
-var alertMessage = this.message;
-if( !this.tripped ){
-try{
-if( this.stallTilPageLoad ) SimpleRhapsodyUtility.addLoadEvent( function(){ SimplePopUpBlockHandler.buildAlertDiv( blockedFunction ); } );
-else this.buildAlertDiv( blockedFunction );
-} catch(e) {
-alertMessage += this.messageSupplemental;
-alert( alertMessage );
-this.tripped = true;
-}
-}
-},
-destroyDialogBox: function(){
-this.popUpBlockerDialogBox.toggleMeddlesomeElements( true );
-this.popUpBlockerDialogBox.destroy();
-this.popUpBlockerDialogBox = null;
-this.tripped = false;
-this.stallTilPageLoad = false;
-},
-buildAlertDiv: function(blockedFunction){
-var alertDiv = document.createElement( "DIV" );
-this.tryAgainFunction = function(){
-blockedFunction();
-this.destroyDialogBox();
-return false;
-}
-alertDiv.setAttribute("id", "popUpBlockHolder");
-this.popUpBlockerDialogBox = new DialogBox();
-this.popUpBlockerDialogBox.setWidth( 433 );
-this.popUpBlockerDialogBox.setMask( true );
-this.popUpBlockerDialogBox.centerInPage();
-this.popUpBlockerDialogBox.toggleMeddlesomeElements();
-this.popUpBlockerDialogBox.getHoldingElement().appendChild(alertDiv);
-SimpleRhapsodyUtility.addEvent( window, 'scroll', function(e){ this.popUpBlockerDialogBox.centerInPage(); });
-alertDiv.innerHTML =
-'<b class="xtop">' +
-'<b class="xb1"><\/b>' +
-'<b class="xb2"><\/b>' +
-'<b class="xb3"><\/b>' +
-'<b class="xb4"><\/b>' +
-'<\/b>' +
-'<h2 class="boxHeader">Pop-Up Blocker Detected<\/h2>' +
-'<div class="popUpBlockMessage">' +
-'<p>' + this.message + ' Click \'View Content\' to spawn the blocked window.<\/p>' +
-'<div style="text-align: center; padding-top: 15px;">' +
-'<div style="width: 10px; height: 23px; float: right; font-size: 0.1em;">&nbsp;<\/div>' +
-'<div class="whiteButtonRight" style="width: 7px; height: 23px; float: right; font-size: 0.1em;" onClick="SimplePopUpBlockHandler.destroyDialogBox(); return false;">&nbsp;<\/div>' +
-'<div class="whiteButton" style="float: right; line-height: 23px; width: 40px;">' +
-'<a href="#" title="Cancel" onClick="SimplePopUpBlockHandler.destroyDialogBox(); return false;" class="boldWhiteLink"><b>Cancel<\/b><\/a>' +
-'<\/div>' +
-'<div class="whiteButtonLeft" style="width: 7px; height: 23px; float: right; font-size: 0.1em;" onClick="SimplePopUpBlockHandler.destroyDialogBox(); return false;">&nbsp;<\/div>' +
-'<div style="width: 10px; height: 23px; float: right; font-size: 0.1em;">&nbsp;<\/div>' +
-'<div class="whiteButtonRight" style="width: 7px; height: 23px; float: right; font-size: 0.1em;" onClick="window.location=\'' + RhapsodySimple.environment + '/-popuphelp\'">&nbsp;<\/div>' +
-'<div class="whiteButton" style="float: right; line-height: 23px; width: 40px;">' +
-'<a href="' + RhapsodySimple.environment + '/-popuphelp" title="Help" class="boldWhiteLink"><b>Help<\/b><\/a>' +
-'<\/div>' +
-'<div class="whiteButtonLeft" style="width: 7px; height: 23px; float: right; font-size: 0.1em;" onClick="window.location=\'' + RhapsodySimple.environment + '/-popuphelp\'">&nbsp;<\/div>' +
-'<div style="width: 10px; height: 23px; float: right; font-size: 0.1em;">&nbsp;<\/div>' +
-'<div class="whiteButtonRight" style="width: 7px; height: 23px; float: right; font-size: 0.1em;" onClick="SimplePopUpBlockHandler.tryAgainFunction(); return false;">&nbsp;<\/div>' +
-'<div class="whiteButton" style="float: right; line-height: 23px; width: 80px;">' +
-'<a href="#" title="View Content" onClick="SimplePopUpBlockHandler.tryAgainFunction(); return false;" class="boldWhiteLink"><b>View Content<\/b><\/a>' +
-'<\/div>' +
-'<div class="whiteButtonLeft" style="width: 7px; height: 23px; float: right; font-size: 0.1em;" onClick="SimplePopUpBlockHandler.tryAgainFunction(); return false;">&nbsp;<\/div>' +
-'<\/div>' +
-'<\/div>';
-this.tripped = true;
-}
-}
-var ErrorModalDialogBox = {
-embPlayerDialogBoxInstance: null,
-init: function(errorHtmlContent){
-if(errorHtmlContent != null && errorHtmlContent != 'undefined' && errorHtmlContent != ''){
-this.embPlayerDialogBoxInstance = new DialogBox(
-{
-width: '330px',
-height: 'auto',
-maskOpacityPercent: 60,
-holdingElementBgColor: '#363636',
-zIndex: '999999999',
-maskBgColor: '#000',
-maskZIndex: '10000',
-htmlContent: errorHtmlContent
-}
-);
-this.embPlayerDialogBoxInstance.centerInPage( .85 );
-this.embPlayerDialogBoxInstance.setMask( true );
-this.embPlayerDialogBoxInstance.setShadow( true );
-this.embPlayerDialogBoxInstance.toggleMeddlesomeElements();
-SimpleRhapsodyUtility.addEvent( window, 'scroll', function(e){ ErrorModalDialogBox.embPlayerDialogBoxInstance.centerInPage( .90 ); ErrorModalDialogBox.embPlayerDialogBoxInstance.setMask( true ); } );
-SimpleRhapsodyUtility.addEvent( window, 'resize', function(e){ ErrorModalDialogBox.embPlayerDialogBoxInstance.centerInPage( .90 ); ErrorModalDialogBox.embPlayerDialogBoxInstance.setMask( true ); } );
-}
-},
-destroyAndPlay: function(){
-ErrorModalDialogBox.embPlayerDialogBoxInstance.toggleMeddlesomeElements();
-ErrorModalDialogBox.embPlayerDialogBoxInstance.destroy();
-var app = RhapsodyPlayer.getFlashApp("embedded");
-if(app != null && app != 'undefined'){
-app.doPlay();
-}
-ErrorModalDialogBox.embPlayerDialogBoxInstance = null;
-},
-destroyNoPlay: function(){
-ErrorModalDialogBox
-ErrorModalDialogBox.embPlayerDialogBoxInstance.toggleMeddlesomeElements();
-ErrorModalDialogBox.embPlayerDialogBoxInstance.destroy();
-ErrorModalDialogBox.embPlayerDialogBoxInstance = null;
-},
-destroyNoFlashNoPlay: function(){
-ErrorModalDialogBox.embPlayerDialogBoxInstance.toggleMeddlesomeElements();
-ErrorModalDialogBox.embPlayerDialogBoxInstance.destroy();
-ErrorModalDialogBox.embPlayerDialogBoxInstance = null;
-CookieManager.setCookie( RhapsodyPlayer.FLASH_PLAYER_REQUIRED_COOKIE, "true" );
-RhapsodyEmbeddedPlayerManager.setSliverModeWhenNoFlash();
-},
-destroyAndSignIn: function(){
-ErrorModalDialogBox.destroyNoPlay();
-signInOut( 'signin');
-}
-}
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-Free floating Utilties DEPRECATED
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-function playTrack(prId){
-RhapsodyPlayer.playRhapsody( { id:prId, type:'track' } );
-}
-function playAlbum(prId){
-RhapsodyPlayer.playRhapsody( { id:prId, type:'album' } );
-}
-function playRadio(prId){
-RhapsodyPlayer.playRhapsody( { id:prId, type:'radio' } );
-}
-function playPlaylist(prId){
-RhapsodyPlayer.playRhapsody( { id:prId, type:'playlist' } );
-}
-function playRhapsody(prObj){
-RhapsodyPlayer.playRhapsody(prObj);
-}
-document.write('<div id="' + RhapsodyEmbeddedPlayerManager.ENGINE_DIV_ID + '" class="embPlayerEngine" style="position:absolute; z-index:-2; height:0.001px;"><\/div>\n');
-function SIMPLE_trySendingFlashMessage( action, id ) {
-var app = RhapsodyPlayer.getFlashApp("engine");
-if( app ) {
-// If we think there should be an embedded player, make sure there is one first...
-if( RhapsodyPlayer.EMBEDDED_PLAYER_ID ) {
-var appEmbed = RhapsodyPlayer.getFlashApp("embedded");
-if( !appEmbed ) {
-setTimeout( "SIMPLE_trySendingFlashMessage('"+action+"','"+id+"')", 500 );
-return;
-}
-}
-try {
-app.sendMessage( {"messageId":new Date().valueOf(), "message":action+"|"+id, "targetId":"popupPlayer", "targetPlayerId":RhapsodyPlayer.EMBEDDED_PLAYER_ID} );
-return;
-}
-catch(e) {}
-}
-SIMPLE_openFromSavedFlashCall();
-}
-function onTargetMessageReceived( messageId, success ) {
-if( !success ) {
-if( RhapsodyPlayer.savedMessages[messageId] ) {
-var splitup = RhapsodyPlayer.savedMessages[messageId].split("|");
-var id = splitup[1];
-SIMPLE__openPlayerWindow( id );
-}
-else {
-SIMPLE_openFromSavedFlashCall();
-}
-}
-}
-function SIMPLE_openFromSavedFlashCall() {
-SIMPLE__openPlayerWindow(
-RhapsodyPlayer.savedFlashArgs['id'],
-RhapsodyPlayer.savedFlashArgs['type'],
-RhapsodyPlayer.savedFlashArgs['title'],
-RhapsodyPlayer.savedFlashArgs['remote'],
-RhapsodyPlayer.savedFlashArgs['page'],
-RhapsodyPlayer.savedFlashArgs['pageRegion'],
-RhapsodyPlayer.savedFlashArgs['guid'],
-RhapsodyPlayer.savedFlashArgs['origin'] );
-}
-/* Below this comment are Functions copied from global.js */
-function SIMPLE__openPlayer(id,type,title,page,pageRegion,guid,origin) {
-RhapsodyPlayer.throwContent( "play", id, type );
-}
-function SIMPLE__openPlayerWindow(id, type, title, remote, page, pageRegion, guid, origin) {
-try {
-if (!rhapPlayer || rhapPlayer.closed) {
-openThis(id, type, title, remote, page, pageRegion, guid, origin)
-} else {
-rhapPlayer.getMetaData(type,id,title,remote);
-rhapPlayer.location.setParameter('page',page);
-rhapPlayer.focus();
-}
-} catch (e) {
-openThis(id, type, title, remote, page, pageRegion, guid, origin);
-}
-}
-function onTrackOpened( rcid ) {
-/** Try to do this, but it might fail on pages without embedded player... **/
-try {
-RhapsodyEmbeddedPlayerManager.setScrollingMode(true);
-RhapsodyEmbeddedPlayerManager.revealPlayer();
-}
-catch(e) { }
-if( RhapsodyPlayer.hasntSentPreloadedPlayEvent ) {
-RhapsodyPlayer.hasntSentPreloadedPlayEvent = false;
-try{
-SimpleTracking.reportPlayAdd( 'play', 'pre-load' );
-} catch( e ){}
-}
-/** In the full player window, we need this to be called "on track open"... **/
-try { rhapsodyPlayerOnTrackOpened( rcid ); } catch(e) { }
-setRhapFlashInstalledCookie();
-}
-function onEmbeddedPlayerBuyMP3( rcid ) {
-var storeLink = "http://mp3.rhapsody.com/goto?rcid=" + rcid + "&lsrc=traEmbP&src=traEmbP&addToCart=" + rcid;
-try{
-SimpleTracking.reportClickToStore( storeLink );
-} catch( e ){ document.location.href = storeLink; }
-}
-function onPlayerReady( playerId ) {
-if( playerId == "chicklet" ) {
-var theChickletSwf = document.getElementById( "popoutPlayer_chicklet" );
-theChickletSwf.style.opacity = "1.00";
-theChickletSwf.style.filter = "alpha( opacity=100 )";
-RhapsodyPlayer.getFlashApp("embedded").resetControlState();
-return;
-}
-if( playerId == RhapsodyPlayer.EMBEDDED_PLAYER_ID != playerId ) {
-if( RhapsodyPlayer.EMBEDDED_PLAYER_PRELOAD_COMMAND ) {
-var app = RhapsodyPlayer.getFlashApp("engine");
-app.sendMessage( {
-messageId:new Date(),
-message:RhapsodyPlayer.EMBEDDED_PLAYER_PRELOAD_COMMAND,
-targetPlayerId:playerId,
-forceTarget:true} );
-}
-if( RhapsodyPlayer.shouldShowInterruptedPlaybackOverlay ) {
-RhapsodyEmbeddedPlayerManager.showInterruptedPlaybackOverlay();
-if( CookieManager && typeof CookieManager != 'undefined' ) CookieManager.setCookie( 'RhapPlayer.hasSeenPopupTip', 'true' );
-RhapsodyPlayer.shouldShowInterruptedPlaybackOverlay = false;
-}
-}
-}
-function onEmbeddedPlayerPopout(){
-try{
-SimpleTracking.reportPlayerPopout();
-} catch( e ){};
-RhapsodyPlayer.hasntSentPreloadedPlayEvent = false;
-RhapsodyPlayer.currentPlayerMode = 'popout';
-RhapsodyEmbeddedPlayerManager.setSliverMode();
-SIMPLE__openPlayerWindow( "player.restore", null );
-}
-function onEmbeddedPlayerError(code) {
-var errorHtmlContent = '';
-var learnMoreURL = 'http://learn.rhapsody.com/?src=rcom_efp_lm&pcode=rn&cpath=rcom_efp';
-var subscribeJoinURL = 'http://learn.rhapsody.com/plans/unlimited?src=rcom_efp&pcode=rn&cpath=rcom_efp&ocode=rn';
-var privacyPolicyURL = 'http://www.rhapsody.com/-privacy_policy';
-var termsConditionsURL = 'http://www.rhapsody.com/-terms_of_use';
-var flashPlayerDnldURL = 'http://www.adobe.com/products/flashplayer/';
-var closeXSpanContinuePlay = '<div class="embPlayerErrorDialogClose"><a href="#" onclick="ErrorModalDialogBox.destroyAndPlay(); return false;">Close <span>X<\/span><\/a><\/div>';
-var closeXSpanNoPlay = '<div class="embPlayerErrorDialogClose"><a href="#" onclick="ErrorModalDialogBox.destroyNoPlay(); return false;">Close <span>X<\/span><\/a><\/div>';
-var closeXSpanNoFlashNoPlay = '<div class="embPlayerErrorDialogClose"><a href="#" onclick="ErrorModalDialogBox.destroyNoFlashNoPlay(); return false;">Close <span>X<\/span><\/a><\/div>';
-var bottomFiller = '<div class="embPlayerErrorDialogClose">&nbsp;<\/div>';
-if( code != null && typeof code != 'undefined'){
-var arrayCode = code.split('|');
-if(arrayCode[0] != null && typeof arrayCode[0] != 'undefined'){
-switch(arrayCode[0]){
-case('geoBlocked'):
-//var otherCountryClickHandler = 'http://uk.real.com/partners/rhapsody/rhap_pop_redirect.html?src=rhapsody_embed_nonus&rsrc=rhapsody_embed_nonus';
-//background: url(http://static.rhap.com/assets/rn/img/4/8/9/2/28872984.jpg);
-var customizedBkgnd = '<img src="http://static.rhap.com/rotw/images/overlays/us-only_bg.jpg"></img>'.split('"');
-var imgSrc = customizedBkgnd[1];
-errorHtmlContent = closeXSpanNoPlay;
-errorHtmlContent += '<div class="embPlayerErrorDialogBody" style="padding: 18px 18px 0px 15px; margin-bottom: 0px; background: url('+ imgSrc +');">';
-errorHtmlContent += '<div class="geoBlockedHeader">U.S. Only<\/div>';
-errorHtmlContent += '<div class="geoBlockedContent" style="padding-bottom: 18px; text-align: justify;">We are sorry. Rhapsody is currently only available in the United States.<\/div>';
-errorHtmlContent += '<div class="geoBlockedContent" style="padding-bottom: 18px; text-align: center;">Why not try RealMusic ?<\/div>';
-errorHtmlContent += '<div class="geoBlockedContent" style="padding-bottom: 28px; text-align: justify;">Hundreds of interactive stations and radio from around the globe.<\/div>';
-errorHtmlContent += '<div style="padding-bottom: 18px; text-align: center;"><a href="http://uk.real.com/partners/rhapsody/rhap_pop_redirect.html?src=rhapsody_embed_nonus&rsrc=rhapsody_embed_nonus"><img src="http://static.rhap.com/rotw/images/overlays/btn_us_only_RealMusic.jpg"></img><\/a><\/div>';
-errorHtmlContent += '<\/div>';
-errorHtmlContent += bottomFiller;
-break;
-case('flashNotInstalled'):
-errorHtmlContent = closeXSpanNoFlashNoPlay;
-errorHtmlContent += '<div class="embPlayerErrorDialogBody" style="padding: 18px 30px 72px 15px;">';
-errorHtmlContent += '<div class="flashNotInstalledHeader">Latest Flash Player Required<\/div>';
-errorHtmlContent += '<div class="flashNotInstalledSubheader">For the best experience, please install the <a class="getLatestFlash" href="' + flashPlayerDnldURL + '">latest Adobe Flash player<\/a>.<\/div>';
-errorHtmlContent += '<\/div>';
-break;
-case('playsLeftUpsell'):
-if(arrayCode[1] != null && typeof arrayCode[1] != 'undefined' && arrayCode[1] != ''){
-var upsellMsgDetail = 'We offer 25 plays a month for free. If you want to upgrade now, you can listen all you want, whenever you want.';
-var upsellMsgDetailStyle = 'padding-right: 10px;';
-var upsellHeaderClassSuffix = '';
-var upSellMsgSubheaderContent = '<div class="upSellMsgSubheader">You have <span class="numUpsellLeft">' + arrayCode[1] + '<\/span> free plays left this month.<\/div>'
-var unlimitedAccessSubheader = '';
-var unlimitedAccessDetails = '';
-var upSellMsgPricingContent = 'Get unlimited access for $12.99/month';
-var continueSubscribeButtons = '<div style="padding-bottom: 8px;"><span><a href="#" onclick="ErrorModalDialogBox.destroyAndPlay(); return false;"><img src="http://static.rhap.com/rotw/ima
----End---
-
-Server writes a chunk to client
----------
-org.jboss.netty.handler.codec.http.DefaultHttpChunk@2f1b2b6f
----Content---
-ges/overlays/btn_continueplaying.gif"></img><\/a><\/span><span style="padding-left: 8px;"><a href="' + subscribeJoinURL + '"><img src="http://static.rhap.com/rotw/images/overlays/btn_subscribenow.gif"></img><\/a><\/span><\/div>';
-var upgradeNowSection = '';
-var learnMoreLinkStyle = 'padding-bottom: 26px;';
-if(arrayCode[1] == '0'){
-upsellMsgDetail = 'Your set of 25 full-length plays has ended, but if you upgrade now, running out of music will never be a problem again.';
-upsellMsgDetailStyle = 'padding-right: 20px;';
-upsellHeaderClassSuffix = 'NoPlaysLeft';
-upSellMsgSubheaderContent = '';
-unlimitedAccessSubheader = '<div class="upsellUnlimitedAcc">Unlimited Access<\/div>';
-unlimitedAccessDetails = '<div><ul class="upsellBullet"><li>Unlimited full-length play of any song in the library<li>100+ ad-free Rhapsody Channels<li>Access to your music, anytime you want it<\/ul><\/div>';
-upSellMsgPricingContent = 'Upgrade to Rhapsody Unlimited and experience:';
-continueSubscribeButtons = '';
-upgradeNowSection = '<div style="padding-bottom: 14px;"><span><a href="' + subscribeJoinURL + '"><img src="http://static.rhap.com/rotw/images/overlays/btn_upgradenow.gif"></img><\/a><\/span><\/div>';
-upgradeNowSection += '<div style="padding-bottom: 22px;"><div class="rhapMember">No, thanks, I will <a style="text-decoration: underline;" href="#" onclick="ErrorModalDialogBox.destroyAndPlay(); return false;">keep listening<\/a> to 30 seconds samples.<\/div>';
-upgradeNowSection += '<div class="rhapMember">Rhapsody member? <a href="#" onclick="ErrorModalDialogBox.destroyAndSignIn(); return false;">Sign in<\/a> here.<\/div><\/div>';
-learnMoreLinkStyle = 'padding-bottom: 18px;';
-}
-errorHtmlContent = closeXSpanContinuePlay;
-errorHtmlContent += '<div class="embPlayerErrorDialogBody">';
-errorHtmlContent += '<div class="upsellHeader' + upsellHeaderClassSuffix + '">Join Now<\/div>';
-errorHtmlContent += upSellMsgSubheaderContent;
-errorHtmlContent += '<div class="upSellMsgDetail" style="' + upsellMsgDetailStyle + '">'+ upsellMsgDetail + '<\/div>';
-errorHtmlContent += unlimitedAccessSubheader;
-errorHtmlContent += '<div class="upSellMsgPricing">' + upSellMsgPricingContent + '<\/div>';
-errorHtmlContent += unlimitedAccessDetails;
-errorHtmlContent += continueSubscribeButtons;
-errorHtmlContent += '<div class="upSellLearnMoreLink" style="' + learnMoreLinkStyle + '"><a href="' + learnMoreURL + '">Learn more<\/a><\/div>';
-errorHtmlContent += upgradeNowSection;
-errorHtmlContent += '<div class="upsellPolicyTerms"><span><a href="' + privacyPolicyURL + '">Privacy Policy</a><\/span>|<span style="padding-left: 2px;"><a href="' + termsConditionsURL + '">Terms and Conditions</a><\/span><\/div>';
-errorHtmlContent += '<\/div>';
-}
-break;
-case('popupTip'):
-errorHtmlContent = closeXSpanContinuePlay;
-errorHtmlContent += '<div class="embPlayerErrorDialogBody" style="padding-left: 12px; height: 1%; overflow: hidden;">';
-errorHtmlContent += '<div class="popupTipHeader">Tip:<\/div>';
-errorHtmlContent += '<div class="popupTipContent">';
-errorHtmlContent += '<div class="popupTipWords">To keep playing music as you browse, pop out the player.<\/div>';
-errorHtmlContent += '<div class="popupTipImg"><img src="http://static.rhap.com/rotw/images/overlays/rhap_icon.gif"></img><\/div>';
-errorHtmlContent += '<\/div>';
-errorHtmlContent += '<div class="embPlayerImg"><img src="http://static.rhap.com/rotw/images/overlays/player.gif"></img><\/div>';
-errorHtmlContent += '<\/div>';
-break;
-default:
-break;
-}
-ErrorModalDialogBox.init(errorHtmlContent);
-}
-}
-}
-var checkPlayStateThreadHandle = null;
-function checkPlayStateThread() {
-var app = RhapsodyPlayer.getFlashApp("embedded");
-if( !app ) { return; }
-if( app.getPlayState()==4 ) { // if it's still PLAYING, set the cookie again...
-document.cookie = RhapsodyPlayer.LAST_STATE_COOKIE + "=" + (new Date().valueOf()) + "; domain=.rhapsody.com; path=/;";
-}
-checkPlayStateThreadHandle = setTimeout( "checkPlayStateThread()", 1000 );
-}
-function onPlayStateChanged( oldstate, newstate ) {
-if( newstate==0 ) { // Stopped
-if( checkPlayStateThreadHandle ) { clearTimeout(checkPlayStateThreadHandle); }
-document.cookie = RhapsodyPlayer.LAST_STATE_COOKIE + "=; domain=.rhapsody.com; path=/;";
-}
-if( newstate==4 ) { // Playing
-if( !checkPlayStateThreadHandle ) { checkPlayStateThreadHandle = setTimeout( "checkPlayStateThread()", 1000 ); }
-}
-}
-function sendControlMessage( target, message ) {
-if( target == "embedded" ) {
-RhapsodyPlayer.getRhapsodySwfObject("embedded").sendControlMessage(message);
-}
-if( target == "transportControl" ) {
-RhapsodyPlayer.getRhapsodySwfObject("chicklet").sendControlMessage(message);
-}
-}
-function openThis(id, type, title, remote, page, pageRegion, guid, origin){
-if( id.indexOf("action.")==0 ) {
-SignInOutDialogBox.showDialog(id.substring("action.".length));
-return;
-}
-var playerLocation = RhapsodySimple.environment+'/player';
-// Special case...
-if( (""+id).indexOf("mash.")==0 || (""+id).indexOf("mash1.")==0 ) {
-// Fix the id
-id = id.replace("mash.", "mash1.");
-playerLocation = RhapsodySimple.environment+'/player_redirector';
-}
-var successfulOpen = false;
-var wname="rhapPlayer";
-var width = 317;
-var height = 480;
-var trackingParameters = "";
-if( RhapsodyPlayer.OCODE ) { trackingParameters += "&ocode="+escape(RhapsodyPlayer.OCODE); }
-if( RhapsodyPlayer.PCODE || RhapsodyPlayer.PCODE_OVERRIDE ) { trackingParameters += "&pcode="+escape(RhapsodyPlayer.getPcode()); }
-if( RhapsodyPlayer.CPATH ) { trackingParameters += "&cpath="+escape(RhapsodyPlayer.CPATH); }
-if( RhapsodyPlayer.PLAYERNAME ) { trackingParameters += "&playername="+escape(RhapsodyPlayer.PLAYERNAME); }
-if (title) {
-playerLocation += "?type=" + type + "&id="+id +"&title="+title +"&remote="+remote + "&page=" + page + "&pageregion=" + pageRegion + "&guid=" + guid + "&from=" + origin + trackingParameters;
-} else {
-playerLocation += "?type=" + type + "&id="+id +"&remote="+remote + "&page=" + page + "&pageregion=" + pageRegion + "&guid=" + guid + "&from=" + origin + trackingParameters;
-}
-if( RhapsodyPlayer.CJ_PID ) {
-playerLocation = "http://www.tkqlhce.com/click-" + RhapsodyPlayer.CJ_PID + "-10436574?url=" + escape(playerLocation);
-}
-var openFunction=function(){
-rhapPlayer = window.open( playerLocation,wname,"width="+width+",height="+height+",toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=0,resizable,top=20,left="+RhapsodyUser.SIMPLE__openPlayerPosition+"" );
-if((rhapPlayer!=null) && (typeof rhapPlayer!="undefined")){
-if (!rhapPlayer.opener) rhapPlayer.opener = self;
-rhapPlayer.focus();
-return true;
-}
-}
-successfulOpen=openFunction();
-if(!successfulOpen){
-SimplePopUpBlockHandler.alertUser( openFunction );
-}
-}
----End---
-
-Server writes a chunk to client
----------
-org.jboss.netty.handler.codec.http.HttpChunk$1@194266e5
----Content---
-
----End---
-
-Client writes to server
----------
-DefaultHttpRequest(chunked: false)
-GET http://www.rhapsody.com/simple.js HTTP/1.1
-Accept: application/javascript, */*;q=0.8
-Referer: http://www.mtv.com/news/articles/1684550/adam-youch-mca-beastie-boys-fight-for-your-right.jhtml
-Accept-Language: en-US
-User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)
-Accept-Encoding: gzip, deflate
-Host: www.rhapsody.com
-Proxy-Connection: Keep-Alive
----Content---
-
----End---
-
-Server writes to client
----------
-DefaultHttpResponse(chunked: true)
-HTTP/1.1 200 OK
-Server: Apache Coyote/1.0
-P3P: CP="CAO DSP COR CUR DEV TAI PSA IVD CONo OUR DELi SAMi BUS PRE"
-Pragma: 
-RotwVersion: 01_42_00_175
-RotwBid: -1067563546
-RotwExpire: PageIdMatch(external-javascript-library)-Ttl(14400000)
-Content-Type: text/javascript
-Vary: Accept-Encoding
-Cneonction: close
-Content-Encoding: gzip
-nnCoection: close
-Content-Length: 18300
-Cache-Control: private, max-age=10513
-Expires: Sat, 05 May 2012 03:41:14 GMT
-Date: Sat, 05 May 2012 00:46:01 GMT
-Connection: keep-alive
----Content---
-
----End---
-
-Server writes a chunk to client
----------
-org.jboss.netty.handler.codec.http.DefaultHttpChunk@35f42649
----Content---
-‹      ì}i{I²îwÿŠ¤æ,µeyºÁFôx?f¼Û@÷®ž²T²¤*u•dã†þï÷}#3kSi±aúÎ<Ïif ”[FDF.•µtíF*ºr‡'}÷Ö‹¶—Ö~øAíz—~øÁ¥
-{ê•qØ½Ugo__|ô:£úÇXÕëuõÃk_ú!­R×õÇ[êeß?¯”F©ºÞ5~(7è*opáuÕªº?†[kkýð²Þõ:aÐñ†£z'¬Å7½P?­-åqû±ªtªjs}ýGõ‹özêlä¹QbÔF^ßsc ]]yê°u®üŽÄÞ?ª777õpˆÂpu¼z]®õ5P¼6ðG«æG}x5~ø!Ç£ÀÈw"8R½0¸QÿV}
-ÂÈk-•©s´	Ü?§nPÓ¹rƒK4E`ï{—nÌ»qÄu!xþª©ÎŽ_ž¿Ý9mªÖ™:9=~ÓÚoî+gç¿?šzÛ:uüú\âtçèü7uüRíý¦þÙ:Ú¯©æ¯'§Í³3u|
-d­Ã“ƒV¥­£½ƒ×û­£_Ô.ZC5-(hÏ?…¤AÖj¢åKuØ<Ý{…Ÿ;»­ƒÖùo5 zÙ:?"Þ—Ç§jG?ìœž·ö^ìœª“×§'ÇgM°°ÄG­£—§ Ó<l?×Aeªù?ÔÙ«?ƒ¶?×?á”\ª½ã“ßN[¿¼:W¯Žö›(Üm‚»?Ýƒ¦&ÑövZ‡5µ¿s¸ó9<UÇÀC		¨yTo_5YHš;øßÞyëøˆÂì?Ÿâg²žž'?ß¶Îš5µsÚ:£Z^žRL*m 4hyÔÔx¨ô|ß „¿_Ct‹Rí7w€uTèJÝ¹GõÝºZ]…IÀ–®½(¦oÀÓR‹¼aßíx1|Çx†ºñGW‰/¶ÓòQ¨ÜëÐï/Ì‹>Û	û}Ÿ8cÝ(„¹F–NLB‰‡Ñ“GWîHüË«‘ºð88?Å´Õ¡{é?çµ%¿WÝás%,4ý­ç^×©~a@)
-¼¥¥«T·ÿœ‰°>ùýÖiPwA›è÷õBøóàB³à½q ¯ÒÞ¨ùÝÚMíªÖ~RëÔÚ?ÕÚOkígµ¶[k_T¿?ÝÝ°3xb"ÀÈkö=þúú5­¸ôF¦t÷¶Õ­~‰¼Ñ8
-ÀÄTßožÃ:ÛÿlþÖh_üÜ¾ØrtÀí1ú8Û(þä÷¥¸1E“¤rêý>öâÑ‰¡óG^T)¨lCÄy•èt¾ï^ô½ÒJw4Šü‹ñÈÔîD‘{ËJh¡½Qý¢õF;¬âÀP?êtÏú?½Èï:Ð²?¹)¹ñ»£+§vc€®J?®<:?S»2Pí'¥`Æ‘œe(Q¦õÞh( ©?Â34.+Õz<ìû£ŠSwªUì~?Ü~ßë¢IYçäÌ?½”' 8PZÂa§ÕÛ1’¸Ý®tnÅ¹¸D˜#§Ö!#ôÙßí§?·Ÿn9WPƒµ›´Áïc¼ß:µßmwæÕ2Ž½æçaäÅqK„Ž#õÐnX„ì¹ýØ0ùhw•ö³êÏíg[7~Ðoêý°ãÒ?J‘}öO½®Q?iÂÊÀ¢,?ã«sK{8˜í?ÿÜžéðõaŽBžÆ—,ª­4xµv¯•jëãwmïC£ÝÛ^ú³–íÂL»?u´Ò?À\h¼±þ?Mm'e›mÀm6-Aí¯€ß µ?MCNÚÄi£!ÝÈàcü:KâH<¶$Ç•G¤òØP)k	ÇÊ‘Ê6~""eNç0iVhqâúQ¾ U{ãÇ|Øaá'ïÖXÝÆÓ† ÍR&R´
- ”¸€§>ÇW,]qÎ
-ŠßáùÉ°ÃläÕùáA	7Ï¼V¸×þ¥;
-£ú°?Fâ?|˜ü?wÃ*/¬÷½àr„pF<–ýŒ%OxZ5VÊŠsxˆl!…(á'à¢…èq„Ëç:Íó~ï¸CÄ0í?kŸWã«°óéÆ½öVe¸yï¨8ê ÊY)á†Ñ¼ºâ Hâñ40¬5 ŽÉÓ MÄPèÜ®4åw§Ác¤Ðh™ˆÏFÝSnbÚe¬YÒ¦?P"ôÅ`ÄŽRóSÐé8ÛÞèLXšX,Æ‡?¡Tœ‡6<mtL¿@ÐÒ‰š?&6:Zvé*T¯½ ×zˆ¦ßÕ$v`»×Þ¯›%ð-¢ë8Ž®ÓÇ¿[û›?ííïþØ\Ýiþ¸¿º±Ñé­>ûq÷éêãÇ?Ÿ<yôäñ:þû×˜u£Õô\‚›5ƒAxí{ÀtíöÇSÍ"5^Ñ±îÉî"–?¬¥Œª³"$GÀ©Á?Ž5™ÞÂ&Ó›0™<ÙÄ€
-„{š¦Ýšîd)JÛ3¶›ÈÏ?R›¥Êím2/€Ái©67$ ÏÍ¡ÞýX[¯ýø6¡?(™$Mu“ï´â7HQºàf£úðáƒ¹p%Ì&™y”úy™Ë(3qØ‚%iÄé?SóâŽ;ôÊhæ&†KIæ?òG}¯‘ÿY?¹:QY¯=þ	ö¨Vó‹-†1‰Ï0Ó2¾€N9µ<bæ9‰‚Ó	Ã×¯%LOFö-
-§Q;?ƒQaŽ4¸tª?O™‰ímá¯í¥ Ä/âp›x‹~é—6s@‡Í	‘Ùü¯ú ÃtõKBÝæ¢u3EŸÛ^´jhKš;7›,Íó3sÊM$^›L¼´=YÐ‰ÖáDëÆ‡K9Òì‚”>7&Z½sÎìø¯­ÐAòôŸ>ü\ïÂä¹0âˆD‹²™k—(y­òÎ]ýãÃ×w;«ÿóáëû¸º²Æ$>Sÿ>^‰P±rñn}õÙ‡•*ê1ËÊN¸Ät¯?¢[-‘û9Ô¡ÝÌl5•IDªç2ÎÚï7mÇƒF0î÷·ý•hê>8ëÎŠ´‹w¥oº–kì\U¼ê=eÝ|ôð!ðÔîÇ0z?ŸúÉ®Ð\ @>@Ý×¯¶@‡aô ±þõ+EÞ5žA<?FŠˆ0¦øAãGþ’) Tº0ûPQý—t «8ÿ'‰¶¿”S}·ñÁþªéÞKEM=Jä)u§Í¬÷<³¡]Ë†Á1öZÁˆ5ï TÝ›?‹·`t+*+ßjãÔbë¡¾|í¦®]€ËtYˆœ)û½kpo£–ð¼w]èceò`/&À$f (— ãÃtd¬d9°2(?¨ðOQ¾T%²¬÷ñ¯¸•Í7¸xFü=“È{nÔ¹úúu²æ
-Î&êwÓ¼½ÙmüŽa£ë}>¦÷\pBWÔu^£’V"ÅBØíV_¬nTž,ÞúÝDK?ß&at£.Û$S×ßëñøBkYô?g÷MfZU1»‡¦€Uf®#á,´!æ
-ì¥•?ÙÕ‡wÒAš=ÌÓ7{éÈ˜V ktæ™ôúã¿Ç^t+½£DÞ8¥ï8t»Nk4i QO‡Æ™+^Ûjm?{$êÂe¸Œº±ê„ƒ!:óÂçbTkÒl6NÙáâöU3èÎØß2»[êÞ–^‚q? û±>.­_…7\°GN,ÚV=¿ïÕÔPv­Tìy*GKgûÿ4XÎ¾wíõÃ!‚?úeìw=G¹£dË»ˆ½è¹ üÍÈ ûgK96îòg-§Ð3 ÎTC}Y2jK-¯×/×–¼àÚ?Â€Þ…²Ì¦Z–Àí7w_ÿÒ>h¾il©G5}nl)·ïE#½i7ºŠÂ›XyQF5µ¹eÂ [S?Xþ&’^¢Gã-µ^[ê‡nwK%FnB£N-'FŠµœ¬÷/W•.¶¢2å‚=Õ…š-l’©¸âØß¦?¸·Ü)ñƒNÜõºjFìN—=Ü±;(zë„±¤ÀHCq?4yª¡’£p¤:ã(‚6!eßAúÈ?œÔ›?ÆÍÊv’,76rB}ýº4äÐóŠUT%?«Û&Í‡0¨©…'ü=£›ªªçj£þ¸º$
-šT‰á9–íßúº‚ås&n©?„‚ú‡{íž™SF‡›0ú5±s‘ åð5ì[ÌïŒ;˜Ív›[¶zÄ<	cŸ}¾ÅÝWÏê²"€ÉÐæ3Ø…Þ Ñ:ÎØÇÂNÜÚ¯)¦˜5å}Õ“ÝšÞ˜óQz #é?K~ÜjV8;IêZM=12}˜`%’jºHG¸%&œ¶D?€?=9‘JÛ%þ#÷:G ”Û…~×–ò¬—©FpëÁý9î?ÐšB1R/
-¼˜öaõèÞ@éEzÚçÝ©‡%Úå*ÞúðWJiYR¨,??Û;m?œ«ƒ?£_^ïüÒl¼ÙÕÖòþ…z,ÃaŠ-À‚„áÝ@SS@‰Z±í<Ùs3?œeø‚Ñž–‘v–"ê•eÕ‚¸ [¥yOƒIè½dLâ0Ôê•±û|M+#=éQ?Xº´`-™>-·Ý·ÁxÀe^¸CêZj’hP(BF×í+®ŠIÈ4R•,(È%¦k“#¼™P­o+±&m€ß2¯2ñQ—–|çËÜSUr?uñl•¿~µqÖÔfæšâÏ‚_ÁêåäÆxp¡£U¹ÊH†,ŽÃŽûéê?vÒ5;ÔÎ¹ 5
-$µ^ˆ÷-{Y¢cŠSëâ£tŠú¨5!xðKô0!á»?êXÁ?ñLI€xÜëùŸÉMƒ?xž’?w"V$Þº…LOÎ?´>c6ÈjŒ{?ÂƒðÆ‹ö?ÕTªiŠ;ˆ}Ï©r(F>,4üæ›ÇK;p/é4s1'™k¥‚	?åAø‡ßï»Ë˜Ë?ÃO †aÏ‹–«? Wo“Ì>|–*P	ó2V„µï-Žƒ Ëe(rŠ¾Í×müxá?L­åáÐí|rdnÇF!—?²Ý'ÊR³H	¹Ã¡I*´?ý™&Õvœ×CºMBËÿ,í¨³ú¤cR'™ô]P¾b¦Ä3+D÷Ö»°+¡§Þ Dˆ½½:\Lˆbf$'Ç'Ç¯ÏÛgç;çÍöÞññ?éŽl”!%´9Ê0?ÈµçÔ–vÎ&à1ÔŒš¹6ºutÞ<=}}rÞÜoŸìüÖÞ}ºÃ#Hí³æÞñÑþÙ–ÚxR[Š¯Âq¿{†i…ÍÑxˆ`DLœ0_{Ñ?ôéÚÒÎÁisgÿ·öÙ«ã·@Û<ÜmîïüÍÓì%8}e
-Û§Íÿ~Ý:PÂs?s7Í,gyÈúº‡ñ¥¡ÎOöŽ÷	öGûødiI)Êö›/w^œ§ô÷NvÎ_±Ü®íõ†e0g§{yˆcM†“ßÚ’Á ¨)ÿGû¤µoi‘Žv“v¯ÏšSÕP(o§xŠ5'§Íƒãªèðpç`ºå¦}ÑwƒO_¿~¥®0×¹ÅèÀ•zž-Óƒ¯?“Îöñî?š{çèRY8ÔÛÓ`·yÄ£z)ZM=v¯½®L w¢KLƒ2¥‡^-³ˆ®Ü8?q<ˆ0™t»ÚBš×Úµ´œgsºþë)Ì;ƒQ:è²·Ã®‡ÉžµqÌî8Ñ·“››ÞDþ¡ÇÜ*¼ÅI3¿# FmD’Øa¼ÉûBÂU¾³f-Í^8p&I::ËœìT¸ìÉy&‘Š9=tùv’&ì]y?OœÝs?aZ&? EWTWnsF/À¬1ñSîºÄtí‡cmõz]ÖR…·µ†Ÿ|ïÐPqùJTÔ2¯añP#ÜŒ‡çþp¹VhvÖ<;ãáENã$ƒ¨"R(Íæ[7ÎÄdîTjv‘?¥‰Efá–óÿ ÔŽðÃš’™PY?HÎ0à„R¡‰;öÝ¾ÿ‡·³ùÎç@÷§ž3MP×ÏÍ ù“ŒŠ£¶4Dá¤š2f*6ÝâoŒîÄ#1Œæ{Îc;³ÀÀÄH¡2Ãr+“:û>~ ÕºæÂìêjŒÓ÷ÊÆúú:Æ´±¹Œ€âÛ>T_òÉ;:Q’Ž—záç‚2&²?)iGšiô4§ús¢Ž¼K?†²O 5ò¼;?8ïÏÑw)H6{¸+³³9-¾ÅÔ ÈD*×Õ´&k¡‡ð­Àã™ó¡Užúá%’¢+/’à:#/ÎFáA|	§×ë6|¥þ>öÆÞy[Î@#.-Š'r{!ì=U”#-FßV·¦œq8b"ëNÿb<øF¬.qä°²Yvð?ˆ‡?ÅÍßSÔ ýÀzK Ó÷»[g\[Ë"ý²ú3ƒmŠø‹`©Sl\¦–n×a!­3µßÄH´‡À°_W'Í?3}ðœP{Wnx}Â??ÃŒõv‚à~,El:ÉÒN4‚cLÃÎ`/ƒìžzVÙÆý.¢Oˆò?y=ÁÿÅÀïƒ•Õlœ¢»?í n‚MÆÊòÕo?Ö9£ 2UàÃYhëãéâ- eÎ4‹g	Ñ»y¢õ@.éžù—A+8g½Û•ŽÒ«a„ÌäWÏ¥TŸöÐü‘¸eDƒ½ŒÂ54Òº³’b'“*´šÁØlb?aOtzÀ?0”k™)æ¥ï\
-eŒAÔF2„J&NÈùb}>†käºˆ”1­DêÄY2$?‡Ã0BrQSÝ0X	‚~pÉî+Žt}‰èÌ6ª$‹ÃƒÕìTÊ,þÈzÁpˆ‚BkÈ¤gÃaÅñ$9²»¥Fb/e	É'¹Ë»¤ù´7?4b¤ÑZ›ÚsÚV?¶Š,SùÖþöd«gºå$ô?­äVjž“BŽx9‚ÎV†?ÔfzßÙÊü¿LžÈîŠA™Êk7]¾Z?j+@þÏ|³6wXÌôs6xHG ñf¸1ÒÀtˆa§OÑ”k¤!‹‹úÉ×Ž®t.¨¸c’äÅå±†|Kw~2‘,‰{&€HàSÉl6@,ä‚ÁÆ®9`dÕ´‡)0f×©”ÔBù»3tå¨”à’uð! ¿¬X LÀM™,\ L[jœ	ù1cÁ?!YÄHcOçc{È¾0Äô*±H¹AmYp:?ŽÛëA×PŽ­±|°ešmã’YâÉ¤^S¯âš
-Z³JgU™3
-*ÕXEDÎ¸ ½`ôõ‘—l·%½£™l‡)ÐdáÈ‚ØÃCÈ_Œ­[€Y{½ˆÄÞÍ<q‘?|ÂMÌà©XÁ¦ .¥EJ4ð°—Ö6jYŸY.ÅÎºáaøŸ0çÈ#µÝL›äq…çK 2¹ÅšHÃ1›OäHÐ¡‡ÒìH?5‚ˆq˜ÉL²£øì¡Mdâ²8ª)µ¹­›Šù”˜@‰QIò,`åá„ØqVìïÌÌÒþÕFc?<Úy¬±Îdi˜†8t”1Eæ{ª:ˆé¾^rŽB»=tc¾u<
-s–˜°ìÔ–n"•V‚³wîˆor*ÂÕÚFÜbÝ¾*1íÎïù bòMNäV¶½>"!8ª¥?Û"Tz‡§\u$[[56=ÝCÑF†ˆ?(ÐÂrßKï€Åªrs¢ä¯a¢oµ^J/'BŽ¢¶üÅ]!U€xø¿^Uë…ý~xú {¼UŠ*Bˆ7ÂL`D™WjKñ´óRu"\éX‘3Ø-¡Ä’,Ø9DÉƒãžzôŠíC~ ¿hÀ_¿ÚÚ#à¶´õûGÚ(õpž	“¡ƒÁPw²nñ?R­«äÁb±Î‚gxf¨23‡ïù"lÎ(‹üU&ôjc¡qáLM6 âO::,ÄÞž”)ËsœãW”?Óè\?&4 ôN2­ÎEµSIVçz¡(è\'bñ¦¼b¦-žƒYŽ?›¦“ ÀR[š—¬eG?¶ÍË.õ°ˆ?Çtf<=ÿ³m-Fêö/–Mzi,WÊÆƒe“O.Š'MâÉÌôï†ÁiÛ}ðû·x¨}Y)¸ªÁpŠ²IwR®;Ÿl´?•Úþg¹t9(ž0Îtm&u°f@“À<.¿“øóÌÚ­²ZKr?©öB$%)¶ÍÎ¢Ü¦úÔFg§{¶‰]í½#ELjK‹'¦¶å©Eêw`|’2çÓµ2O‰JY×+1®+1„ KßYË©YÄƒ¶z<?RÌ–µÇÂOØ¡23âá™õü¢0g4µ§‹ž§dí%1"SâbÆ?sï”¯>ÀŒÚ’Ð'¶_$¹šïæ³P?U|¡?¨.—¾gæwfðgÚÛ"Ù(”™5žëäÉÍIÜÙé+ZéôÎtˆÀ½nË2œ¢"Më¢Xô@`‚L–“„ü;Ÿêåc%, ÐR0ŸK…ÐöR7æ"ÿ"nÊ¿ˆ{º<É¿ƒ¡þÓ•äa£«I,63¬gÕ“¡HÁ mJ¡:á9:2Ù?ãxÄÜ¾ëKê‡ª#›ÀÌá³??0«|ÞSÎO2¨«æ……ÊÚÿ•w—ÖªêOØL\bâvé:ZµYõ”Ãj™åYÄeÎ‘¡1eÿn’Aë>”i¦MrZp¦	¬EŸšÀ §8²»8q}ê±,wÔ@2
-¦µ†.<?üiˆŒó)ž¯.­2Ì¤®¿{kh”±ÄÎèê¤“‹¢Xèí¥“.ÊÙôÐ7YÞJô.Az×ut…™•Sk™;¥u²“:fi?ÞI5œ´Z"yŠ©TmëS¶† î'KJit½ž;î?R ”É‚EùêKVïÌRtÜ3ÊySXã8¬áË±O{#é?õI‡JÐMedº``a^é,íËR‘:œ!¾¢œ
-W:k* …
-?"™9M5ô\Ã‚Á—³TÖX,£Âg^s++ìò^ÐèÅ%šÅ×íŠíASa°ªõÉ¥?IÿÐ*Q.ùDlö±‚§zª…D¤z˜w@:O‰ÅÐº4,]{ÛF?‚BÄÃ³Û^Yó²KêtX½|->ZÈ­ÚŸ‘Î^^–AdÆWÉšÞ[ ‡7•”uSšD*£¦FÉÃ§å ¢ú$YÇS?~È“eÐa ÈFJ¦7ÂÏ*ÐYî²ÍD°A‰Þ
-‡åè«ˆÜvä²Ý\q–køA™Ì#µ‚Ç*L¶€¡ô`PæÆõGç?˜ÇaN¼ «0›¬Í†*—SB”>·õÅlÑl-‹òNd?ôëòŸÕmew]xçOÙ“ðj1ÚLíæŒ`*+YMÉY ´ï'Ô	ö¤ôÏ2ãånÍžäcú?X6»´‹AÓv™4>â–¦ûKÓ•šq0Å},ÊŸçÁ2šw<„”Êì6P6u-I”?ÅqûTÂL®‡ÊMÚSr»ìñ@tMê¿O½K½8Œ|(F¤¼«"Pù3ªÀ’›GÌ~·Œá†›ÀÜÈšIé–ó¡©Î§¹ðZ]Ò@?ÎmA•
-<‚Ö?´Ñ?ç¶dwI>Ì…ÖÝ*ðúñÎ‘Ô˜F&š¤`·A«K%àT?	¾¾gøœÍ‘ñ S€å	ÂxF³ßÝÕà»`äNDÌÓ·Ç@“}V¯.ÑÈÄl°˜žÁžìüÒó‡Ócñi™nØ$…E?s:–hcÿ¾Ž§í:£pxä^çq?ÆŒy0øS5x¸5y©=ÍÉ†}Ì=œ©Ã4§£uA]F€aú
-‡>¬Y=Æ{2ùŠÉÌ5‡³¾=ÕÊû7w<—‡ôŽì!k9e?¾›lWè®ìðWÎš§œ‰Þ‘éµzÈš)y”=–Z$Ø]Œ.ðXÔ î›mQ?Í"”Ù £^Ÿ05DJ†ä›É`Éð[<ºS<…?¹ÌÝZ¤I+™øšæ¬ìj$Î?_z`GÖÚl"–›¹ÙM™9"ëÔHOy’S\‹«û^[Ô‹N V­}*oÛr8$y9IvÛ3‡Æs‡´¨	(2¼qe?éæâãQÈÃÆ?³eÓ>}ªÕuŠ+î% †yçÊÇtÊÕ‘;¶‘C,Ô?™D®ü E”×¤=oÍ§8vƒ§ºî–}Yšý]IGró~eŠ |òŒôæ¤)A[’€Â2,AXÇlsH4ºßzuB?áÐý]NTNö—éÈ_{F‡³–(}k{¯Z{ÿ<hž—°6ÙÛâ D ý<53Xðl>‡©ÂiÈ’q)§MrñÓ9ÀÜþ:ú¥uÔLU¢íÍJŒ]ŸÚ¥]—0&C&IÐöÆ1d fÂ,è™Eº*a41¡×Uhqf?Òw?TäP•	ÚêÒÌùNI×CGzž“??FÚ—}5?ùa:}uª€`ÖÛŽÅ©Nš§ûÍ£s!2[+¹?ü-RÚ£P8ÕÃµt—æ“s—°§?Û*eß>½?œqíA š('òôeA¬²,ÐÈZö¸±¾> ¡œÌÞG;|õhó¸ºüÝdKwAgø³‰x\“Ad3ÓâI|#;áÕ“\?¥Áò¸bMÝPë5­Tv`î%)FöeDÁ£>”¤%P0<«÷¼GÎojû?mÃ±8¿Ö™	8I§uÇW«Xúùß9÷©x¿P˜Þ?´Ú‘·Ú]}u’TEa¿?4âªåZ¤£ðdl?c¦’\éÕyŸÔÀ]…]!Öq‚q’Œ™§’Kp&0ÃUÏÿÌtðÊóÁÕøRUv_ÿ¢þ¶ùxãéO?ª@µ¶d;UMK¥¾ÇâF¡‹¾;	vC«¥S øyaàÜÂL[¬ ßàÀë?H?Ì‹Ç3áOýË+Û š®ß—i¥ÍI~¾Õ ÙtsK†)ë˜ŽÔÅ:5K²$Mï-oÞÙR?®¯k^ÉÝ»|S}¢j×¿Ü?äÃÇ½ÂÏ–"ŒMö}dÖî­&ê¸qØËkñn?ò\¸‡7z=Ô‹œ²4ÎMmÍÃn?ç$N Í?ˆyÕÙVÜœ`c³¯ÄÃ¢wDAóf‘¾]%_)#Fæ@vA,J”Ü	»“¹LÙ\tE9?¡Tocä`ÆÝÈ]ßµ]5Ö¶sH<7#I6#¤ªžz®2¼f­éûðªç—÷ãU§DsYÍŒÓ®Ëšæ-úÁ/µj•5¼«\Ø)ïú<²¢{@„«o1žb–pêÅþ^ŽÉ›Ú=øßs7ó˜Ë7Ó?á[…ZûaéïzÚÂXwø]Þš¦ýÎë.ý=s»Ï–­¸
-±ƒ—Ø{1†#wÄ1‰‰±]Äq“ï`™âQ8¬«VÝ«ƒÈH†1y?ß@waŽ7ÈÃín!¡—þ®ƒ„£JŸ—FGŒ^Ÿ·àÂ¿TºÛ—yÌÄ,ƒáY-AÃPß{¶½¤g“ÈÉúw!ðw`‚óôóþ c$'R—öèvÜ1xŒ¼kÏí›B®Aé¡|%‹ì“™YêAš"½!Gj2ˆÐ$@êÑïó³_%ä—ÎB®@!9as.,KÊ3?]¹¹?çy?W!Ý	Acå,Ö—ò:ºòúCIv`Œj÷6ÿøìñ:E?<µá)JQ"¨[“ÝÉ·™H­û	­”]?v‡C?«'Há˜^÷oõW™&­>ëÓôf&"šÑL¤-÷5äÙË¯¿ÑÃØä“ÕØÙsÄù+¹kkjÏíwÆ}­RO9‰Òmuq«.Cêl<”zzx?'ïµ™9¹VŸ=v‘ 3\?{‚%Ø.¬‡fO\®µO?²ùMõX‘çsefC@ šIR¢ûéÝÆ‡E™9IyßÓ;A4#_vyÀ®pc¤ÌJHsú4°º©ãßÃ¤,¾$mœ…n«…dÜ®¡eÐcR6}þ•¦dõ,ƒ(Õ¿‰ÓÂ4€þ×·Jþ‹||e²UÞÌË•NdtFšœMÔãÑmß«£Ç ?J?Q9I5üìP"³~ ='ËäIF•È©V1¥B“oar[äÌRx^Ô^µÈ@€Y÷L!3­³ÎŸ¤•LeÝLVxÖ­tÅ'¹©Æ,Û?ÝÔ¿oáÐíp?Øêëà§ªç÷õé?Çí¯ÜŠ2Íëª*Bdš¥‚g‘?]Ï#O¡¦"º.ÈKi?:ë¢CŸX¨=;·×÷á!PB«ù£\¿ZŠÆæ€Ä¥µ9/Mï$8Ò¾È4–îœËË,kž)ð#š¯ý'w×þÓµv-U‰•I>¸Ã¹:ÊàRV—»µYzá~q@“Îð_ \¨É’]d¤¬[ébÉŠÌ„—mÔ×ïîfr(`Z+Ó1£fÚ5ßÇù=ßÓÿ2ía¯b®‹8â=eÖNñ&YNøÚ?ÍuÿI~õE"ÙØ… z"Ÿ·b’—[?CMükGn37Sÿœæ`öÁdõŽhÅ¢6ÛÊò?!)ÛV)}®þ%$¸³èBË‚Í°§LýŽ{¿Bqë5ýüŸÅ>eq;Ä¿3'ž¿%É	Ï~ëÓÓ<üÍÍ˜#oóVH¸0	õÝ`´”`œD±­+I:Sù«­Ì[O Û0’BQ]\ç	 ²:m‡šÍýãÃ2§4Ë°9?h9³öÁôV?ïBí4ÊÁ²ÒÀ%ù²zÐM>~!rÉ)›á¦",“s:“ôec¾ïŒ	%æÃý+¹	Œ[?rþ'9å÷}Ä8±=?Â;ƒÕµïÝÈÒ‹«zxŠ½NtcžþI¶‘`"ˆ\­‘ù¶<þ[™%Ÿ‚}³?f‡ÅÜ*pê“öª‡‹dÌX×3¶ß@Þ¼!„Ùox…ÚCàï{¼wÏè‹'Wô\šïáí$ËFŸ<s,³ãk_ÔÆ iš®ôÈ?²Œtåƒñ€ˆ‡>ð? p»]LÌ¹6ÉÝ7ª%K}(‰¸
-Å{¡tŸQýÔ:„¦^Ë)ê=6‚¢Gáå¥,]eÆƒi:œXcÂ õ‡?rRM˜øCAº¶”1Ù04+lÞ%"'ª¡Öm*ó]fW0kV½›Š»?of$éŽåBôü(©'ÖöÜ!êiªu»±4µ£e…ýL”¦·#o€ð†>¸2­ebº=f¬FfHV‡ûÍî/_šÛz¨<áá	Z/ßDÒ“x<aæí?ß?ø:¢Lž›¼=g$WýžTWžÞ(w«åÿ`NZjïÃ ïÇW?Rtôª¬—cÔì{fßV¿Ÿ»—HŠrÖìÁ2æÚ1Ô‘í‰)jYD­²›5±1z·?9m‡µ>‰ÈŒëVÂ÷ x>QU¿L«ª¨eížËóŽO•.Mš÷M +8H†dKk4r;WB.ËAZ
-#M~îé­ò•Q¡{oÉ?ÐÿÃûÿ&¹&ÿ-’ßÓp2Gó"Ù>-à.ÉZaäœL_!]xiøÕhÐW?¥åç]àó»ùÄËlAŠÁüŒþˆq#sx––‘ša†ÒpxÄæ2
-1•ÙÂÀÄC½`9Žúóm,äp#¿#{ÖÜ¯^ƒ#ß¬ùŒ×,Ò6Œ	‘Q;ÅXÿ8¼¬ª \?¼¡‡¸¢-X­#‹w^<¿Á^3w±¸‚œ13)z™§3²®že¶ÊÁ¹Ú+™œ4œ'?ÙU˜´.k/ì#%Ä„îoÍ—üS„¸Ó `]mè-SŸ|ä•–¥{xÞôx",šdm?§È‹vhcÆü ä¤¨àYúše{à³R¾Ó`Á5êåBæL£™¨c^ñ¥™¶ƒ
-9grû—˜C¯báŽ©ùå«ðf?1ÆÌªQe’&Ó4ÙŽ5}*u·?0!Ç‰¯@OŸ9t0èÉ;."âš2™6/bL¾›ÁÌ‘ÙÑxÀY¯ˆ0[/ÙÞ?Ê“cAR´¦|?ÆÈ1IÚŒ«ë³ÝùeÚñÊ¡½k_#Íœ[û¦c|Œ³"{—ÿ¡Ù£$Ó™_¦>E‚ôÉ>›:¡ƒrùWOý?2z¾€'ûÒÂ?ìÁ]Dß{©®Â uÃÝqÄ4³~L>„$	²þÎ¸±¸$¬ÜøèÁn(@R@ÊÁ%Ý
-¬å¹xç)çC~i*ˆ#geg$ËM¼r Kiz›8«eÁ™1p?°N›uÏ^m4Ò“ÿi·gðÉ… SðY‹”{…ˆ·Ø8Ž:sšžE?œ‡Ý…ü=È&ä26$³ØQø	S_ô|—T6'ÏåÇ$Až£ß	Â`™‡y-ÃJ“7¸¦#ÍY¦Pº€?íÞÒ±Ìœè­wQIš	¾—bÄ!U‰?¥¤&«\6›ÖÍbÚ“å·	1 %’6?Rƒ@9ÔßÏ~¿²vYsþks—¹#Zî…2º«éÉúãèL€åÇ„ ÜŸKU˜þH(˜ÁäkJù³ÑäPâžå—»Úb0òÞºŒwï²`uC­ªq?¾Ú×Ukú€¬]Geø‰O³KSãáeä"
-ŠX¹I0‰>Þg~ Á›ô„Àd_¹ ?«F»±?è(¤Øb¾skÞ-†Na?/A™MìZquš†”§'Îgµ¦·ÝôPüÀ0h›ëŠ)M§åÙªäžV"“Ž’QA~"¿J†º,¹£:	oYÝ¡vfµ‡ášÉ;[£Ã“v"ô\K'0h	kôeŒn+Š¹õF5³ Û?ùS1B	Á¤:ÑËìæ·Ù.5—X%œ˜X–c%=6ît Øƒöo•¾Ä£¦(c–©t7?ÌéÁKa;Vð9,³ùÌLÙsXJt^ÏvŽè6o9ª"¬]s‡þô:êëOàë¢!ñzŸG™2Ýõmý‘VÄ½?õõÿrrUzÖ?©K7ã¥6D=ZZª7,Ä1IãVù‘Jgd¦µC£~G ?¯i<kæ$cß´PPN zCÖ(#BK3Ï?`?–ÀÉwÛÚé_!Å7ðk^qûf&5ž”IÓN¿èU¦l«y/•“¬qbã÷gˆ×äõ;ý·a¤Dß­·NÆ‘wøf?
-ð¢5‹wMO³Úc¿ßÍi)éDã‰ßüôô±L…Myê4f²=)DºbñWq.«˜µšÐ"A¿DŽ?ÍEäÐï¼‘Ýô{ Ó÷—uÙ-þCq—î%üí7ÏÅ”¯>
-õÕLl0 PE Á"òXiüºõºúY9ëæŽÃÂ	 Id]2¢á4+ex2ÕduL8_!g –ÙW9Î"Ë®w<¿¯	¼
-Ç_þ\S?'ñ\ÈËër­ŸÕïÎûåâb=ð>Åòsd.Äpt&`ò¨ôÔX@ú1ýJã‘ûê°£M í¬$††ñ-ÓÃÉ/Ý¯h÷Œ‰³]éÉ$Í)ýzòa”7°~ÌÅùýƒ–¾£L^VO8K¿é¯ù <a+ïžÕÖkO>Tí™0Öy29“ôàI?¤<¸Ýî‰¹ƒŠƒT»ÏÅRdèú<OÓáÍ™¼h°#?›¹ý÷6žÑên¸ÙPH&ñ%°oÜÈw/ú/)¹&ÞavÇ2\—¡NÁ{Ã6ôÉŒVI4žÙ$ùœ[rœMK¾ñ¶’?ä±9,nR¼š7HhÂ(‡âZŠf6çÅðhcÖÌyI¼ø$ˆŠéZ¯ÍÈVš-’¥ßdÝy¸©är?M‡&Mße+1s¤uÂ>ÍL6ƒQ\g‚^ÏÚxg‹u€lj^aB&ê@ˆ<c3ñ<•dö<×“ü˜Žf=Aƒ'd‘È“wb‡È‘!³³ àž­ì@?³4TÌ… Z>ÁÌ„•%Î¯²™?;S7ãOé7„½ ³ê˜'§P—0ðäC
-0â®Ò˜}/^Êá¹Ûýár–ùhÉ}†™5H™×Ææt¤üÐ¡ßÄ{Zj)jLõT7¢a‰X01™K*u]ñ†Ê,Œ#è?ÜãŠQä=—b’¥XqŒ aÏâÉ¡XóäPže"l[~5÷õýæîë_ÚÍ7ÍbØà‚òl?GU%ªÓ*Ò$´ïÎh÷œÍäÞ™B3c²éËðÛÌÝd¿ Ó|0½ö»0^k“œqÒ¿É„²/öçjäÄ›Å%G?óÕzŽúÊ¬•Ul›0@÷`?vüö‹¬Cn»™-§D¤^žö0†1dçëØg¾.³ÇÉh4­Z·?@œî_æì&ƒ'·‡™£PØÇÔk¥Ì'z³É"ô`Ü £7ŠŒ˜‰å¢HÌVÇ%š­çJkëH|
-§éPÉÊKò’?-±v„?©÷Û»·Äísw!f{É¾®ó*}+¢æWž…3>!c2w.;º	¯&µ0?ÌÔŸ,k©DZˆP¼GÊõÄ†tu‹mÓÍ¶ä.1.&øÁ'ÓKˆ oÜhã§-µ¼3îú¡:õ~G>Ì}IÍ)Ãdv%¥\â0¼ñ Í-µ`!?&Ef‘î ?0É¢nu‹Ÿ gÛG“m	º7ŽGáàÐƒ:\ÿŠü?ÝJZð6¢ŒÒîÖ,¥¼yÊäþ^´MÃ”ú£…¨ë›—–7žRz|Jw?/× ¥öd1j¼¨zq±è”Î?‹Ó¹‹PxÐBè‚ÑÒá]®-õác„I‹nKWc
-Žz?þ‡ìaY6–¹Ñmƒ?éµ¢ü6çƒÓ=úÈ½ÞR{|=uKwœA9ëÀedb¦<hÄ¬üLÈñ´(Ç)¤?y¡c*?‰k<-9:®Y×*ßS	ÂÆèúïª Á|žQÙ¡ã2…²\r§eé2cA6"|Aš€¹â´´,§¶dx]2)Ëu2JÂd^wy²ä•tùB>‡K¸	ïå†´ì¬Ú’,œû}FöôhR?©Äâ½4ZÙ’m” å+6n?¼ÜåçÊu¥YùÆø²Ã;WÇC%g[@œËúòÑþžÇ›™ô7ÃÆ‘²÷èðì„§S ‘·!£ºÇï—¯™ˆsz]~$Í?áÉ?Ý¸}?|´z„—¶~0æé\}>?€iã ®)ÀópT„Žx~ð†›¨r'&Prþ°®@GòbNÎ³Æ¡êZ½ÐH¨t?5[ Ð´L»Ÿ’L›½M£IÎx›¨Îß8C,tR?ò	I6¡ÆL8uÖiý^—5Åò·ï_—€Ô†n!y—ð2·ü(ÝØÔj²¢ÛËìKúhÛ|>=¯+`Ëi&]O—¼‹®ŠÂÛŒ©eDÖ-KM²>õü©àOÈ–76T9˜VõÖL?¥t¢[“jÈ–ÓsF°‚Â³@ Höõ×Œhþö[o0ð%å]˜´3º+PId-jœÅtÜòÂ…??D¿?¼ŠãóF®nZÄÔJŸ#œ­E.BgÉM‡&Ayq¨¢?z4§{èÆŸêñèE­€5‡…'›g5C²B}`±ýUåêÆ“½+ØAÅêX¦z¾ñz=?­eŽ'ë!,.¦âÍÊIgfŽ.-?¿°G??Â¡cG¦…r°ñb²bsZÅ£i?séÓÕfrœ2üüÊCÂ9/N0°¼*#šÚ÷F˜lz]4»Ú4íºðÓ0Uƒ	8V’!ÿÍÅ*ü\ÖÙ†z¿ü†¯Û˜Üÿý2‡’xèÞè7G.„41YU eAf›Ã¬\þ]uûþ%†N­uÞ®Ôeÿ¯B¡¼ÎkøyÛr“i(kÿ¨^GµÒKÿ[jóõ?táGÄ2üw«ÜÝRëõo dƒ‹x¸†€oR7WþÈÛ?Fa ·›9’?Ý?¢
-ÑXÃÜ¡†Î1ê¶£OI8ÉÏîïÀuÂpž-äKÞjžo#Ñc*ÑêØUW‘×k8sôUtg?ÇlúßEˆÔPûÝ·ä˜9Ìúâ…&"V?¿\ÃÌ|aùÙ¿yýg[¬q_¨Bæ?÷Ë ŸLJµ¶ê^píGaÀxÍø°¶Š€2òn¢÷Ë¹åÞ‰¿ÄÊ_É?©öÉêëü×õÆ¶•NóÚbv÷—ÆÕ§³ãjvðü.¢L·Þ,©+þ¾½UòlRÌ²Ù'	MîÆ†]·Ÿ„sÀ|á%‹z')–+?12Ù¹;Ï?fæ ²­Ã—BŒn1aÀ\µXš=O^V—]èŸÂ;4D¦é<NÌ–¸¥#½µüèlq¹¶d{l™'´ð{€ÌÿXßBqâEÌÀx¹*àr9øî¥¼Aƒf{ô#ÿ å-0?‰æò3ûŸA—^__7…ÿc¡7PÆÂ«T¾­	‰ÑMv–0]Ü|–®ê¼-e~£òÙÎìgW.‚îâMfM}´éß{ÒRb¹wPÑ3¾ºyWE?éu?…åHÞDü÷”#»|²ÈJm~ñäŽTfõýQe–WdecþƒÌ5—†Ø yÌÏüµ<(¬wC"#™?ïÈ"#Ž¬í¤:<dsUøï¡Öï ­hA¡ÿcÌ¿±Ç17ì­oö?ýMÚl³fn%ƒ?}G1s+²XdÖ9ÏüË ÌWsÎ‰…y[Á1ßx_Ö‡zí»tÉ)Ÿ;ÿYzÉ—%çÁ@)§wxxGí7ON›{;çÍýo;Çc…”;#dc¥Âo?BäB'°ÞUÔåw·¨÷ô·Ì‡Îm°ËaÝá6àý°Êb9ÖS~@÷~XõwÖK±Aß?G÷CÌj¶žÂ±m8ŒŽ/>ÎA®aˆ#Y_Ögätö¼à;ÑÙ»ò9GKr÷Ä;›æ\¼I»íM][öš­mõÇ*ÆX$U«›I&¾^__ß?I‡É„ß‹¥'ÒÎþ”]æk<Ó±è¨£nÓžmõ+7ú}•O\Œ¼ÌgÜ }?†êõ¢š¸Ÿ 2œ†æÙ½ÀÜ§b_¦)0Ròé§ã¢û»?™ò¥BÝŽˆšÒ[KîõeÂšzRüâ›=g	Jˆ}A7QÿÇ¬±¶ºÎVzæ<ýdbª?p¶,±¯$Å`+×²%WsÇC-,wt?þÍú¹:IùM7±È»Ñ¿ÿú2
-gÉ y4JBvjnap.´?„§^ÇCœï&/ÿÐAÍL¢né€bA?ÝÜ+HïD’Ž?ù?´q‰ÕNk™ù²šÎ´ä€»A“ûÖÚÄGoÅS(²9A·€rø§è?ÓàSŒ“¤‹AJ¤Óv-_âäW;kó€ã‚Åpú£% ¡ùÁìWKçë•ÎÓ—Ï/Ã^ØÿwÍ?õ7<?‹€®\DŸ—¦?X:ôäúË~xáöëãÜ=ÙIø$•[ÓŸs¡ ò—ùˆ‹|ÃEsÂN.°,GFÍTqgˆRø1½œ(ØT±ðøû.Ÿ”!?:>ñ\éƒ¬i´êëW•þªË§G»„&ås¨ïÞÓ¨ü6F.B +§[kh Ñj¬ÐBÚ.ˆ2™”7<Ì+ÚÎDñyð†nI­á?z“^é]úo–E»x62ÿ:ZÆ=}²tøÝÌs}]n'àçŽ.Æ#~õaÀ‘\õ\¿?ÖB(Ælz„¡3óîéPË!w×­™þ²V$Ã×DÊÁ,[–0p1Ñ®0;»³[e¯ÄÓúJG¥_œ²Œjg?~*±õ…KA>DBYqHŽåŽ´"¯â‰ŸFÞ*-‹Ÿ˜öóÞ¢÷–ÞŸä‹’F?ÉjEr¿ £ú&¹%?‡?•¤Òòyy'§yq‹T¦ã²>çrCNuèªB"“LÀHÆÌ³DÑÊ÷ÍîøöðäQÆ˜dÔã(®÷Bköm»ÁðQþ-;ƒú™ÍäÍ,iÏ7µúqÔi@8?9y˜}v»ÝópÏ?F	ü¬¾?Å]sP¬’a¨ØéÁŒÄk¹4Î1×¶?¶òÐ’ŸòŽŠé´–ž&˜4 |þ%Dê†ç¶MáÙ½¯ÕÏ#©KZ>ûâßlîÅ¿§˜’¡BÏ20»íŸ?Ì‰i¢VTEkI²ü 1©Ì9­ŠÆµJfâ¿èDa2óµ§ÕZÝLâ›•»Oµ¥|Ê»ee¬ñ?”Ž§“Ò-@3,Ë3e®r6ûþ
-oÛM	»3°ÿH;·àÂÅ:=a¯P^Ø*¨æ«³ë4ËdÊ‚{æ!7°·!FRr‰?÷‘9=›%¦†)ä¼	ÓéÙá;…,Æë	þît²Ö´)ý¦¹vóÌÍ§t^veŠüMŸH–†&<4‰ ÆW9¾ˆuMU‘,^Uxc?õ"(=¿÷Ã­=+é{n÷ëÓ› /Åù0ÿ3cx„§¶×¶ûƒ‡raP#
-ÊU;I•A?/âNä_xÿý`.rÈÄkã ï|XGŽÖ4BCSn(#ÿÚíÜž„1nóonn
-o†àöP Xç †Žº²(ÏÃ!àí°×ÇžÁÐc\ÒÝ°ô»“Ünx!Ÿ“\ê·[ã5i£;zÍ ‘4ø×³¡°Çx –8‰*»™Šžéq½R¹Ç–Î‹ìÆptô©€•¯jšM
-XcqkTªç1xyñëó÷kò€]»4Á²^!ý2›,Á~^e$ùXÎÐùÎ/ÂÑ(¼ô‘Öqä_”Ýüþ¶è<Ù?38ØâüŽi»|m?Õ?2+Ë_¹ŒIý»õüegq±:O Æd!:„RÞ]Y¾ôBÙÐ'$¯O"3rñÑ^8FÖr+)¢ÙíÏ¸Ûøâ&¦ÕâlH7^a=XàýÃväuýÈëŒêÜ<Ö?ÇÀèËNÚAŒã‡Ñ´¨sm?C™¹>sÖ?™è'^ÝkþàríñÚÓµgk›k›OŸþ´ùìéc¹'ÓX¨¼?àÿáuw?]\9Z~Ž&ŠLØD¼ˆ<{!g¨‡U„Ôx5ú·í‹Kb‡á’ò‹eÛwûŽQzuØ³yÊ²RåÑ òãGÖ…hu%@+Ø'¿=?®Fë#š[jãéð³þk?<¬©H¯ü`U;À+¶å»ÀY­/¯X9V —CKŸËUj\ö?ëëúY]î©LýåXDQ¨„qŠµ?‘&=¡ú÷{·à÷­'‹DqE·õ$uä’µÉ7ú·ˆ6øË½ÆDžïãë×÷=õ:à°)ï†{1OÅþŒ›£µàûêV¾pÈy+fSýÃqìwÔÏÿ66gèï,î,·£Ë/\Î¾†Bé)\tCŒP²¤×Ý\±Q —à¼…wwõ$ƒÅ_˜@ø^!ãb £iKØHz3= ¥ì¸T®ª™ÕÙal{éÚø´m‚½dCG¹Ï¾oMâÈ ÿWœµ65ŽcÑïü
-µw·IŠÝ==CS4MO3Ë«ììÔî¥Ør¢Å‘<²LÈNóß÷\ÉqLpMïÔU‰#]]?û:º2§úSÂ³á©>Oø¤³"ŒÑæ³%ZY¡,[ë²ÕÝHÞ²bY7£>I
-sH’%OôàƒŽ&Ëì$Ý åQ$Õ`‡m}ŸÞ±7›øx¿??­wé]'Ø[}Æ±Gd?Tfy’ˆè³à‘0ÁÞ1·"³Ì!f»¿åÒˆh÷ŸPñ2ý½¼?,¶ø¤³CÁú´‘¸K…‘B…¢ÅÒDðL0é×8™]>Õ8ÖcsÐ64"î«l?¹½<Ô?*‰®.Ž1¸ì%Þ”ýH÷EaPê¤`ßk?eM9Ý7‚ßtVB`k¬’†ìXÄö*ÍD’¬6wVdÜàÆðÉ?ŽÄ?¶þÅ^u™Ê?ÿõkf'©Ð1›Ÿ^ÍU$b©D´JR?¦W›¿¯ÜrÃr·ÇI6ø(,—	ÃÔ/‚é8FP¶ß9k2ÆÙ°‡,†[c#D›Ål¢s6æ0Åjhxž)=n¹‰?+–È¦2òóT¶ÅÆC¡Ä-”O‡Ú0¿H?ò?Ð™¸nä`h‘?HÅÎƒ%>­(„½<Žå­*%z^i™Sÿ“û+ÉôX0Øû‡ü’¥0§?TùÈÇ…"„J@"<p.òq¥{ÎW…H#Ýdæ]Y¦†‡©9’VDûa(ÈŒCÕ’‡"ÞIY?©çF†pXÅÐŸ„?­gÜ)p±üóÖvû‡6¢BMˆg©rYhd_|È­ÕÊíäö? ÖûÓ£š /8Oí¡¢|éü)`Z…‰oº?cšñdJ7wíÅcôd_ET[?f‡as£XÌ“L?>9°Ì„Ý`hmº³±?²µ2l›!OÛ¡mmÇrÄ
----End---
-
-Server writes a chunk to client
----------
-org.jboss.netty.handler.codec.http.DefaultHttpChunk@499ca496
----Content---
-"ÛÐH+òõFßªë©ä}àlduì¹ÚœÆÈÇvÎ(
-ViÒÔŠt6õÊÏZª’^Ž²Ô‡ÂY±¤	gWj§zÜ¡•ZUr äfÔ‰6âXª›G4Õöw¾„æI¥ÙMâ…N@-–!?@5 …ä/©HÁç÷?gL€r¢ëç–IÏxÁäJÓ˜‡šQžÉ??%èÁ3(”³Ôè~"FŒ¸TÄÏä…í‚–p‚?³:ÁùŠ¯TÍ/©É‡ÌA^U¤ƒ½òó‹g\\Æ¤so7Oêý GÐÌn"+ZçÝOîäjÂ2÷JåŽµDö7Z¸µ¹	’ŠÖ] )3õì`È•IF19¢f|hZ¤ÒÊ‘˜1½´°$O*¹„u®ŠØCi¹çÌ®¢ÊÁ¼UË˜ÇíT“÷Ëiëm%ýU\@{^?¶£ll²?Æ‹!‘"9Ó	š8:¦Nuçê&k±#_O°¶ÐeÅ?]?D¨lÑjç r8A_Ð™ö7ßLÒ7B¤ÅaØÎl
-ú›M‚e,ã#4^Y¥Zâ…Ëü¹?ÉÀ¯ß“u¤jàÓŠÆã
-#¦0ghŸÇ«Ô*Ý?îöº°Jgâï=ä?Qž“7¿¥U'`O®®Ò!¥þ"zt@åÀ’™áuúç³àk=ñ•×?´9¢w¸VMÒø(Ð÷×€,8Í7y‹˜îk‘”_/â±ŽŸ?ú¸š©Ü[“ÃžöªÌX
-•¬è¢g5ÂÈS©1WÕÏÂM‘=×¨áÉ¥0£¬–²S#oy8ñb%8„‚F™Þ­ðí—%}]A§Uõ–6ÂHê¬ÜÀrgÕl²ºÍrwTã~îŠ§Ó<½”)Ýí­ü#È¢Þ[ä
-p^qµúK‡Ñ¹'z¼Ã†2Â‘G-4®²ïÔO,ð›LwžòMÍòbþëöüE›Is©™;ˆ¨‚…E{‰®”º—¾ÑãŒ®ÿ:uí'5H$(Ì“wôš?Fà„—µ4{-C­æ:…¥ž?°Œÿ7@,üò|EŽG"æybw¦¿ïWiÝÜÑ,•´?y…M’¦?wŠð†ìé·¸D¹òè3ŠÑ¿ôþ£³çÊ·u²?&ûÝ)âiŠÓ.Â{¨=þ=Ï~š6Èqù €{{EK°¼h:ìÞc”Ö•û4šÝî['·±AwiWÑíXêÁÎ?÷=:ý©ånM”o¡Ö7Ww±i·W"æ#˜ŒH¸‰G ?÷{—×½ËýËÃëƒ³³¿‚“‚n€Ï†cöÑíß¾åI.ÎâF³IÓé6èº “2
-t‡¥Ü»?€Ü»Ô­@{‰žEÒ`A½SƒÃ?b“¹X•Ðª¤›Å@D¦“(£?nxc÷D¾ržœt»Päý×³:MEä¦—`$é?ª)ÎÅ²höî_êççxò¡!e"?^P?O¤§,ùŸ¦Ò_?×qª*£“ô(ò³Ü }[è£Ý@?No f•à&×Ìt¤7ŽÏúÿÆ1_-žvÍ¦Å^.[æö²†«,ÕÆK¾bÏpˆžŸ®ÆOîYÍÑT¨Ë¡Ì2Â?i’"1­´	¾ŒiÊÓ«üç…`I‹rÖF¤jzoÉä‰;T]À?æv "p‰¼âïg¹?1]6Ôcÿ·éöiòc¶¸íïòMà-ø¨‰¸Rç‚cºÛ[%u{’nTm¡n¥ÑŠÒ{mµ`nð0S*BlÉ¨ß ¶!Ü? X“Qs~ú+ ùR?½U1j?á®@d&Q¦ðÀCïØB1ÕÖbåºÎÊKð_Iƒ k2Åû!Ë]ïçÉB=þòææÆŠ?ÐÙhöƒÒtã2²Cˆ¾Ùzï|Ÿƒ‘·ßoúä_xƒHœshéeC€õä­¹4<;8ûxèJ¶fŽÁàµu k"y*uë]•Ö(?wÊƒºñë³¿^\=±{ºtw:´H ÇÄçû—Ÿ—î:ê[´ƒ[¿Ð>†‡§û'OØà¤}<l3ÓTìÅ®„)?ýò2ÛHå?TåîÌ¤"ö×2‚r$ïZðÚ­Ä/÷Mž0âœ<‘?Ó@åˆqôPŽ{¶p³DnœÜHlôÈ?xÁÃc Ó™@N¿ÄŒÿ+êÚ\úùúüè£ãŒ9c`KÑ‹ŽÇã¶½ù-†Âõ¢î%Î:íW¯?Ö·6ß¾ùîÝû·?æ&qÐŠy¸‰c}*o¢ûO÷w§‡@$n°ƒ×@cð?·I¸1G¸-Ç-­ÀQ	üë¾×‚–gøŒX­“>7ÝÍVR¬Åã”Æ¤Èð‹º„œÀv¹—Å_'´Ž†?Èäx§ú î64áŽ†=¦î¸ÊàŒÞÑÉùñáõ5¡õœëÌÝK×œžŽ¹3ó^u©MnÒ Å?
-«“AùOÂ éÎ6Öx5›w.¦YYRÁk¸´Ç8­f31Ú¬¬Qž`H–MÇïCòîV£Bò@üê¡ øóá\§WéxôÆ·D¦ÍñaÉh.+z|/zÿ_R¾_óÿ  
----End---
-
-Server writes a chunk to client
----------
-org.jboss.netty.handler.codec.http.HttpChunk$1@595cd4e
----Content---
-
----End---
-
-Client writes to server
----------
-DefaultHttpRequest(chunked: false)
-GET http://www.rhapsody.com/simple.js HTTP/1.1
-Accept: application/javascript, */*;q=0.8
-Referer: http://www.mtv.com/news/articles/1684550/adam-youch-mca-beastie-boys-fight-for-your-right.jhtml
-Accept-Language: en-US
-User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)
-Accept-Encoding: gzip, deflate
-Host: www.rhapsody.com
-Proxy-Connection: Keep-Alive
-Pragma: no-cache
----Content---
-
----End---
-
-Server writes to client
----------
-DefaultHttpResponse(chunked: true)
-HTTP/1.1 200 OK
-Server: Apache Coyote/1.0
-P3P: CP="CAO DSP COR CUR DEV TAI PSA IVD CONo OUR DELi SAMi BUS PRE"
-Pragma: 
-RotwVersion: 01_42_00_175
-RotwBid: -1067563546
-RotwExpire: PageIdMatch(external-javascript-library)-Ttl(14400000)
-Content-Type: text/javascript
-Vary: Accept-Encoding
-Cneonction: close
-Content-Encoding: gzip
-nnCoection: close
-Content-Length: 18300
-Cache-Control: private, max-age=10491
-Expires: Sat, 05 May 2012 03:41:14 GMT
-Date: Sat, 05 May 2012 00:46:23 GMT
-Connection: keep-alive
----Content---
-
----End---
-
-Server writes a chunk to client
----------
-org.jboss.netty.handler.codec.http.DefaultHttpChunk@43a84ff1
----Content---
-‹      ì}i{I²îwÿŠ¤æ,µeyºÁFôx?f¼Û@÷®ž²T²¤*u•dã†þï÷}#3kSi±aúÎ<Ïif ”[FDF.•µtíF*ºr‡'}÷Ö‹¶—Ö~øAíz—~øÁ¥
-{ê•qØ½Ugo__|ô:£úÇXÕëuõÃk_ú!­R×õÇ[êeß?¯”F©ºÞ5~(7è*opáuÕªº?†[kkýð²Þõ:aÐñ†£z'¬Å7½P?­-åqû±ªtªjs}ýGõ‹özêlä¹QbÔF^ßsc ]]yê°u®üŽÄÞ?ª777õpˆÂpu¼z]®õ5P¼6ðG«æG}x5~ø!Ç£ÀÈw"8R½0¸QÿV}
-ÂÈk-•©s´	Ü?§nPÓ¹rƒK4E`ï{—nÌ»qÄu!xþª©ÎŽ_ž¿Ý9mªÖ™:9=~ÓÚoî+gç¿?šzÛ:uüú\âtçèü7uüRíý¦þÙ:Ú¯©æ¯'§Í³3u|
-d­Ã“ƒV¥­£½ƒ×û­£_Ô.ZC5-(hÏ?…¤AÖj¢åKuØ<Ý{…Ÿ;»­ƒÖùo5 zÙ:?"Þ—Ç§jG?ìœž·ö^ìœª“×§'ÇgM°°ÄG­£—§ Ó<l?×Aeªù?ÔÙ«?ƒ¶?×?á”\ª½ã“ßN[¿¼:W¯Žö›(Üm‚»?Ýƒ¦&ÑövZ‡5µ¿s¸ó9<UÇÀC		¨yTo_5YHš;øßÞyëøˆÂì?Ÿâg²žž'?ß¶Îš5µsÚ:£Z^žRL*m 4hyÔÔx¨ô|ß „¿_Ct‹Rí7w€uTèJÝ¹GõÝºZ]…IÀ–®½(¦oÀÓR‹¼aßíx1|Çx†ºñGW‰/¶ÓòQ¨ÜëÐï/Ì‹>Û	û}Ÿ8cÝ(„¹F–NLB‰‡Ñ“GWîHüË«‘ºð88?Å´Õ¡{é?çµ%¿WÝás%,4ý­ç^×©~a@)
-¼¥¥«T·ÿœ‰°>ùýÖiPwA›è÷õBøóàB³à½q ¯ÒÞ¨ùÝÚMíªÖ~RëÔÚ?ÕÚOkígµ¶[k_T¿?ÝÝ°3xb"ÀÈkö=þúú5­¸ôF¦t÷¶Õ­~‰¼Ñ8
-ÀÄTßožÃ:ÛÿlþÖh_üÜ¾ØrtÀí1ú8Û(þä÷¥¸1E“¤rêý>öâÑ‰¡óG^T)¨lCÄy•èt¾ï^ô½ÒJw4Šü‹ñÈÔîD‘{ËJh¡½Qý¢õF;¬âÀP?êtÏú?½Èï:Ð²?¹)¹ñ»£+§vc€®J?®<:?S»2Pí'¥`Æ‘œe(Q¦õÞh( ©?Â34.+Õz<ìû£ŠSwªUì~?Ü~ßë¢IYçäÌ?½”' 8PZÂa§ÕÛ1’¸Ý®tnÅ¹¸D˜#§Ö!#ôÙßí§?·Ÿn9WPƒµ›´Áïc¼ß:µßmwæÕ2Ž½æçaäÅqK„Ž#õÐnX„ì¹ýØ0ùhw•ö³êÏíg[7~Ðoêý°ãÒ?J‘}öO½®Q?iÂÊÀ¢,?ã«sK{8˜í?ÿÜžéðõaŽBžÆ—,ª­4xµv¯•jëãwmïC£ÝÛ^ú³–íÂL»?u´Ò?À\h¼±þ?Mm'e›mÀm6-Aí¯€ß µ?MCNÚÄi£!ÝÈàcü:KâH<¶$Ç•G¤òØP)k	ÇÊ‘Ê6~""eNç0iVhqâúQ¾ U{ãÇ|Øaá'ïÖXÝÆÓ† ÍR&R´
- ”¸€§>ÇW,]qÎ
-ŠßáùÉ°ÃläÕùáA	7Ï¼V¸×þ¥;
-£ú°?Fâ?|˜ü?wÃ*/¬÷½àr„pF<–ýŒ%OxZ5VÊŠsxˆl!…(á'à¢…èq„Ëç:Íó~ï¸CÄ0í?kŸWã«°óéÆ½öVe¸yï¨8ê ÊY)á†Ñ¼ºâ Hâñ40¬5 ŽÉÓ MÄPèÜ®4åw§Ác¤Ðh™ˆÏFÝSnbÚe¬YÒ¦?P"ôÅ`ÄŽRóSÐé8ÛÞèLXšX,Æ‡?¡Tœ‡6<mtL¿@ÐÒ‰š?&6:Zvé*T¯½ ×zˆ¦ßÕ$v`»×Þ¯›%ð-¢ë8Ž®ÓÇ¿[û›?ííïþØ\Ýiþ¸¿º±Ñé­>ûq÷éêãÇ?Ÿ<yôäñ:þû×˜u£Õô\‚›5ƒAxí{ÀtíöÇSÍ"5^Ñ±îÉî"–?¬¥Œª³"$GÀ©Á?Ž5™ÞÂ&Ó›0™<ÙÄ€
-„{š¦Ýšîd)JÛ3¶›ÈÏ?R›¥Êím2/€Ái©67$ ÏÍ¡ÞýX[¯ýø6¡?(™$Mu“ï´â7HQºàf£úðáƒ¹p%Ì&™y”úy™Ë(3qØ‚%iÄé?SóâŽ;ôÊhæ&†KIæ?òG}¯‘ÿY?¹:QY¯=þ	ö¨Vó‹-†1‰Ï0Ó2¾€N9µ<bæ9‰‚Ó	Ã×¯%LOFö-
-§Q;?ƒQaŽ4¸tª?O™‰ímá¯í¥ Ä/âp›x‹~é—6s@‡Í	‘Ùü¯ú ÃtõKBÝæ¢u3EŸÛ^´jhKš;7›,Íó3sÊM$^›L¼´=YÐ‰ÖáDëÆ‡K9Òì‚”>7&Z½sÎìø¯­ÐAòôŸ>ü\ïÂä¹0âˆD‹²™k—(y­òÎ]ýãÃ×w;«ÿóáëû¸º²Æ$>Sÿ>^‰P±rñn}õÙ‡•*ê1ËÊN¸Ät¯?¢[-‘û9Ô¡ÝÌl5•IDªç2ÎÚï7mÇƒF0î÷·ý•hê>8ëÎŠ´‹w¥oº–kì\U¼ê=eÝ|ôð!ðÔîÇ0z?ŸúÉ®Ð\ @>@Ý×¯¶@‡aô ±þõ+EÞ5žA<?FŠˆ0¦øAãGþ’) Tº0ûPQý—t «8ÿ'‰¶¿”S}·ñÁþªéÞKEM=Jä)u§Í¬÷<³¡]Ë†Á1öZÁˆ5ï TÝ›?‹·`t+*+ßjãÔbë¡¾|í¦®]€ËtYˆœ)û½kpo£–ð¼w]èceò`/&À$f (— ãÃtd¬d9°2(?¨ðOQ¾T%²¬÷ñ¯¸•Í7¸xFü=“È{nÔ¹úúu²æ
-Î&êwÓ¼½ÙmüŽa£ë}>¦÷\pBWÔu^£’V"ÅBØíV_¬nTž,ÞúÝDK?ß&at£.Û$S×ßëñøBkYô?g÷MfZU1»‡¦€Uf®#á,´!æ
-ì¥•?ÙÕ‡wÒAš=ÌÓ7{éÈ˜V ktæ™ôúã¿Ç^t+½£DÞ8¥ï8t»Nk4i QO‡Æ™+^Ûjm?{$êÂe¸Œº±ê„ƒ!:óÂçbTkÒl6NÙáâöU3èÎØß2»[êÞ–^‚q? û±>.­_…7\°GN,ÚV=¿ïÕÔPv­Tìy*GKgûÿ4XÎ¾wíõÃ!‚?úeìw=G¹£dË»ˆ½è¹ üÍÈ ûgK96îòg-§Ð3 ÎTC}Y2jK-¯×/×–¼àÚ?Â€Þ…²Ì¦Z–Àí7w_ÿÒ>h¾il©G5}nl)·ïE#½i7ºŠÂ›XyQF5µ¹eÂ [S?Xþ&’^¢Gã-µ^[ê‡nwK%FnB£N-'FŠµœ¬÷/W•.¶¢2å‚=Õ…š-l’©¸âØß¦?¸·Ü)ñƒNÜõºjFìN—=Ü±;(zë„±¤ÀHCq?4yª¡’£p¤:ã(‚6!eßAúÈ?œÔ›?ÆÍÊv’,76rB}ýº4äÐóŠUT%?«Û&Í‡0¨©…'ü=£›ªªçj£þ¸º$
-šT‰á9–íßúº‚ås&n©?„‚ú‡{íž™SF‡›0ú5±s‘ åð5ì[ÌïŒ;˜Ív›[¶zÄ<	cŸ}¾ÅÝWÏê²"€ÉÐæ3Ø…Þ Ñ:ÎØÇÂNÜÚ¯)¦˜5å}Õ“ÝšÞ˜óQz #é?K~ÜjV8;IêZM=12}˜`%’jºHG¸%&œ¶D?€?=9‘JÛ%þ#÷:G ”Û…~×–ò¬—©FpëÁý9î?ÐšB1R/
-¼˜öaõèÞ@éEzÚçÝ©‡%Úå*ÞúðWJiYR¨,??Û;m?œ«ƒ?£_^ïüÒl¼ÙÕÖòþ…z,ÃaŠ-À‚„áÝ@SS@‰Z±í<Ùs3?œeø‚Ñž–‘v–"ê•eÕ‚¸ [¥yOƒIè½dLâ0Ôê•±û|M+#=éQ?Xº´`-™>-·Ý·ÁxÀe^¸CêZj’hP(BF×í+®ŠIÈ4R•,(È%¦k“#¼™P­o+±&m€ß2¯2ñQ—–|çËÜSUr?uñl•¿~µqÖÔfæšâÏ‚_ÁêåäÆxp¡£U¹ÊH†,ŽÃŽûéê?vÒ5;ÔÎ¹ 5
-$µ^ˆ÷-{Y¢cŠSëâ£tŠú¨5!xðKô0!á»?êXÁ?ñLI€xÜëùŸÉMƒ?xž’?w"V$Þº…LOÎ?´>c6ÈjŒ{?ÂƒðÆ‹ö?ÕTªiŠ;ˆ}Ï©r(F>,4üæ›ÇK;p/é4s1'™k¥‚	?åAø‡ßï»Ë˜Ë?ÃO †aÏ‹–«? Wo“Ì>|–*P	ó2V„µï-Žƒ Ëe(rŠ¾Í×müxá?L­åáÐí|rdnÇF!—?²Ý'ÊR³H	¹Ã¡I*´?ý™&Õvœ×CºMBËÿ,í¨³ú¤cR'™ô]P¾b¦Ä3+D÷Ö»°+¡§Þ Dˆ½½:\Lˆbf$'Ç'Ç¯ÏÛgç;çÍöÞññ?éŽl”!%´9Ê0?ÈµçÔ–vÎ&à1ÔŒš¹6ºutÞ<=}}rÞÜoŸìüÖÞ}ºÃ#Hí³æÞñÑþÙ–ÚxR[Š¯Âq¿{†i…ÍÑxˆ`DLœ0_{Ñ?ôéÚÒÎÁisgÿ·öÙ«ã·@Û<ÜmîïüÍÓì%8}e
-Û§Íÿ~Ý:PÂs?s7Í,gyÈúº‡ñ¥¡ÎOöŽ÷	öGûødiI)Êö›/w^œ§ô÷NvÎ_±Ü®íõ†e0g§{yˆcM†“ßÚ’Á ¨)ÿGû¤µoi‘Žv“v¯ÏšSÕP(o§xŠ5'§Íƒãªèðpç`ºå¦}ÑwƒO_¿~¥®0×¹ÅèÀ•zž-Óƒ¯?“Îöñî?š{çèRY8ÔÛÓ`·yÄ£z)ZM=v¯½®L w¢KLƒ2¥‡^-³ˆ®Ü8?q<ˆ0™t»ÚBš×Úµ´œgsºþë)Ì;ƒQ:è²·Ã®‡ÉžµqÌî8Ñ·“››ÞDþ¡ÇÜ*¼ÅI3¿# FmD’Øa¼ÉûBÂU¾³f-Í^8p&I::ËœìT¸ìÉy&‘Š9=tùv’&ì]y?OœÝs?aZ&? EWTWnsF/À¬1ñSîºÄtí‡cmõz]ÖR…·µ†Ÿ|ïÐPqùJTÔ2¯añP#ÜŒ‡çþp¹VhvÖ<;ãáENã$ƒ¨"R(Íæ[7ÎÄdîTjv‘?¥‰Efá–óÿ ÔŽðÃš’™PY?HÎ0à„R¡‰;öÝ¾ÿ‡·³ùÎç@÷§ž3MP×ÏÍ ù“ŒŠ£¶4Dá¤š2f*6ÝâoŒîÄ#1Œæ{Îc;³ÀÀÄH¡2Ãr+“:û>~ ÕºæÂìêjŒÓ÷ÊÆúú:Æ´±¹Œ€âÛ>T_òÉ;:Q’Ž—záç‚2&²?)iGšiô4§ús¢Ž¼K?†²O 5ò¼;?8ïÏÑw)H6{¸+³³9-¾ÅÔ ÈD*×Õ´&k¡‡ð­Àã™ó¡Užúá%’¢+/’à:#/ÎFáA|	§×ë6|¥þ>öÆÞy[Î@#.-Š'r{!ì=U”#-FßV·¦œq8b"ëNÿb<øF¬.qä°²Yvð?ˆ‡?ÅÍßSÔ ýÀzK Ó÷»[g\[Ë"ý²ú3ƒmŠø‹`©Sl\¦–n×a!­3µßÄH´‡À°_W'Í?3}ðœP{Wnx}Â??ÃŒõv‚à~,El:ÉÒN4‚cLÃÎ`/ƒìžzVÙÆý.¢Oˆò?y=ÁÿÅÀïƒ•Õlœ¢»?í n‚MÆÊòÕo?Ö9£ 2UàÃYhëãéâ- eÎ4‹g	Ñ»y¢õ@.éžù—A+8g½Û•ŽÒ«a„ÌäWÏ¥TŸöÐü‘¸eDƒ½ŒÂ54Òº³’b'“*´šÁØlb?aOtzÀ?0”k™)æ¥ï\
-eŒAÔF2„J&NÈùb}>†käºˆ”1­DêÄY2$?‡Ã0BrQSÝ0X	‚~pÉî+Žt}‰èÌ6ª$‹ÃƒÕìTÊ,þÈzÁpˆ‚BkÈ¤gÃaÅñ$9²»¥Fb/e	É'¹Ë»¤ù´7?4b¤ÑZ›ÚsÚV?¶Š,SùÖþöd«gºå$ô?­äVjž“BŽx9‚ÎV†?ÔfzßÙÊü¿LžÈîŠA™Êk7]¾Z?j+@þÏ|³6wXÌôs6xHG ñf¸1ÒÀtˆa§OÑ”k¤!‹‹úÉ×Ž®t.¨¸c’äÅå±†|Kw~2‘,‰{&€HàSÉl6@,ä‚ÁÆ®9`dÕ´‡)0f×©”ÔBù»3tå¨”à’uð! ¿¬X LÀM™,\ L[jœ	ù1cÁ?!YÄHcOçc{È¾0Äô*±H¹AmYp:?ŽÛëA×PŽ­±|°ešmã’YâÉ¤^S¯âš
-Z³JgU™3
-*ÕXEDÎ¸ ½`ôõ‘—l·%½£™l‡)ÐdáÈ‚ØÃCÈ_Œ­[€Y{½ˆÄÞÍ<q‘?|ÂMÌà©XÁ¦ .¥EJ4ð°—Ö6jYŸY.ÅÎºáaøŸ0çÈ#µÝL›äq…çK 2¹ÅšHÃ1›OäHÐ¡‡ÒìH?5‚ˆq˜ÉL²£øì¡Mdâ²8ª)µ¹­›Šù”˜@‰QIò,`åá„ØqVìïÌÌÒþÕFc?<Úy¬±Îdi˜†8t”1Eæ{ª:ˆé¾^rŽB»=tc¾u<
-s–˜°ìÔ–n"•V‚³wîˆor*ÂÕÚFÜbÝ¾*1íÎïù bòMNäV¶½>"!8ª¥?Û"Tz‡§\u$[[56=ÝCÑF†ˆ?(ÐÂrßKï€Åªrs¢ä¯a¢oµ^J/'BŽ¢¶üÅ]!U€xø¿^Uë…ý~xú {¼UŠ*Bˆ7ÂL`D™WjKñ´óRu"\éX‘3Ø-¡Ä’,Ø9DÉƒãžzôŠíC~ ¿hÀ_¿ÚÚ#à¶´õûGÚ(õpž	“¡ƒÁPw²nñ?R­«äÁb±Î‚gxf¨23‡ïù"lÎ(‹üU&ôjc¡qáLM6 âO::,ÄÞž”)ËsœãW”?Óè\?&4 ôN2­ÎEµSIVçz¡(è\'bñ¦¼b¦-žƒYŽ?›¦“ ÀR[š—¬eG?¶ÍË.õ°ˆ?Çtf<=ÿ³m-Fêö/–Mzi,WÊÆƒe“O.Š'MâÉÌôï†ÁiÛ}ðû·x¨}Y)¸ªÁpŠ²IwR®;Ÿl´?•Úþg¹t9(ž0Îtm&u°f@“À<.¿“øóÌÚ­²ZKr?©öB$%)¶ÍÎ¢Ü¦úÔFg§{¶‰]í½#ELjK‹'¦¶å©Eêw`|’2çÓµ2O‰JY×+1®+1„ KßYË©YÄƒ¶z<?RÌ–µÇÂOØ¡23âá™õü¢0g4µ§‹ž§dí%1"SâbÆ?sï”¯>ÀŒÚ’Ð'¶_$¹šïæ³P?U|¡?¨.—¾gæwfðgÚÛ"Ù(”™5žëäÉÍIÜÙé+ZéôÎtˆÀ½nË2œ¢"Më¢Xô@`‚L–“„ü;Ÿêåc%, ÐR0ŸK…ÐöR7æ"ÿ"nÊ¿ˆ{º<É¿ƒ¡þÓ•äa£«I,63¬gÕ“¡HÁ mJ¡:á9:2Ù?ãxÄÜ¾ëKê‡ª#›ÀÌá³??0«|ÞSÎO2¨«æ……ÊÚÿ•w—ÖªêOØL\bâvé:ZµYõ”Ãj™åYÄeÎ‘¡1eÿn’Aë>”i¦MrZp¦	¬EŸšÀ §8²»8q}ê±,wÔ@2
-¦µ†.<?üiˆŒó)ž¯.­2Ì¤®¿{kh”±ÄÎèê¤“‹¢Xèí¥“.ÊÙôÐ7YÞJô.Az×ut…™•Sk™;¥u²“:fi?ÞI5œ´Z"yŠ©TmëS¶† î'KJit½ž;î?R ”É‚EùêKVïÌRtÜ3ÊySXã8¬áË±O{#é?õI‡JÐMedº``a^é,íËR‘:œ!¾¢œ
-W:k* …
-?"™9M5ô\Ã‚Á—³TÖX,£Âg^s++ìò^ÐèÅ%šÅ×íŠíASa°ªõÉ¥?IÿÐ*Q.ùDlö±‚§zª…D¤z˜w@:O‰ÅÐº4,]{ÛF?‚BÄÃ³Û^Yó²KêtX½|->ZÈ­ÚŸ‘Î^^–AdÆWÉšÞ[ ‡7•”uSšD*£¦FÉÃ§å ¢ú$YÇS?~È“eÐa ÈFJ¦7ÂÏ*ÐYî²ÍD°A‰Þ
-‡åè«ˆÜvä²Ý\q–køA™Ì#µ‚Ç*L¶€¡ô`PæÆõGç?˜ÇaN¼ «0›¬Í†*—SB”>·õÅlÑl-‹òNd?ôëòŸÕmew]xçOÙ“ðj1ÚLíæŒ`*+YMÉY ´ï'Ô	ö¤ôÏ2ãånÍžäcú?X6»´‹AÓv™4>â–¦ûKÓ•šq0Å},ÊŸçÁ2šw<„”Êì6P6u-I”?ÅqûTÂL®‡ÊMÚSr»ìñ@tMê¿O½K½8Œ|(F¤¼«"Pù3ªÀ’›GÌ~·Œá†›ÀÜÈšIé–ó¡©Î§¹ðZ]Ò@?ÎmA•
-<‚Ö?´Ñ?ç¶dwI>Ì…ÖÝ*ðúñÎ‘Ô˜F&š¤`·A«K%àT?	¾¾gøœÍ‘ñ S€å	ÂxF³ßÝÕà»`äNDÌÓ·Ç@“}V¯.ÑÈÄl°˜žÁžìüÒó‡Ócñi™nØ$…E?s:–hcÿ¾Ž§í:£pxä^çq?ÆŒy0øS5x¸5y©=ÍÉ†}Ì=œ©Ã4§£uA]F€aú
-‡>¬Y=Æ{2ùŠÉÌ5‡³¾=ÕÊû7w<—‡ôŽì!k9e?¾›lWè®ìðWÎš§œ‰Þ‘éµzÈš)y”=–Z$Ø]Œ.ðXÔ î›mQ?Í"”Ù £^Ÿ05DJ†ä›É`Éð[<ºS<…?¹ÌÝZ¤I+™øšæ¬ìj$Î?_z`GÖÚl"–›¹ÙM™9"ëÔHOy’S\‹«û^[Ô‹N V­}*oÛr8$y9IvÛ3‡Æs‡´¨	(2¼qe?éæâãQÈÃÆ?³eÓ>}ªÕuŠ+î% †yçÊÇtÊÕ‘;¶‘C,Ô?™D®ü E”×¤=oÍ§8vƒ§ºî–}Yšý]IGró~eŠ |òŒôæ¤)A[’€Â2,AXÇlsH4ºßzuB?áÐý]NTNö—éÈ_{F‡³–(}k{¯Z{ÿ<hž—°6ÙÛâ D ý<53Xðl>‡©ÂiÈ’q)§MrñÓ9ÀÜþ:ú¥uÔLU¢íÍJŒ]ŸÚ¥]—0&C&IÐöÆ1d fÂ,è™Eº*a41¡×Uhqf?Òw?TäP•	ÚêÒÌùNI×CGzž“??FÚ—}5?ùa:}uª€`ÖÛŽÅ©Nš§ûÍ£s!2[+¹?ü-RÚ£P8ÕÃµt—æ“s—°§?Û*eß>½?œqíA š('òôeA¬²,ÐÈZö¸±¾> ¡œÌÞG;|õhó¸ºüÝdKwAgø³‰x\“Ad3ÓâI|#;áÕ“\?¥Áò¸bMÝPë5­Tv`î%)FöeDÁ£>”¤%P0<«÷¼GÎojû?mÃ±8¿Ö™	8I§uÇW«Xúùß9÷©x¿P˜Þ?´Ú‘·Ú]}u’TEa¿?4âªåZ¤£ðdl?c¦’\éÕyŸÔÀ]…]!Öq‚q’Œ™§’Kp&0ÃUÏÿÌtðÊóÁÕøRUv_ÿ¢þ¶ùxãéO?ª@µ¶d;UMK¥¾ÇâF¡‹¾;	vC«¥S øyaàÜÂL[¬ ßàÀë?H?Ì‹Ç3áOýË+Û š®ß—i¥ÍI~¾Õ ÙtsK†)ë˜ŽÔÅ:5K²$Mï-oÞÙR?®¯k^ÉÝ»|S}¢j×¿Ü?äÃÇ½ÂÏ–"ŒMö}dÖî­&ê¸qØËkñn?ò\¸‡7z=Ô‹œ²4ÎMmÍÃn?ç$N Í?ˆyÕÙVÜœ`c³¯ÄÃ¢wDAóf‘¾]%_)#Fæ@vA,J”Ü	»“¹LÙ\tE9?¡Tocä`ÆÝÈ]ßµ]5Ö¶sH<7#I6#¤ªžz®2¼f­éûðªç—÷ãU§DsYÍŒÓ®Ëšæ-úÁ/µj•5¼«\Ø)ïú<²¢{@„«o1žb–pêÅþ^ŽÉ›Ú=øßs7ó˜Ë7Ó?á[…ZûaéïzÚÂXwø]Þš¦ýÎë.ý=s»Ï–­¸
-±ƒ—Ø{1†#wÄ1‰‰±]Äq“ï`™âQ8¬«VÝ«ƒÈH†1y?ß@waŽ7ÈÃín!¡—þ®ƒ„£JŸ—FGŒ^Ÿ·àÂ¿TºÛ—yÌÄ,ƒáY-AÃPß{¶½¤g“ÈÉúw!ðw`‚óôóþ c$'R—öèvÜ1xŒ¼kÏí›B®Aé¡|%‹ì“™YêAš"½!Gj2ˆÐ$@êÑïó³_%ä—ÎB®@!9as.,KÊ3?]¹¹?çy?W!Ý	Acå,Ö—ò:ºòúCIv`Œj÷6ÿøìñ:E?<µá)JQ"¨[“ÝÉ·™H­û	­”]?v‡C?«'Há˜^÷oõW™&­>ëÓôf&"šÑL¤-÷5äÙË¯¿ÑÃØä“ÕØÙsÄù+¹kkjÏíwÆ}­RO9‰Òmuq«.Cêl<”zzx?'ïµ™9¹VŸ=v‘ 3\?{‚%Ø.¬‡fO\®µO?²ùMõX‘çsefC@ šIR¢ûéÝÆ‡E™9IyßÓ;A4#_vyÀ®pc¤ÌJHsú4°º©ãßÃ¤,¾$mœ…n«…dÜ®¡eÐcR6}þ•¦dõ,ƒ(Õ¿‰ÓÂ4€þ×·Jþ‹||e²UÞÌË•NdtFšœMÔãÑmß«£Ç ?J?Q9I5üìP"³~ ='ËäIF•È©V1¥B“oar[äÌRx^Ô^µÈ@€Y÷L!3­³ÎŸ¤•LeÝLVxÖ­tÅ'¹©Æ,Û?ÝÔ¿oáÐíp?Øêëà§ªç÷õé?Çí¯ÜŠ2Íëª*Bdš¥‚g‘?]Ï#O¡¦"º.ÈKi?:ë¢CŸX¨=;·×÷á!PB«ù£\¿ZŠÆæ€Ä¥µ9/Mï$8Ò¾È4–îœËË,kž)ð#š¯ý'w×þÓµv-U‰•I>¸Ã¹:ÊàRV—»µYzá~q@“Îð_ \¨É’]d¤¬[ébÉŠÌ„—mÔ×ïîfr(`Z+Ó1£fÚ5ßÇù=ßÓÿ2ía¯b®‹8â=eÖNñ&YNøÚ?ÍuÿI~õE"ÙØ… z"Ÿ·b’—[?CMükGn37Sÿœæ`öÁdõŽhÅ¢6ÛÊò?!)ÛV)}®þ%$¸³èBË‚Í°§LýŽ{¿Bqë5ýüŸÅ>eq;Ä¿3'ž¿%É	Ï~ëÓÓ<üÍÍ˜#oóVH¸0	õÝ`´”`œD±­+I:Sù«­Ì[O Û0’BQ]\ç	 ²:m‡šÍýãÃ2§4Ë°9?h9³öÁôV?ïBí4ÊÁ²ÒÀ%ù²zÐM>~!rÉ)›á¦",“s:“ôec¾ïŒ	%æÃý+¹	Œ[?rþ'9å÷}Ä8±=?Â;ƒÕµïÝÈÒ‹«zxŠ½NtcžþI¶‘`"ˆ\­‘ù¶<þ[™%Ÿ‚}³?f‡ÅÜ*pê“öª‡‹dÌX×3¶ß@Þ¼!„Ùox…ÚCàï{¼wÏè‹'Wô\šïáí$ËFŸ<s,³ãk_ÔÆ iš®ôÈ?²Œtåƒñ€ˆ‡>ð? p»]LÌ¹6ÉÝ7ª%K}(‰¸
-Å{¡tŸQýÔ:„¦^Ë)ê=6‚¢Gáå¥,]eÆƒi:œXcÂ õ‡?rRM˜øCAº¶”1Ù04+lÞ%"'ª¡Öm*ó]fW0kV½›Š»?of$éŽåBôü(©'ÖöÜ!êiªu»±4µ£e…ýL”¦·#o€ð†>¸2­ebº=f¬FfHV‡ûÍî/_šÛz¨<áá	Z/ßDÒ“x<aæí?ß?ø:¢Lž›¼=g$WýžTWžÞ(w«åÿ`NZjïÃ ïÇW?Rtôª¬—cÔì{fßV¿Ÿ»—HŠrÖìÁ2æÚ1Ô‘í‰)jYD­²›5±1z·?9m‡µ>‰ÈŒëVÂ÷ x>QU¿L«ª¨eížËóŽO•.Mš÷M +8H†dKk4r;WB.ËAZ
-#M~îé­ò•Q¡{oÉ?ÐÿÃûÿ&¹&ÿ-’ßÓp2Gó"Ù>-à.ÉZaäœL_!]xiøÕhÐW?¥åç]àó»ùÄËlAŠÁüŒþˆq#sx––‘ša†ÒpxÄæ2
-1•ÙÂÀÄC½`9Žúóm,äp#¿#{ÖÜ¯^ƒ#ß¬ùŒ×,Ò6Œ	‘Q;ÅXÿ8¼¬ª \?¼¡‡¸¢-X­#‹w^<¿Á^3w±¸‚œ13)z™§3²®že¶ÊÁ¹Ú+™œ4œ'?ÙU˜´.k/ì#%Ä„îoÍ—üS„¸Ó `]mè-SŸ|ä•–¥{xÞôx",šdm?§È‹vhcÆü ä¤¨àYúše{à³R¾Ó`Á5êåBæL£™¨c^ñ¥™¶ƒ
-9grû—˜C¯báŽ©ùå«ðf?1ÆÌªQe’&Ó4ÙŽ5}*u·?0!Ç‰¯@OŸ9t0èÉ;."âš2™6/bL¾›ÁÌ‘ÙÑxÀY¯ˆ0[/ÙÞ?Ê“cAR´¦|?ÆÈ1IÚŒ«ë³ÝùeÚñÊ¡½k_#Íœ[û¦c|Œ³"{—ÿ¡Ù£$Ó™_¦>E‚ôÉ>›:¡ƒrùWOý?2z¾€'ûÒÂ?ìÁ]Dß{©®Â uÃÝqÄ4³~L>„$	²þÎ¸±¸$¬ÜøèÁn(@R@ÊÁ%Ý
-¬å¹xç)çC~i*ˆ#geg$ËM¼r Kiz›8«eÁ™1p?°N›uÏ^m4Ò“ÿi·gðÉ… SðY‹”{…ˆ·Ø8Ž:sšžE?œ‡Ý…ü=È&ä26$³ØQø	S_ô|—T6'ÏåÇ$Až£ß	Â`™‡y-ÃJ“7¸¦#ÍY¦Pº€?íÞÒ±Ìœè­wQIš	¾—bÄ!U‰?¥¤&«\6›ÖÍbÚ“å·	1 %’6?Rƒ@9ÔßÏ~¿²vYsþks—¹#Zî…2º«éÉúãèL€åÇ„ ÜŸKU˜þH(˜ÁäkJù³ÑäPâžå—»Úb0òÞºŒwï²`uC­ªq?¾Ú×Ukú€¬]Geø‰O³KSãáeä"
-ŠX¹I0‰>Þg~ Á›ô„Àd_¹ ?«F»±?è(¤Øb¾skÞ-†Na?/A™MìZquš†”§'Îgµ¦·ÝôPüÀ0h›ëŠ)M§åÙªäžV"“Ž’QA~"¿J†º,¹£:	oYÝ¡vfµ‡ášÉ;[£Ã“v"ô\K'0h	kôeŒn+Š¹õF5³ Û?ùS1B	Á¤:ÑËìæ·Ù.5—X%œ˜X–c%=6ît Øƒöo•¾Ä£¦(c–©t7?ÌéÁKa;Vð9,³ùÌLÙsXJt^ÏvŽè6o9ª"¬]s‡þô:êëOàë¢!ñzŸG™2Ýõmý‘VÄ½?õõÿrrUzÖ?©K7ã¥6D=ZZª7,Ä1IãVù‘Jgd¦µC£~G ?¯i<kæ$cß´PPN zCÖ(#BK3Ï?`?–ÀÉwÛÚé_!Å7ðk^qûf&5ž”IÓN¿èU¦l«y/•“¬qbã÷gˆ×äõ;ý·a¤Dß­·NÆ‘wøf?
-ð¢5‹wMO³Úc¿ßÍi)éDã‰ßüôô±L…Myê4f²=)DºbñWq.«˜µšÐ"A¿DŽ?ÍEäÐï¼‘Ýô{ Ó÷—uÙ-þCq—î%üí7ÏÅ”¯>
-õÕLl0 PE Á"òXiüºõºúY9ëæŽÃÂ	 Id]2¢á4+ex2ÕduL8_!g –ÙW9Î"Ë®w<¿¯	¼
-Ç_þ\S?'ñ\ÈËër­ŸÕïÎûåâb=ð>Åòsd.Äpt&`ò¨ôÔX@ú1ýJã‘ûê°£M í¬$††ñ-ÓÃÉ/Ý¯h÷Œ‰³]éÉ$Í)ýzòa”7°~ÌÅùýƒ–¾£L^VO8K¿é¯ù <a+ïžÕÖkO>Tí™0Öy29“ôàI?¤<¸Ýî‰¹ƒŠƒT»ÏÅRdèú<OÓáÍ™¼h°#?›¹ý÷6žÑên¸ÙPH&ñ%°oÜÈw/ú/)¹&ÞavÇ2\—¡NÁ{Ã6ôÉŒVI4žÙ$ùœ[rœMK¾ñ¶’?ä±9,nR¼š7HhÂ(‡âZŠf6çÅðhcÖÌyI¼ø$ˆŠéZ¯ÍÈVš-’¥ßdÝy¸©är?M‡&Mße+1s¤uÂ>ÍL6ƒQ\g‚^ÏÚxg‹u€lj^aB&ê@ˆ<c3ñ<•dö<×“ü˜Žf=Aƒ'd‘È“wb‡È‘!³³ àž­ì@?³4TÌ… Z>ÁÌ„•%Î¯²™?;S7ãOé7„½ ³ê˜'§P—0ðäC
-0â®Ò˜}/^Êá¹Ûýár–ùhÉ}†™5H™×Ææt¤üÐ¡ßÄ{Zj)jLõT7¢a‰X01™K*u]ñ†Ê,Œ#è?ÜãŠQä=—b’¥XqŒ aÏâÉ¡XóäPže"l[~5÷õýæîë_ÚÍ7ÍbØà‚òl?GU%ªÓ*Ò$´ïÎh÷œÍäÞ™B3c²éËðÛÌÝd¿ Ó|0½ö»0^k“œqÒ¿É„²/öçjäÄ›Å%G?óÕzŽúÊ¬•Ul›0@÷`?vüö‹¬Cn»™-§D¤^žö0†1dçëØg¾.³ÇÉh4­Z·?@œî_æì&ƒ'·‡™£PØÇÔk¥Ì'z³É"ô`Ü £7ŠŒ˜‰å¢HÌVÇ%š­çJkëH|
-§éPÉÊKò’?-±v„?©÷Û»·Äísw!f{É¾®ó*}+¢æWž…3>!c2w.;º	¯&µ0?ÌÔŸ,k©DZˆP¼GÊõÄ†tu‹mÓÍ¶ä.1.&øÁ'ÓKˆ oÜhã§-µ¼3îú¡:õ~G>Ì}IÍ)Ãdv%¥\â0¼ñ Í-µ`!?&Ef‘î ?0É¢nu‹Ÿ gÛG“m	º7ŽGáàÐƒ:\ÿŠü?ÝJZð6¢ŒÒîÖ,¥¼yÊäþ^´MÃ”ú£…¨ë›—–7žRz|Jw?/× ¥öd1j¼¨zq±è”Î?‹Ó¹‹PxÐBè‚ÑÒá]®-õác„I‹nKWc
-Žz?þ‡ìaY6–¹Ñmƒ?éµ¢ü6çƒÓ=úÈ½ÞR{|=uKwœA9ëÀedb¦<hÄ¬üLÈñ´(Ç)¤?y¡c*?‰k<-9:®Y×*ßS	ÂÆèúïª Á|žQÙ¡ã2…²\r§eé2cA6"|Aš€¹â´´,§¶dx]2)Ëu2JÂd^wy²ä•tùB>‡K¸	ïå†´ì¬Ú’,œû}FöôhR?©Äâ½4ZÙ’m” å+6n?¼ÜåçÊu¥YùÆø²Ã;WÇC%g[@œËúòÑþžÇ›™ô7ÃÆ‘²÷èðì„§S ‘·!£ºÇï—¯™ˆsz]~$Í?áÉ?Ý¸}?|´z„—¶~0æé\}>?€iã ®)ÀópT„Žx~ð†›¨r'&Prþ°®@GòbNÎ³Æ¡êZ½ÐH¨t?5[ Ð´L»Ÿ’L›½M£IÎx›¨Îß8C,tR?ò	I6¡ÆL8uÖiý^—5Åò·ï_—€Ô†n!y—ð2·ü(ÝØÔj²¢ÛËìKúhÛ|>=¯+`Ëi&]O—¼‹®ŠÂÛŒ©eDÖ-KM²>õü©àOÈ–76T9˜VõÖL?¥t¢[“jÈ–ÓsF°‚Â³@ Höõ×Œhþö[o0ð%å]˜´3º+PId-jœÅtÜòÂ…??D¿?¼ŠãóF®nZÄÔJŸ#œ­E.BgÉM‡&Ayq¨¢?z4§{èÆŸêñèE­€5‡…'›g5C²B}`±ýUåêÆ“½+ØAÅêX¦z¾ñz=?­eŽ'ë!,.¦âÍÊIgfŽ.-?¿°G??Â¡cG¦…r°ñb²bsZÅ£i?séÓÕfrœ2üüÊCÂ9/N0°¼*#šÚ÷F˜lz]4»Ú4íºðÓ0Uƒ	8V’!ÿÍÅ*ü\ÖÙ†z¿ü†¯Û˜Üÿý2‡’xèÞè7G.„41YU eAf›Ã¬\þ]uûþ%†N­uÞ®Ôeÿ¯B¡¼ÎkøyÛr“i(kÿ¨^GµÒKÿ[jóõ?táGÄ2üw«ÜÝRëõo dƒ‹x¸†€oR7WþÈÛ?Fa ·›9’?Ý?¢
-ÑXÃÜ¡†Î1ê¶£OI8ÉÏîïÀuÂpž-äKÞjžo#Ñc*ÑêØUW‘×k8sôUtg?ÇlúßEˆÔPûÝ·ä˜9Ìúâ…&"V?¿\ÃÌ|aùÙ¿yýg[¬q_¨Bæ?÷Ë ŸLJµ¶ê^píGaÀxÍø°¶Š€2òn¢÷Ë¹åÞ‰¿ÄÊ_É?©öÉêëü×õÆ¶•NóÚbv÷—ÆÕ§³ãjvðü.¢L·Þ,©+þ¾½UòlRÌ²Ù'	MîÆ†]·Ÿ„sÀ|á%‹z')–+?12Ù¹;Ï?fæ ²­Ã—BŒn1aÀ\µXš=O^V—]èŸÂ;4D¦é<NÌ–¸¥#½µüèlq¹¶d{l™'´ð{€ÌÿXßBqâEÌÀx¹*àr9øî¥¼Aƒf{ô#ÿ å-0?‰æò3ûŸA—^__7…ÿc¡7PÆÂ«T¾­	‰ÑMv–0]Ü|–®ê¼-e~£òÙÎìgW.‚îâMfM}´éß{ÒRb¹wPÑ3¾ºyWE?éu?…åHÞDü÷”#»|²ÈJm~ñäŽTfõýQe–WdecþƒÌ5—†Ø yÌÏüµ<(¬wC"#™?ïÈ"#Ž¬í¤:<dsUøï¡Öï ­hA¡ÿcÌ¿±Ç17ì­oö?ýMÚl³fn%ƒ?}G1s+²XdÖ9ÏüË ÌWsÎ‰…y[Á1ßx_Ö‡zí»tÉ)Ÿ;ÿYzÉ—%çÁ@)§wxxGí7ON›{;çÍýo;Çc…”;#dc¥Âo?BäB'°ÞUÔåw·¨÷ô·Ì‡Îm°ËaÝá6àý°Êb9ÖS~@÷~XõwÖK±Aß?G÷CÌj¶žÂ±m8ŒŽ/>ÎA®aˆ#Y_Ögätö¼à;ÑÙ»ò9GKr÷Ä;›æ\¼I»íM][öš­mõÇ*ÆX$U«›I&¾^__ß?I‡É„ß‹¥'ÒÎþ”]æk<Ó±è¨£nÓžmõ+7ú}•O\Œ¼ÌgÜ }?†êõ¢š¸Ÿ 2œ†æÙ½ÀÜ§b_¦)0Ròé§ã¢û»?™ò¥BÝŽˆšÒ[KîõeÂšzRüâ›=g	Jˆ}A7QÿÇ¬±¶ºÎVzæ<ýdbª?p¶,±¯$Å`+×²%WsÇC-,wt?þÍú¹:IùM7±È»Ñ¿ÿú2
-gÉ y4JBvjnap.´?„§^ÇCœï&/ÿÐAÍL¢né€bA?ÝÜ+HïD’Ž?ù?´q‰ÕNk™ù²šÎ´ä€»A“ûÖÚÄGoÅS(²9A·€rø§è?ÓàSŒ“¤‹AJ¤Óv-_âäW;kó€ã‚Åpú£% ¡ùÁìWKçë•ÎÓ—Ï/Ã^ØÿwÍ?õ7<?‹€®\DŸ—¦?X:ôäúË~xáöëãÜ=ÙIø$•[ÓŸs¡ ò—ùˆ‹|ÃEsÂN.°,GFÍTqgˆRø1½œ(ØT±ðøû.Ÿ”!?:>ñ\éƒ¬i´êëW•þªË§G»„&ås¨ïÞÓ¨ü6F.B +§[kh Ñj¬ÐBÚ.ˆ2™”7<Ì+ÚÎDñyð†nI­á?z“^é]úo–E»x62ÿ:ZÆ=}²tøÝÌs}]n'àçŽ.Æ#~õaÀ‘\õ\¿?ÖB(Ælz„¡3óîéPË!w×­™þ²V$Ã×DÊÁ,[–0p1Ñ®0;»³[e¯ÄÓúJG¥_œ²Œjg?~*±õ…KA>DBYqHŽåŽ´"¯â‰ŸFÞ*-‹Ÿ˜öóÞ¢÷–ÞŸä‹’F?ÉjEr¿ £ú&¹%?‡?•¤Òòyy'§yq‹T¦ã²>çrCNuèªB"“LÀHÆÌ³DÑÊ÷ÍîøöðäQÆ˜dÔã(®÷Bköm»ÁðQþ-;ƒú™ÍäÍ,iÏ7µúqÔi@8?9y˜}v»ÝópÏ?F	ü¬¾?Å]sP¬’a¨ØéÁŒÄk¹4Î1×¶?¶òÐ’ŸòŽŠé´–ž&˜4 |þ%Dê†ç¶MáÙ½¯ÕÏ#©KZ>ûâßlîÅ¿§˜’¡BÏ20»íŸ?Ì‰i¢VTEkI²ü 1©Ì9­ŠÆµJfâ¿èDa2óµ§ÕZÝLâ›•»Oµ¥|Ê»ee¬ñ?”Ž§“Ò-@3,Ë3e®r6ûþ
-oÛM	»3°ÿH;·àÂÅ:=a¯P^Ø*¨æ«³ë4ËdÊ‚{æ!7°·!FRr‰?÷‘9=›%¦†)ä¼	ÓéÙá;…,Æë	þît²Ö´)ý¦¹vóÌÍ§t^veŠüMŸH–†&<4‰ ÆW9¾ˆuMU‘,^Uxc?õ"(=¿÷Ã­=+é{n÷ëÓ› /Åù0ÿ3cx„§¶×¶ûƒ‡raP#
-ÊU;I•A?/âNä_xÿý`.rÈÄkã ï|XGŽÖ4BCSn(#ÿÚíÜž„1nóonn
-o†àöP Xç †Žº²(ÏÃ!àí°×ÇžÁÐc\ÒÝ°ô»“Ünx!Ÿ“\ê·[ã5i£;zÍ ‘4ø×³¡°Çx –8‰*»™Šžéq½R¹Ç–Î‹ìÆptô©€•¯jšM
-XcqkTªç1xyñëó÷kò€]»4Á²^!ý2›,Á~^e$ùXÎÐùÎ/ÂÑ(¼ô‘Öqä_”Ýüþ¶è<Ù?38ØâüŽi»|m?Õ?2+Ë_¹ŒIý»õüegq±:O Æd!:„RÞ]Y¾ôBÙÐ'$¯O"3rñÑ^8FÖr+)¢ÙíÏ¸Ûøâ&¦ÕâlH7^a=XàýÃväuýÈëŒêÜ<Ö?ÇÀèËNÚAŒã‡Ñ´¨sm?C™¹>sÖ?™è'^ÝkþàríñÚÓµgk›k›OŸþ´ùìéc¹'ÓX¨¼?àÿáuw?]\9Z~Ž&ŠLØD¼ˆ<{!g¨‡U„Ôx5ú·í‹Kb‡á’ò‹eÛwûŽQzuØ³yÊ²RåÑ òãGÖ…hu%@+Ø'¿=?®Fë#š[jãéð³þk?<¬©H¯ü`U;À+¶å»ÀY­/¯X9V —CKŸËUj\ö?ëëúY]î©LýåXDQ¨„qŠµ?‘&=¡ú÷{·à÷­'‹DqE·õ$uä’µÉ7ú·ˆ6øË½ÆDžïãë×÷=õ:à°)ï†{1OÅþŒ›£µàûêV¾pÈy+fSýÃqìwÔÏÿ66gèï,î,·£Ë/\Î¾†Bé)\tCŒP²¤×Ý\±Q —à¼…wwõ$ƒÅ_˜@ø^!ãb £iKØHz3= ¥ì¸T®ª™ÕÙal{éÚø´m‚½dCG¹Ï¾oMâÈ ÿWœµ65ŽcÑïü
-µw·IŠÝ==CS4MO3Ë«ììÔî¥Ør¢Å‘<²LÈNóß÷\ÉqLpMïÔU‰#]]?û:º2§úSÂ³á©>Oø¤³"ŒÑæ³%ZY¡,[ë²ÕÝHÞ²bY7£>I
-sH’%OôàƒŽ&Ëì$Ý åQ$Õ`‡m}ŸÞ±7›øx¿??­wé]'Ø[}Æ±Gd?Tfy’ˆè³à‘0ÁÞ1·"³Ì!f»¿åÒˆh÷ŸPñ2ý½¼?,¶ø¤³CÁú´‘¸K…‘B…¢ÅÒDðL0é×8™]>Õ8ÖcsÐ64"î«l?¹½<Ô?*‰®.Ž1¸ì%Þ”ýH÷EaPê¤`ßk?eM9Ý7‚ßtVB`k¬’†ìXÄö*ÍD’¬6wVdÜàÆðÉ?ŽÄ?¶þÅ^u™Ê?ÿõkf'©Ð1›Ÿ^ÍU$b©D´JR?¦W›¿¯ÜrÃr·ÇI6ø(,—	ÃÔ/‚é8FP¶ß9k2ÆÙ°‡,†[c#D›Ål¢s6æ0Åjhxž)=n¹‰?+–È¦2òóT¶ÅÆC¡Ä-”O‡Ú0¿H?ò?Ð™¸nä`h‘?HÅÎƒ%>­(„½<Žå­*%z^i™Sÿ“û+ÉôX0Øû‡ü’¥0§?TùÈÇ…"„J@"<p.òq¥{ÎW…H#Ýdæ]Y¦†‡©9’VDûa(ÈŒCÕ’‡"ÞIY?©çF†pXÅÐŸ„?­gÜ)p±üóÖvû‡6¢BMˆg©rYhd_|È­ÕÊíäö? ÖûÓ£š /8Oí¡¢|éü)`Z…‰oº?cšñdJ7wíÅcôd_ET[?f‡as£XÌ“L?>9°Ì„Ý`hmº³±?²µ2l›!OÛ¡mmÇrÄ
----End---
-
-Server writes a chunk to client
----------
-org.jboss.netty.handler.codec.http.DefaultHttpChunk@3fec226c
----Content---
-"ÛÐH+òõFßªë©ä}àlduì¹ÚœÆÈÇvÎ(
-ViÒÔŠt6õÊÏZª’^Ž²Ô‡ÂY±¤	gWj§zÜ¡•ZUr äfÔ‰6âXª›G4Õöw¾„æI¥ÙMâ…N@-–!?@5 …ä/©HÁç÷?gL€r¢ëç–IÏxÁäJÓ˜‡šQžÉ??%èÁ3(”³Ôè~"FŒ¸TÄÏä…í‚–p‚?³:ÁùŠ¯TÍ/©É‡ÌA^U¤ƒ½òó‹g\\Æ¤so7Oêý GÐÌn"+ZçÝOîäjÂ2÷JåŽµDö7Z¸µ¹	’ŠÖ] )3õì`È•IF19¢f|hZ¤ÒÊ‘˜1½´°$O*¹„u®ŠØCi¹çÌ®¢ÊÁ¼UË˜ÇíT“÷Ëiëm%ýU\@{^?¶£ll²?Æ‹!‘"9Ó	š8:¦Nuçê&k±#_O°¶ÐeÅ?]?D¨lÑjç r8A_Ð™ö7ßLÒ7B¤ÅaØÎl
-ú›M‚e,ã#4^Y¥Zâ…Ëü¹?ÉÀ¯ß“u¤jàÓŠÆã
-#¦0ghŸÇ«Ô*Ý?îöº°Jgâï=ä?Qž“7¿¥U'`O®®Ò!¥þ"zt@åÀ’™áuúç³àk=ñ•×?´9¢w¸VMÒø(Ð÷×€,8Í7y‹˜îk‘”_/â±ŽŸ?ú¸š©Ü[“ÃžöªÌX
-•¬è¢g5ÂÈS©1WÕÏÂM‘=×¨áÉ¥0£¬–²S#oy8ñb%8„‚F™Þ­ðí—%}]A§Uõ–6ÂHê¬ÜÀrgÕl²ºÍrwTã~îŠ§Ó<½”)Ýí­ü#È¢Þ[ä
-p^qµúK‡Ñ¹'z¼Ã†2Â‘G-4®²ïÔO,ð›LwžòMÍòbþëöüE›Is©™;ˆ¨‚…E{‰®”º—¾ÑãŒ®ÿ:uí'5H$(Ì“wôš?Fà„—µ4{-C­æ:…¥ž?°Œÿ7@,üò|EŽG"æybw¦¿ïWiÝÜÑ,•´?y…M’¦?wŠð†ìé·¸D¹òè3ŠÑ¿ôþ£³çÊ·u²?&ûÝ)âiŠÓ.Â{¨=þ=Ï~š6Èqù €{{EK°¼h:ìÞc”Ö•û4šÝî['·±AwiWÑíXêÁÎ?÷=:ý©ånM”o¡Ö7Ww±i·W"æ#˜ŒH¸‰G ?÷{—×½ËýËÃëƒ³³¿‚“‚n€Ï†cöÑíß¾åI.ÎâF³IÓé6èº “2
-t‡¥Ü»?€Ü»Ô­@{‰žEÒ`A½SƒÃ?b“¹X•Ðª¤›Å@D¦“(£?nxc÷D¾ržœt»Päý×³:MEä¦—`$é?ª)ÎÅ²höî_êççxò¡!e"?^P?O¤§,ùŸ¦Ò_?×qª*£“ô(ò³Ü }[è£Ý@?No f•à&×Ìt¤7ŽÏúÿÆ1_-žvÍ¦Å^.[æö²†«,ÕÆK¾bÏpˆžŸ®ÆOîYÍÑT¨Ë¡Ì2Â?i’"1­´	¾ŒiÊÓ«üç…`I‹rÖF¤jzoÉä‰;T]À?æv "p‰¼âïg¹?1]6Ôcÿ·éöiòc¶¸íïòMà-ø¨‰¸Rç‚cºÛ[%u{’nTm¡n¥ÑŠÒ{mµ`nð0S*BlÉ¨ß ¶!Ü? X“Qs~ú+ ùR?½U1j?á®@d&Q¦ðÀCïØB1ÕÖbåºÎÊKð_Iƒ k2Åû!Ë]ïçÉB=þòææÆŠ?ÐÙhöƒÒtã2²Cˆ¾Ùzï|Ÿƒ‘·ßoúä_xƒHœshéeC€õä­¹4<;8ûxèJ¶fŽÁàµu k"y*uë]•Ö(?wÊƒºñë³¿^\=±{ºtw:´H ÇÄçû—Ÿ—î:ê[´ƒ[¿Ð>†‡§û'OØà¤}<l3ÓTìÅ®„)?ýò2ÛHå?TåîÌ¤"ö×2‚r$ïZðÚ­Ä/÷Mž0âœ<‘?Ó@åˆqôPŽ{¶p³DnœÜHlôÈ?xÁÃc Ó™@N¿ÄŒÿ+êÚ\úùúüè£ãŒ9c`KÑ‹ŽÇã¶½ù-†Âõ¢î%Î:íW¯?Ö·6ß¾ùîÝû·?æ&qÐŠy¸‰c}*o¢ûO÷w§‡@$n°ƒ×@cð?·I¸1G¸-Ç-­ÀQ	üë¾×‚–gøŒX­“>7ÝÍVR¬Åã”Æ¤Èð‹º„œÀv¹—Å_'´Ž†?Èäx§ú î64áŽ†=¦î¸ÊàŒÞÑÉùñáõ5¡õœëÌÝK×œžŽ¹3ó^u©MnÒ Å?
-«“AùOÂ éÎ6Öx5›w.¦YYRÁk¸´Ç8­f31Ú¬¬Qž`H–MÇïCòîV£Bò@üê¡ øóá\§WéxôÆ·D¦ÍñaÉh.+z|/zÿ_R¾_óÿ  
----End---
-
-Server writes a chunk to client
----------
-org.jboss.netty.handler.codec.http.HttpChunk$1@595cd4e
----Content---
-
----End---
-
