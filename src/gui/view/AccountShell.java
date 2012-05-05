@@ -108,6 +108,15 @@ public class AccountShell extends Dialog {
 		return passlabelconf;
 	}
 	
+	private String getWindowName(boolean changepass){
+		String header;
+		if (changepass){
+			header = "Change Password";
+		} else
+			header = "Create Account";
+		return header;
+	}
+	
 	/**
 	 * Takes in account credentials and checks to make sure they are set. Compares the values of the
 	 * passwords to ensure that they are the same. If the criteria aren't met it sets a label error
@@ -147,7 +156,7 @@ public class AccountShell extends Dialog {
 		shell = new Shell(getParent(), SWT.ON_TOP | SWT.CLOSE | SWT.TITLE);
 		shell.setSize(450, 300);
 		shell.setLocation(200,200);
-		shell.setText("Create Account");
+		shell.setText(getWindowName(changepassword));
 		shell.setLayout(new FillLayout(SWT.HORIZONTAL));
 
 		

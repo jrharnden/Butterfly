@@ -70,4 +70,12 @@ public class ProxyServer {
 	public boolean isRunning() {
 		return isRunning;
 	}
+	
+	public static ProxyServer createServer(int port) {
+		return new ProxyServer(port, new HttpResponseFilters() {
+			public HttpFilter getFilter(String hostAndPort) {
+				return new CustomHttpResponseFilter(); //TODO Changed from null
+			}
+		}, null);
+	}
 }

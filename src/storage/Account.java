@@ -21,6 +21,9 @@ public class Account implements Serializable{
 		passHash = pass;
 		if(!(gr == null)){
 			group = gr;
+			if(group==Group.ADMINISTRATOR){
+				permissions = EnumSet.allOf(Permission.class);
+			}
 			
 		}
 		else group = Group.STANDARD;
@@ -164,10 +167,14 @@ public class Account implements Serializable{
 		permissions.removeAll(perm);
 	}
 	public void addPermission(EnumSet<Permission> perm){
-		
+		permissions.addAll(perm);
 	}
 	public EnumSet<Permission> getPermissions(){
 		return permissions;
+	}
+	public void addDefaultFilter(Filter f){
+		if(!defaultFilters.contains(f))
+			defaultFilters.add(f);
 	}
 	@Override
 	public boolean equals(Object o){

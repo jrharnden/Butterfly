@@ -14,6 +14,7 @@ public class Accounts implements Serializable,Iterable<Account> {
 	private EnumSet<Permission> groupAdminPermission = EnumSet.allOf(Permission.class);
 	private EnumSet<Permission> groupPowerPermission = EnumSet.allOf(Permission.class);
 	private EnumSet<Permission> groupStandardPermission = EnumSet.of(Permission.CREATEFILTER,Permission.DELETEFILTER,Permission.EDITFILTER);
+	private int portNumber = 8080;
 	public boolean addAccount(Account a){
 		if(!containsAccount(a.getName())){
 			accounts.add(a);
@@ -103,14 +104,15 @@ public class Accounts implements Serializable,Iterable<Account> {
 	public boolean saveAccounts(){
 		ObjectOutputStream objOut = null;
 		FileOutputStream fileOut = null;
-		File f = null;
 		try {
 			fileOut = new FileOutputStream("./data.dat");
 			objOut = new ObjectOutputStream(fileOut);
 			
 			objOut.writeObject(accounts);
+			objOut.writeObject(groupAdminPermission);
+			objOut.writeObject(groupPowerPermission);
+			objOut.writeObject(groupStandardPermission);
 			objOut.close();
-			f = new File("./data.dat");
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -129,7 +131,9 @@ public class Accounts implements Serializable,Iterable<Account> {
 			
 			try {
 				accounts = (ArrayList<Account>) objIn.readObject();
-				for(Account ac: accounts) System.out.println(ac.toString());
+				groupAdminPermission = (EnumSet<Permission>) objIn.readObject();
+				groupPowerPermission = (EnumSet<Permission>) objIn.readObject();
+				groupStandardPermission = (EnumSet<Permission>) objIn.readObject();
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 				return false;
@@ -202,12 +206,31 @@ public class Accounts implements Serializable,Iterable<Account> {
 		return imported;
 		
 	}
+	public void setPortNumber(int p){
+		portNumber = p;
+	}
+	public void setAdminPermissions(EnumSet<Permission> p){
+		groupAdminPermission = EnumSet.copyOf(p);
+		applyPermissions();
+	}
+	public void setPowerPermission(EnumSet<Permission> p){
+		groupPowerPermission = EnumSet.copyOf(p);
+		applyPermissions();
+	}
+	public void setStandardPermission(EnumSet<Permission> p){
+		groupStandardPermission = EnumSet.copyOf(p);
+		applyPermissions();
+	}
+	public EnumSet<Permission> getAdminPermissions(){return groupAdminPermission;}
+	public EnumSet<Permission> getPowerPermissions(){return groupPowerPermission;}
+	public EnumSet<Permission> getStandardPermissions(){return groupStandardPermission;}
 	private void applyPermissions(){
 		for(Account a: accounts){
 			switch(a.getGroup()){
 			case ADMINISTRATOR:
 				a.removePermission(EnumSet.complementOf(groupAdminPermission));
 				a.addPermission(groupAdminPermission);
+				System.err.println(groupAdminPermission + " " + a.getName() + " " + a.getPermissions());
 				break;
 			case POWER:
 				a.removePermission(EnumSet.complementOf(groupPowerPermission));

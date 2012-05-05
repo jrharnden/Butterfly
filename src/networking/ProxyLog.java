@@ -43,7 +43,7 @@ public class ProxyLog {
 	}
 	
 	public static void setLogEnabled(Boolean value) {
-		isLogEnabled = true;
+		isLogEnabled = value;
 	}
 	
 	public static void setCountText(JTextArea inText) {
@@ -56,6 +56,20 @@ public class ProxyLog {
 	
 	public static void setDialogText(JTextArea inText) {
 		dialogText = inText;
+	}
+	
+	/**
+	 * clearConnections
+	 * Clears connection count and connection list
+	 */
+	public static void clearConnections() {
+		connectionList.clear();
+		if (connectionText != null) {
+			connectionText.setText("");
+		}
+		if (countText != null) {
+			countText.setText("");
+		}
 	}
 	
 	/**
@@ -181,8 +195,8 @@ public class ProxyLog {
 			case WROTE_REQUEST:
 				update += "Wrote a request to ";
 				update += server;
-				update += " to ";
-				update += server;
+				update += " from ";
+				update += client;
 				break;
 			case WROTE_RESPONSE:
 				update += "Wrote a response to ";

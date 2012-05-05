@@ -188,7 +188,6 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler implements 
 						ProxyLog.addConnection(ProxyLog.clientToString(inboundChannel), ProxyLog.serverToString(future.getChannel()));
 						wf.addListener(new ChannelFutureListener() {
 							public void operationComplete(final ChannelFuture wcf) throws Exception {
-								//ProxyLog.appendDialog(ProxyLog.serverToString(wf.getChannel()), ProxyLog.WROTE_REQUEST);
 								ctx.getChannel().setReadable(true);
 							}
 						});

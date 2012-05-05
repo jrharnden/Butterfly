@@ -1,5 +1,8 @@
 package gui.view;
 
+import networking.ProxyLog;
+import networking.ProxyServer;
+
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.custom.CTabFolder;
@@ -24,6 +27,7 @@ import java.util.concurrent.Executors;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JRootPane;
 import javax.swing.JTextField;
@@ -61,6 +65,10 @@ import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 
 import storage.*;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.jface.text.TextViewer;
+import org.eclipse.swt.widgets.Text;
+
 public class ApplicationWindow{
 
 	//final static variables
@@ -73,15 +81,23 @@ public class ApplicationWindow{
 	//Constructor variables
 	protected Shell shlButterfly;
 	protected Display display;
+	private ProxyServer server;
 	private Account account;
 	private Accounts accounts;
 	private JFrame frame;
-	protected JTextField txtPort;
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 	
 	private  ListViewer filterInactiveListViewer;
 	private ListViewer  filterActiveListViewer;
 	private ListViewer AccountListViewer;
+	private Button btnCreate, btnDelete, btnEdit;
+	
+	// Status Menu Components
+	private JTextArea textAreaDialog;
+	private JTextArea textAreaConnectionList;
+	private Text textPort;
+	private Text textConnectionCount;
+	
 	/**
 	 * Launches Login window
 	 * @param shell
@@ -113,7 +129,7 @@ public class ApplicationWindow{
 	 */
 	private boolean editUserAccount(Account a){
 		Display display = Display.getDefault();
-		EditShell eShell = new EditShell(display, a);
+		EditShell eShell = new EditShell(display, a,account, accounts);
 		
 		//Disable the main window
 		shlButterfly.setEnabled(false);
@@ -136,7 +152,7 @@ public class ApplicationWindow{
 	 */
 	private boolean editUserGroup(Group g){
 		Display display = Display.getDefault();
-		EditShell eShell = new EditShell(display, g);
+		EditShell eShell = new EditShell(display, g, accounts);
 		
 		//Disable the main window
 		shlButterfly.setEnabled(false);
@@ -145,6 +161,18 @@ public class ApplicationWindow{
 		eShell.open();
 		
 		//Re-Enable and make the window active
+		if(account.getPermissions().contains(Permission.CREATEFILTER))
+			btnCreate.setEnabled(true);
+		else
+			btnCreate.setEnabled(false);
+		if(account.getPermissions().contains(Permission.EDITFILTER))
+			btnEdit.setEnabled(true);
+		else
+			btnEdit.setEnabled(false);
+		if(account.getPermissions().contains(Permission.DELETEFILTER))
+			btnDelete.setEnabled(true);
+		else
+			btnDelete.setEnabled(false);
 		shlButterfly.setEnabled(true);
 		shlButterfly.setActive();
 		return true;
@@ -215,8 +243,8 @@ public class ApplicationWindow{
 		List AccountList = AccountListViewer.getList();
 		AccountList.removeAll();
 		AccountList.add("Administrator");
-		AccountList.add("Power Users");
-		AccountList.add("Standard Users");
+		AccountList.add("Power");
+		AccountList.add("Standard");
 		accounts.loadAccounts();
 		for(Account ac: accounts){
 			
@@ -267,6 +295,8 @@ public class ApplicationWindow{
 		CTabFolder tabFolder = new CTabFolder(shlButterfly, SWT.BORDER);
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 		
+		Border border;
+		border = BorderFactory.createLineBorder(Color.black);
 		
 		//-----------------------------------------------------------------
 		// Status Menu Item
@@ -278,64 +308,171 @@ public class ApplicationWindow{
 		tbtmStatus.setControl(statusComposite);
 		statusComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		SashForm statusSashForm = new SashForm(statusComposite, SWT.NONE);
+		Composite statusCompositeLeft = new Composite(statusComposite, SWT.NONE);
+		formToolkit.adapt(statusCompositeLeft);
+		formToolkit.paintBordersFor(statusCompositeLeft);
+		statusCompositeLeft.setLayout(new GridLayout(1, false));
 		
-		//Logging composite
-		Composite statusLogComposite_AWT = new Composite(statusSashForm, SWT.NONE);
-		statusLogComposite_AWT.setLayout(new GridLayout(2, false));
-		new Label(statusLogComposite_AWT, SWT.NONE);
-		new Label(statusLogComposite_AWT, SWT.NONE);
-		new Label(statusLogComposite_AWT, SWT.NONE);
+		Composite composite_1 = new Composite(statusCompositeLeft, SWT.BORDER);
+		composite_1.setLayout(new GridLayout(1, false));
+		GridData gd_composite_1 = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
+		gd_composite_1.heightHint = 453;
+		gd_composite_1.widthHint = 469;
+		composite_1.setLayoutData(gd_composite_1);
+		formToolkit.adapt(composite_1);
+		formToolkit.paintBordersFor(composite_1);
 		
-		Composite statusLogComposite_AWT_1 = new Composite(statusLogComposite_AWT, SWT.EMBEDDED);
-		GridData gd_statusLogComposite_AWT_1 = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);
-		gd_statusLogComposite_AWT_1.heightHint = 460;
-		gd_statusLogComposite_AWT_1.widthHint = 335;
-		statusLogComposite_AWT_1.setLayoutData(gd_statusLogComposite_AWT_1);
+		//Connection List label
+		Label lblConnectionList = new Label(composite_1, SWT.NONE);
+		lblConnectionList.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
+		formToolkit.adapt(lblConnectionList, true, true);
+		lblConnectionList.setText("Connection List");
 		
-		Frame statusLogFrame_AWT = SWT_AWT.new_Frame(statusLogComposite_AWT_1);
+		//Tons of stuff for putting jtext areas in swt applications
+		Composite composite_4 = new Composite(composite_1, SWT.NONE);
+		composite_4.setLayout(new FillLayout(SWT.HORIZONTAL));
+		GridData gd_composite_4 = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
+		gd_composite_4.heightHint = 431;
+		gd_composite_4.widthHint = 386;
+		composite_4.setLayoutData(gd_composite_4);
+		formToolkit.adapt(composite_4);
+		formToolkit.paintBordersFor(composite_4);
 		
-		Panel satusLogPanel_AWT = new Panel();
-		statusLogFrame_AWT.add(satusLogPanel_AWT);
-		satusLogPanel_AWT.setLayout(new BorderLayout(0, 0));
+		Composite composite_5 = new Composite(composite_4, SWT.EMBEDDED);
+		formToolkit.adapt(composite_5);
+		formToolkit.paintBordersFor(composite_5);
 		
-		JRootPane statusLogRootPane_AWT = new JRootPane();
-		satusLogPanel_AWT.add(statusLogRootPane_AWT);
-		statusLogRootPane_AWT.getContentPane().setLayout(new java.awt.GridLayout(1, 0, 0, 0));
+		Frame frame_2 = SWT_AWT.new_Frame(composite_5);
+		
+		Panel panel_1 = new Panel();
+		frame_2.add(panel_1);
+		panel_1.setLayout(new BorderLayout(0, 0));
+		
+		JRootPane rootPane_1 = new JRootPane();
+		panel_1.add(rootPane_1);
+		rootPane_1.getContentPane().setLayout(new java.awt.GridLayout(1, 0, 0, 0));
+		
+			// Initialize text area connection list
+			textAreaConnectionList = new JTextArea();
+			rootPane_1.getContentPane().add(textAreaConnectionList);
+			textAreaConnectionList.setEditable(false);
+			textAreaConnectionList.setBorder(border);
+		
+		Composite composite = new Composite(statusCompositeLeft, SWT.BORDER);
+		GridData gd_composite = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
+		gd_composite.widthHint = 385;
+		composite.setLayoutData(gd_composite);
+		composite.setLayout(new GridLayout(3, false));
+		//composite.setBorder(border);
+		
+		formToolkit.adapt(composite);
+		formToolkit.paintBordersFor(composite);
+		
+		//Port Label
+		Label lblPort = new Label(composite, SWT.NONE);
+		formToolkit.adapt(lblPort, true, true);
+		lblPort.setText("Port:");
+		
+			// Initialize Port Text Field
+			textPort = new Text(composite, SWT.BORDER);
+			textPort.setText("8080");
+			GridData gd_textPort = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
+			gd_textPort.widthHint = 262;
+			textPort.setLayoutData(gd_textPort);
+			formToolkit.adapt(textPort, true, true);
+		
+			// Initialize Listen Button for the port
+			final Button btnListen = new Button(composite, SWT.NONE);
+			GridData gd_btnListen = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 2);
+			gd_btnListen.heightHint = 50;
+			gd_btnListen.widthHint = 70;
+			btnListen.setLayoutData(gd_btnListen);
+			btnListen.setSelection(true);
+			formToolkit.adapt(btnListen, true, true);
+			btnListen.setText("Listen");
 			
-			//****************************************
-			//Logging text area
-			//****************************************
-			//Create Black border
-			Border border;
-			border = BorderFactory.createLineBorder(Color.black);	
+			//Listen Button listener
+			btnListen.addListener(SWT.Selection, new Listener(){
+				public void handleEvent(Event e){
+					switch(e.type){
+					case SWT.Selection:
+						if(server != null && server.isRunning()) {
+							server.stop();
+							btnListen.setText("Listen");
+						}
+						else {
+							server = ProxyServer.createServer(Integer.parseInt(textPort.getText()));
+							server.start();
+							btnListen.setText("Stop");
+						}
+					}
+				}
+			});
 		
-			JTextArea logTextArea_AWT = new JTextArea();
-			statusLogRootPane_AWT.getContentPane().add(logTextArea_AWT);
-			logTextArea_AWT.setBorder(border);
-			
-		Composite statusFilterComposite = new Composite(statusSashForm, SWT.NONE);
-		statusFilterComposite.setLayout(new GridLayout(2, false));
-		new Label(statusFilterComposite, SWT.NONE);
-		new Label(statusFilterComposite, SWT.NONE);
-		new Label(statusFilterComposite, SWT.NONE);
-
-		//Active List Composite
-		Composite statusActiveComposite = new Composite(statusFilterComposite, SWT.NONE);
-		statusActiveComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
-		GridData gd_statusActiveComposite = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);
-		gd_statusActiveComposite.heightHint = 460;
-		gd_statusActiveComposite.widthHint = 335;
-		statusActiveComposite.setLayoutData(gd_statusActiveComposite);
-		statusActiveComposite.setBounds(0, 0, 64, 64);
-		formToolkit.adapt(statusActiveComposite);
-		formToolkit.paintBordersFor(statusActiveComposite);
+		// Connection Count Label
+		Label lblConnections = new Label(composite, SWT.NONE);
+		lblConnections.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		formToolkit.adapt(lblConnections, true, true);
+		lblConnections.setText("Connection Count:");
 		
-			//Active List Viewer
-			ListViewer statusActiveListViewer = new ListViewer(statusActiveComposite, SWT.BORDER | SWT.V_SCROLL);
-			List statusActiveList = statusActiveListViewer.getList();
-			statusSashForm.setWeights(new int[] {1, 1});
+			// Initialize connection count text field
+			// TODO Andrew - Can you make the Text to JTextArea, I don't want to break anything so I'm leaving this for now
+			textConnectionCount = new Text(composite, SWT.BORDER);
+			textConnectionCount.setText("0");
+			GridData gd_textConnectionCount = new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1);
+			gd_textConnectionCount.widthHint = 266;
+			textConnectionCount.setLayoutData(gd_textConnectionCount);
+			formToolkit.adapt(textConnectionCount, true, true);
+			//disable the fields
+			textConnectionCount.setEnabled(false);
+			//ProxyLog.setCountText(textConnectionCount);
 		
+		Composite statusCompositeRight = new Composite(statusComposite, SWT.NONE);
+		formToolkit.adapt(statusCompositeRight);
+		formToolkit.paintBordersFor(statusCompositeRight);
+		statusCompositeRight.setLayout(new GridLayout(1, false));
+		
+		Composite composite_2 = new Composite(statusCompositeRight, SWT.BORDER);
+		composite_2.setLayout(new GridLayout(1, false));
+		GridData gd_composite_2 = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
+		gd_composite_2.heightHint = 529;
+		gd_composite_2.widthHint = 390;
+		composite_2.setLayoutData(gd_composite_2);
+		formToolkit.adapt(composite_2);
+		formToolkit.paintBordersFor(composite_2);
+		
+		//Dialog label
+		Label lblNewLabel_2 = new Label(composite_2, SWT.NONE);
+		lblNewLabel_2.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
+		formToolkit.adapt(lblNewLabel_2, true, true);
+		lblNewLabel_2.setText("Dialog");
+		
+		//Tons of stuff for the dialog text area
+		Composite composite_3 = new Composite(composite_2, SWT.EMBEDDED);
+		composite_3.setLayout(new FillLayout(SWT.HORIZONTAL));
+		GridData gd_composite_3 = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
+		gd_composite_3.heightHint = 523;
+		gd_composite_3.widthHint = 407;
+		composite_3.setLayoutData(gd_composite_3);
+		formToolkit.adapt(composite_3);
+		formToolkit.paintBordersFor(composite_3);
+		
+		Frame frame_1 = SWT_AWT.new_Frame(composite_3);
+		
+		Panel panel = new Panel();
+		frame_1.add(panel);
+		panel.setLayout(new BorderLayout(0, 0));
+		
+		JRootPane rootPane = new JRootPane();
+		panel.add(rootPane);
+		rootPane.getContentPane().setLayout(new java.awt.GridLayout(1, 0, 0, 0));
+		
+			// Initialize Text Area for Dialog
+			textAreaDialog= new JTextArea();
+			textAreaDialog.setLineWrap(true);
+			rootPane.getContentPane().add(textAreaDialog);
+			textAreaDialog.setBorder(border); //set border
+			textAreaDialog.setEditable(false); // meddling in my text area
 		
 		//-----------------------------------------------------------------
 		// Filters menu item
@@ -386,6 +523,12 @@ public class ApplicationWindow{
 			ArrayList<Filter> f = account.getActiveFilters();
 			for(Filter fil: f){
 				filterActiveList.add(fil.toString());
+			}
+			if(account.getGroup()!= Group.STANDARD){
+				f = account.getDefaultFilters();
+				for(Filter fil : f){
+					filterActiveList.add(fil.toString());
+				}
 			}
 			
 		//Filter middle button bar
@@ -450,7 +593,7 @@ public class ApplicationWindow{
 		formToolkit.adapt(filterBtnBarComposite);
 		formToolkit.paintBordersFor(filterBtnBarComposite);
 			//Create filter
-			Button btnCreate = new Button(filterBtnBarComposite, SWT.NONE);
+			btnCreate = new Button(filterBtnBarComposite, SWT.NONE);
 			formToolkit.adapt(btnCreate, true, true);
 			btnCreate.setText(CREATE);
 			//Create filter button listener. Open blank text area.
@@ -494,7 +637,7 @@ public class ApplicationWindow{
 		
 			
 			//Edit filter
-			Button btnEdit = new Button(filterBtnBarComposite, SWT.NONE);
+			btnEdit = new Button(filterBtnBarComposite, SWT.NONE);
 			formToolkit.adapt(btnEdit, true, true);
 			btnEdit.setText(EDIT);
 			
@@ -512,7 +655,7 @@ public class ApplicationWindow{
 				btnEdit.setEnabled(false);
 			}
 				//Delete filter
-				Button btnDelete = new Button(filterBtnBarComposite, SWT.NONE);
+				btnDelete = new Button(filterBtnBarComposite, SWT.NONE);
 				formToolkit.adapt(btnDelete, true, true);
 				btnDelete.setText("Delete");
 			
@@ -566,7 +709,6 @@ public class ApplicationWindow{
 			formToolkit.adapt(lblNewLabel_1, true, true);
 			lblNewLabel_1.setText("Inactive Filters");
 		
-		//TODO: All of this code is basically a hack until I can get TreeViewer to work
 			Composite admTableTreeComposite = new Composite(admComposite, SWT.NONE);
 			GridData gd_admTableTreeComposite = new GridData(SWT.LEFT, SWT.TOP, true, true, 3, 1);
 			gd_admTableTreeComposite.heightHint = 484;
@@ -581,18 +723,17 @@ public class ApplicationWindow{
 			AccountListViewer = new ListViewer(admTableTreeComposite, SWT.BORDER | SWT.V_SCROLL);
 			final List AccountList = AccountListViewer.getList();
 			
-			//TODO: terrible way of doing this
 			AccountList.add("Administrator");
-			AccountList.add("Power Users");
-			AccountList.add("Standard Users");
+			AccountList.add("Power");
+			AccountList.add("Standard");
 			
 			//TODO set active list to selections current active filters
 			ListViewer activeViewer = new ListViewer(admTableTreeComposite, SWT.BORDER | SWT.V_SCROLL);
-			List activeList = activeViewer.getList();
+			final List activeList = activeViewer.getList();
 			
 			//TODO set inactive list to selections current inactive filters
 			ListViewer inactiveViewer = new ListViewer(admTableTreeComposite, SWT.BORDER | SWT.V_SCROLL);
-			List inactiveList = inactiveViewer.getList();
+			final List inactiveList = inactiveViewer.getList();
 							
 									// Administrator button bar
 									Composite admBtnBarComposite = formToolkit.createComposite(admComposite, SWT.NONE);
@@ -632,21 +773,31 @@ public class ApplicationWindow{
 													case SWT.Selection:
 														Accounts acc = new Accounts();
 														acc.loadAccounts();
-														Account a =acc.getAccount(AccountList.getSelection()[0].trim());
-														if(a == null) System.err.println(AccountList.getSelection()[0]);
+													try{
+														String selection = AccountList.getSelection()[0].trim();
+														Account a =acc.getAccount(selection);
+														if(a == null){
+															if(Group.valueOf(selection.toUpperCase())!= null){
+																editUserGroup(Group.valueOf(selection.toUpperCase()));
+															}
+														}
+														else{
 															//editShell(a,"Administrator");
 															
 															//TODO If an account is selected
 															editUserAccount(a);
-															
+														}
 															//TODO If a user group is selected
 															//editUserGroup(group);
+													}catch(ArrayIndexOutOfBoundsException ex){
+														
+													}
+													catch(IllegalArgumentException ex){}
 													}
 												}
 											}
 											);
-											//TODO:: Shouldn't be able to delete your own account
-											//Delete User Groups/Accounts
+											//Delete User Accounts
 											final Button admBtnDelete = new Button(admBtnBarComposite, SWT.NONE);
 											formToolkit.adapt(admBtnDelete, true, true);
 											admBtnDelete.setText("Delete");
@@ -658,15 +809,17 @@ public class ApplicationWindow{
 														acc.loadAccounts();
 														Account a =acc.getAccount(AccountList.getSelection()[0].trim());
 														if(a!=null){
+															if(!a.getName().equals(account.getName())){
 															acc.removeAccount(a);
 															acc.saveAccounts();
 															AccountList.removeAll();
 															AccountList.add("Administrator");
-															AccountList.add("Power Users");
-															AccountList.add("Standard Users");
+															AccountList.add("Power");
+															AccountList.add("Standard");
 															for(Account ac: acc){
 																
 																AccountList.add(ac.getName());
+															}
 															}
 															
 														}
@@ -680,13 +833,32 @@ public class ApplicationWindow{
 
 												@Override
 												public void selectionChanged(SelectionChangedEvent e) {
+													try{
 													String selection = AccountList.getSelection()[0].trim();
-													if(selection.equals("Administrator")||selection.equals("Power Users")||selection.equals("Standard Users")){
-														
+													if(selection.equals("Administrator")||selection.equals("Power")||selection.equals("Standard")){
+														activeList.removeAll();
+														inactiveList.removeAll();
 														admBtnDelete.setEnabled(false);
+													}
+													else if(accounts.getAccount(selection)!=null){
+														Account acc = accounts.getAccount(selection);
+														activeList.removeAll();
+														inactiveList.removeAll();
+														for(Filter f: acc.getActiveFilters())
+															activeList.add(f.getName());
+														for(Filter f: acc.getInactiveFilters())
+															inactiveList.add(f.getName());
+														if(acc.getName().equals(account.getName()))
+															admBtnDelete.setEnabled(false);
+														else
+															admBtnDelete.setEnabled(true);
 													}
 													else
 														admBtnDelete.setEnabled(true);
+													
+													}catch(ArrayIndexOutOfBoundsException ex){
+														
+													}
 												}
 												
 											});
@@ -728,7 +900,7 @@ public class ApplicationWindow{
 		if (account.getGroup() != Group.STANDARD) {
 			final MenuItem mntmListen = new MenuItem(menu_main, SWT.CHECK);
 			//Set Listen to default on
-			mntmListen.setSelection(true);
+			mntmListen.setSelection(false);
 			mntmListen.setText("Listen");
 			mntmListen.addListener(SWT.Selection, new Listener(){
 				public void handleEvent(Event e){
@@ -777,7 +949,7 @@ public class ApplicationWindow{
 				public void handleEvent(Event e){
 					switch (e.type){
 					case SWT.Selection:
-						
+						//TODO Logout
 					}
 				}
 			}
@@ -813,31 +985,83 @@ public class ApplicationWindow{
 					}
 				});
 				
+				MenuItem mntmLogging = new MenuItem(menu, SWT.CASCADE);
+				mntmLogging.setText("Logging");
 				
-				//Logging - Check enabled
-				final MenuItem mntmEnableLogging = new MenuItem(menu_settings, SWT.CHECK);
-				mntmEnableLogging.setSelection(true);
-				mntmEnableLogging.setText("Enable Logging");
+				Menu menu_logging = new Menu(mntmLogging);
+				mntmLogging.setMenu(menu_logging);
 				
+				/*
+				 * MenuItem for Enable Log
+				 */
+				final MenuItem mntmEnableLogging = new MenuItem(menu_logging, SWT.CHECK);
+				mntmEnableLogging.setText("Enable Log");
+				
+				// Load default/previous setting
+				// TODO Only defaulting, needs to load previous setting
+				mntmEnableLogging.setSelection(false);
+				ProxyLog.setLogEnabled(mntmEnableLogging.getSelection());
+				
+				// Listener for selection
 				mntmEnableLogging.addListener(SWT.Selection, new Listener(){
 					public void handleEvent(Event e) {
-						if (mntmEnableLogging.getSelection() == true) {
-							System.out.println("Checked");
+						ProxyLog.setLogEnabled(mntmEnableLogging.getSelection());
+					}
+				});
+				
+				/*
+				 * MenuItem for Dialog
+				 */
+				final MenuItem mntmNewCheckbox = new MenuItem(menu_logging, SWT.CHECK);
+				mntmNewCheckbox.setText("Enable Dialog");
+				
+				// Load default/previous setting
+				// TODO Only defaulting, needs to load previous setting
+				mntmNewCheckbox.setSelection(true);
+				if (mntmNewCheckbox.getSelection() == true) {
+					ProxyLog.setDialogText(textAreaDialog);
+				} else {
+					ProxyLog.setDialogText(null);
+				}
+				
+				// Listener for selection
+				mntmNewCheckbox.addListener(SWT.Selection, new Listener(){
+					public void handleEvent(Event e) {
+						if (mntmNewCheckbox.getSelection() == true) {
+							ProxyLog.setDialogText(textAreaDialog);
 						} else {
-							System.out.println("Unchecked");
+							ProxyLog.setDialogText(null);
 						}
 					}
 				});
 				
-//				//Set port
-//				MenuItem mntmSetPort = new MenuItem(menu_settings, SWT.NONE);
-//				mntmSetPort.setText("Set Port");
-//				if(!account.getPermissions().contains(Permission.SETPORT)){
-//					menu_settings.getItem(menu_settings.indexOf(mntmSetPort)).setEnabled(false);
-//				}
-						
-
-
+				/*
+				 *  Menu Item for Connection List
+				 */
+				final MenuItem mntmEnableConnectionList = new MenuItem(menu_logging, SWT.CHECK);
+				mntmEnableConnectionList.setText("Enable Connection List");
+				
+				// Load default/previous setting
+				// TODO Only defaulting, needs to load previous setting
+				mntmEnableConnectionList.setSelection(true);
+				if (mntmEnableConnectionList.getSelection() == true) {
+					ProxyLog.setConnectionText(textAreaConnectionList);
+				} else {
+					ProxyLog.setConnectionText(null);
+				}
+				
+				// Listener for selection
+				mntmEnableConnectionList.addListener(SWT.Selection, new Listener(){
+					public void handleEvent(Event e) {
+						if (mntmEnableConnectionList.getSelection() == true) {
+							ProxyLog.setConnectionText(textAreaConnectionList);
+						} else {
+							ProxyLog.setConnectionText(null);
+						}
+					}
+				});
+				
+				
 	}
 	public void setAccounts(Accounts a){
 		accounts = a;
