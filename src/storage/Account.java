@@ -21,6 +21,9 @@ public class Account implements Serializable{
 		passHash = pass;
 		if(!(gr == null)){
 			group = gr;
+			if(group==Group.ADMINISTRATOR){
+				permissions = EnumSet.allOf(Permission.class);
+			}
 			
 		}
 		else group = Group.STANDARD;

@@ -136,7 +136,7 @@ public class ApplicationWindow{
 	 */
 	private boolean editUserGroup(Group g){
 		Display display = Display.getDefault();
-		EditShell eShell = new EditShell(display, g);
+		EditShell eShell = new EditShell(display, g, accounts);
 		
 		//Disable the main window
 		shlButterfly.setEnabled(false);
@@ -215,8 +215,8 @@ public class ApplicationWindow{
 		List AccountList = AccountListViewer.getList();
 		AccountList.removeAll();
 		AccountList.add("Administrator");
-		AccountList.add("Power Users");
-		AccountList.add("Standard Users");
+		AccountList.add("Power");
+		AccountList.add("Standard");
 		accounts.loadAccounts();
 		for(Account ac: accounts){
 			
@@ -583,8 +583,8 @@ public class ApplicationWindow{
 			
 			//TODO: terrible way of doing this
 			AccountList.add("Administrator");
-			AccountList.add("Power Users");
-			AccountList.add("Standard Users");
+			AccountList.add("Power");
+			AccountList.add("Standard");
 			
 			//TODO set active list to selections current active filters
 			ListViewer activeViewer = new ListViewer(admTableTreeComposite, SWT.BORDER | SWT.V_SCROLL);
@@ -632,15 +632,26 @@ public class ApplicationWindow{
 													case SWT.Selection:
 														Accounts acc = new Accounts();
 														acc.loadAccounts();
-														Account a =acc.getAccount(AccountList.getSelection()[0].trim());
-														if(a == null) System.err.println(AccountList.getSelection()[0]);
+													try{
+														String selection = AccountList.getSelection()[0].trim();
+														Account a =acc.getAccount(selection);
+														if(a == null){
+															if(Group.valueOf(selection.toUpperCase())!= null){
+																editUserGroup(Group.valueOf(selection.toUpperCase()));
+															}
+														}
+														else{
 															//editShell(a,"Administrator");
 															
 															//TODO If an account is selected
 															editUserAccount(a);
-															
+														}
 															//TODO If a user group is selected
 															//editUserGroup(group);
+													}catch(ArrayIndexOutOfBoundsException ex){
+														
+													}
+													catch(IllegalArgumentException ex){}
 													}
 												}
 											}
@@ -662,8 +673,8 @@ public class ApplicationWindow{
 															acc.saveAccounts();
 															AccountList.removeAll();
 															AccountList.add("Administrator");
-															AccountList.add("Power Users");
-															AccountList.add("Standard Users");
+															AccountList.add("Power");
+															AccountList.add("Standard");
 															for(Account ac: acc){
 																
 																AccountList.add(ac.getName());
@@ -680,14 +691,18 @@ public class ApplicationWindow{
 
 												@Override
 												public void selectionChanged(SelectionChangedEvent e) {
-													String selection = AccountList.getSelection()[0].trim();
-													if(selection.equals("Administrator")||selection.equals("Power Users")||selection.equals("Standard Users")){
-														
-														admBtnDelete.setEnabled(false);
-													}
-													else
-														admBtnDelete.setEnabled(true);
+													try{
+														String selection = AccountList.getSelection()[0].trim();
+														if(selection.equals("Administrator")||selection.equals("Power")||selection.equals("Standard")){
+															
+															admBtnDelete.setEnabled(false);
+														}
+														else
+															admBtnDelete.setEnabled(true);
+													
+													}catch(ArrayIndexOutOfBoundsException ex){}
 												}
+												
 												
 											});
 		
@@ -866,10 +881,7 @@ public class ApplicationWindow{
 				activeFilters.add(fia.toString());
 			}
 			
-		}catch(ArrayIndexOutOfBoundsException exc){
-			
-			System.err.println("Didn't select anything");
-		}
+		}catch(ArrayIndexOutOfBoundsException exc){}
 	}
 	private void btnAddHandleEvent(){
 		List al = filterActiveListViewer.getList();
@@ -883,9 +895,7 @@ public class ApplicationWindow{
 			accounts.saveAccounts();
 			il.remove(filter);
 			al.add(filter);
-		}catch(ArrayIndexOutOfBoundsException e){
-			System.err.println("Didn't select anything");
-		}
+		}catch(ArrayIndexOutOfBoundsException e){}
 	}
 	private void btnRemoveHandleEvent(){
 		try{
@@ -900,9 +910,7 @@ public class ApplicationWindow{
 			accounts.saveAccounts();
 			al.remove(filter);
 			il.add(filter);
-		}catch(ArrayIndexOutOfBoundsException e){
-			System.err.println("Didn't select anything");
-		}
+		}catch(ArrayIndexOutOfBoundsException e){}
 	}
 	private void btnCreateHandleEvent(){
 		filterEdit(CREATE,null);

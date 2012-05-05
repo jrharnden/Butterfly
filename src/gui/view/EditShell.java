@@ -2,6 +2,7 @@ package gui.view;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.EnumSet;
 
 import javax.swing.JFileChooser;
 
@@ -61,6 +62,7 @@ public class EditShell {
 	private ArrayList<Filter> imported;
 	private Accounts accounts;
 	private File file;
+	private Button btnCreateFilters, btnDeleteFilters, btnEditFilters, btnSetProxyListening;
 	
 	/**
 	 * Import/Export constructor 
@@ -79,12 +81,13 @@ public class EditShell {
 	 * @param d
 	 * @param group
 	 */
-	public EditShell(Display d, Group group){
+	public EditShell(Display d, Group group, Accounts acc){
 		display = d;
 		edit_group = group;
 		sName = "Edit Default Group Settings";
-		opened_user_account = true;
+		opened_user_account = false;
 		opened_user_group = true;
+		accounts = acc;
 	}
 	
 	/**
@@ -299,155 +302,217 @@ public class EditShell {
 			formToolkit.paintBordersFor(btnBarComposite);
 			
 	//If the shell was opened for import/export
-	if (!opened_user_account) {
-			
-			// Import/Export Button
-			Button btnImport = new Button(btnBarComposite, SWT.NONE);
-			GridData gd_btnImport = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-			gd_btnImport.widthHint = 75;
-			btnImport.setLayoutData(gd_btnImport);
-			btnImport.setText(sName);
-			formToolkit.adapt(btnImport, true, true);
-			
-			btnImport.addListener(SWT.Selection, new Listener(){
-				public void handleEvent(Event e){
-					switch (e.type){
-					case SWT.Selection:
-						FileDialog dialog = new FileDialog(shell, SWT.NULL);
-						String path = dialog.open();
-						if (path != null) {
-						  file = new File(path);
-						  if (file.isFile()){
-							  displayFiles(new String[] { file.toString()});
-						  	  Accounts accounts = new Accounts();
-							  List filterActiveList = filterActiveListViewer.getList();
-						  	  if(sName.equalsIgnoreCase("IMPORT")){
-						  	  imported = accounts.importFilters(file);
+	if (opened_user_account || opened_user_group) {
+		
+		Label lblNewLabel = new Label(btnBarComposite, SWT.NONE);
+		GridData gd_lblNewLabel = new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1);
+		gd_lblNewLabel.widthHint = 94;
+		lblNewLabel.setLayoutData(gd_lblNewLabel);
+		formToolkit.adapt(lblNewLabel, true, true);
+		lblNewLabel.setText("User Permissions:");
+		
+		// ****************** PERMISSIONS *******************************************************
+		//Create button check box
+		btnCreateFilters = new Button(btnBarComposite, SWT.CHECK);
+		formToolkit.adapt(btnCreateFilters, true, true);
+		btnCreateFilters.setText("Create Filters");
+		if(opened_user_account && edit_account.getPermissions().contains(Permission.CREATEFILTER)) btnCreateFilters.setSelection(true);
+		else if(opened_user_group){
+			switch(edit_group){
+			case ADMINISTRATOR:
+				if(accounts.getAdminPermissions().contains(Permission.CREATEFILTER))
+				btnCreateFilters.setSelection(true);
+				break;
+			case POWER:
+				if(accounts.getPowerPermissions().contains(Permission.CREATEFILTER))
+				btnCreateFilters.setSelection(true);
+				break;
+			case STANDARD:
+				if(accounts.getStandardPermissions().contains(Permission.CREATEFILTER))
+				btnCreateFilters.setSelection(true);
+			}
+		}
 
-						  	//Active List
-								for(Filter fil: imported)
-									filterActiveList.add(fil.toString());
-						  	  }
-						  	  
-								
-						  
-						  	  
-						  }
-						  else
-							  displayFiles(file.list());
-						}
+		btnCreateFilters.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				if (btnCreateFilters.getSelection()) {
+					System.out.println("Checked");
+				} else {
+					System.out.println("Unchecked");
+				}
+			}
+		});
+		
+		
+		//Edit filters check box
+		btnEditFilters = new Button(btnBarComposite, SWT.CHECK);
+		formToolkit.adapt(btnEditFilters, true, true);
+		btnEditFilters.setText("Edit Filters");
+		if(opened_user_account && edit_account.getPermissions().contains(Permission.EDITFILTER)) btnEditFilters.setSelection(true);
+		else if(opened_user_group){
+			switch(edit_group){
+			case ADMINISTRATOR:
+				if(accounts.getAdminPermissions().contains(Permission.EDITFILTER))
+				btnEditFilters.setSelection(true);
+				break;
+			case POWER:
+				if(accounts.getPowerPermissions().contains(Permission.EDITFILTER))
+				btnEditFilters.setSelection(true);
+				break;
+			case STANDARD:
+				if(accounts.getStandardPermissions().contains(Permission.EDITFILTER))
+					btnEditFilters.setSelection(true);
+			}
+		}
+		btnEditFilters.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				if (btnEditFilters.getSelection()) {
+					System.out.println("Checked");
+				} else {
+					System.out.println("Unchecked");
+				}
+			}
+		});
+		
+		//Delete filters check box
+		btnDeleteFilters = new Button(btnBarComposite, SWT.CHECK);
+		GridData gd_btnDeleteFilters = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_btnDeleteFilters.widthHint = 87;
+		btnDeleteFilters.setLayoutData(gd_btnDeleteFilters);
+		formToolkit.adapt(btnDeleteFilters, true, true);
+		btnDeleteFilters.setText("Delete Filters");
+		if(opened_user_account && edit_account.getPermissions().contains(Permission.DELETEFILTER)) btnDeleteFilters.setSelection(true);
+		else if(opened_user_group){
+			switch(edit_group){
+			case ADMINISTRATOR:
+				if(accounts.getAdminPermissions().contains(Permission.DELETEFILTER))
+					btnDeleteFilters.setSelection(true);
+				break;
+			case POWER:
+				if(accounts.getPowerPermissions().contains(Permission.DELETEFILTER))
+					btnDeleteFilters.setSelection(true);
+			case STANDARD:
+				if(accounts.getStandardPermissions().contains(Permission.DELETEFILTER))
+					btnDeleteFilters.setSelection(true);
+			}
+		}
+		btnDeleteFilters.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				if (btnDeleteFilters.getSelection()) {
+					System.out.println("Checked");
+				} else {
+					System.out.println("Unchecked");
+				}
+			}
+		});
+		
+		//change port check box
+		btnSetProxyListening = new Button(btnBarComposite, SWT.CHECK);
+		if(opened_user_account && edit_account.getPermissions().contains(Permission.SETPORT)) btnSetProxyListening.setSelection(true);
+		else if(opened_user_group){
+			switch(edit_group){
+			case ADMINISTRATOR:
+				if(accounts.getAdminPermissions().contains(Permission.SETPORT))
+				btnSetProxyListening.setSelection(true);
+				break;
+			case POWER:
+				if(accounts.getPowerPermissions().contains(Permission.SETPORT))
+				btnSetProxyListening.setSelection(true);
+				break;
+			case STANDARD:
+				if(accounts.getStandardPermissions().contains(Permission.SETPORT))
+				btnSetProxyListening.setSelection(true);
+			}
+		}
+
+		btnSetProxyListening.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				if (btnSetProxyListening.getSelection()) {
+					System.out.println("Checked");
+				} else {
+					System.out.println("Unchecked");
+				}
+			}
+		});
+		formToolkit.adapt(btnSetProxyListening, true, true);
+		btnSetProxyListening.setText("Change Port Number");
+		
+		//Change password button
+		if (opened_user_account){	
+			Button btnResetPassword = new Button(btnBarComposite, SWT.NONE);
+			formToolkit.adapt(btnResetPassword, true, true);
+			btnResetPassword.setText("Reset Password");
+			Label label = new Label(btnBarComposite, SWT.SEPARATOR | SWT.VERTICAL);
+			GridData gd_label = new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1);
+			gd_label.heightHint = 25;
+			label.setLayoutData(gd_label);
+			formToolkit.adapt(label, true, true);
+			
+			btnResetPassword.addListener(SWT.Selection, new Listener() {
+				public void handleEvent(Event e){
+					switch (e.type) {
+					case SWT.Selection:
+						edit_account.changePass("");
 					}
 				}
 			});
 			
-				//File handle for import/export
-				textHandle = new Text(btnBarComposite, SWT.BORDER);
-				GridData gd_textHandle = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-				gd_textHandle.widthHint = 371;
-				textHandle.setLayoutData(gd_textHandle);
-				formToolkit.adapt(textHandle, true, true);
+		}
+		
+		
+		
+			
+		
 				
 			//Window was opened for editing user account/user group
 			//Add the extra check boxes for accounts and user groups
 			//Add reset password for accounts
 			} else {
+				// Import/Export Button
+				Button btnImport = new Button(btnBarComposite, SWT.NONE);
+				GridData gd_btnImport = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+				gd_btnImport.widthHint = 75;
+				btnImport.setLayoutData(gd_btnImport);
+				btnImport.setText(sName);
+				formToolkit.adapt(btnImport, true, true);
 				
-				Label lblNewLabel = new Label(btnBarComposite, SWT.NONE);
-				GridData gd_lblNewLabel = new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1);
-				gd_lblNewLabel.widthHint = 94;
-				lblNewLabel.setLayoutData(gd_lblNewLabel);
-				formToolkit.adapt(lblNewLabel, true, true);
-				lblNewLabel.setText("User Permissions:");
-				
-				// ****************** PERMISSIONS *******************************************************
-				//Create button check box
-				final Button btnCreateFilters = new Button(btnBarComposite, SWT.CHECK);
-				formToolkit.adapt(btnCreateFilters, true, true);
-				btnCreateFilters.setText("Create Filters");
-				if(edit_account.getPermissions().contains(Permission.CREATEFILTER)) btnCreateFilters.setSelection(true);
+				btnImport.addListener(SWT.Selection, new Listener(){
+					public void handleEvent(Event e){
+						switch (e.type){
+						case SWT.Selection:
+							FileDialog dialog = new FileDialog(shell, SWT.NULL);
+							String path = dialog.open();
+							if (path != null) {
+							  file = new File(path);
+							  if (file.isFile()){
+								  displayFiles(new String[] { file.toString()});
+							  	  Accounts accounts = new Accounts();
+								  List filterActiveList = filterActiveListViewer.getList();
+							  	  if(sName.equalsIgnoreCase("IMPORT")){
+							  	  imported = accounts.importFilters(file);
 
-				btnCreateFilters.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent e) {
-						if (btnCreateFilters.getSelection()) {
-							System.out.println("Checked");
-						} else {
-							System.out.println("Unchecked");
-						}
-					}
-				});
-				
-				
-				//Edit filters check box
-				final Button btnEditFilters = new Button(btnBarComposite, SWT.CHECK);
-				formToolkit.adapt(btnEditFilters, true, true);
-				btnEditFilters.setText("Edit Filters");
-				if(edit_account.getPermissions().contains(Permission.EDITFILTER)) btnEditFilters.setSelection(true);
-
-				btnEditFilters.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent e) {
-						if (btnEditFilters.getSelection()) {
-							System.out.println("Checked");
-						} else {
-							System.out.println("Unchecked");
-						}
-					}
-				});
-				
-				//Delete filters check box
-				final Button btnDeleteFilters = new Button(btnBarComposite, SWT.CHECK);
-				GridData gd_btnDeleteFilters = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-				gd_btnDeleteFilters.widthHint = 87;
-				btnDeleteFilters.setLayoutData(gd_btnDeleteFilters);
-				formToolkit.adapt(btnDeleteFilters, true, true);
-				btnDeleteFilters.setText("Delete Filters");
-				if(edit_account.getPermissions().contains(Permission.DELETEFILTER)) btnDeleteFilters.setSelection(true);
-				btnDeleteFilters.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent e) {
-						if (btnDeleteFilters.getSelection()) {
-							System.out.println("Checked");
-						} else {
-							System.out.println("Unchecked");
-						}
-					}
-				});
-				
-				//change port check box
-				final Button btnSetProxyListening = new Button(btnBarComposite, SWT.CHECK);
-				if(edit_account.getPermissions().contains(Permission.SETPORT)) btnSetProxyListening.setSelection(true);
-
-				btnSetProxyListening.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent e) {
-						if (btnSetProxyListening.getSelection()) {
-							System.out.println("Checked");
-						} else {
-							System.out.println("Unchecked");
-						}
-					}
-				});
-				formToolkit.adapt(btnSetProxyListening, true, true);
-				btnSetProxyListening.setText("Change Port Number");
-				
-				//Change password button
-				if (opened_user_account){	
-					Button btnResetPassword = new Button(btnBarComposite, SWT.NONE);
-					formToolkit.adapt(btnResetPassword, true, true);
-					btnResetPassword.setText("Reset Password");
-					Label label = new Label(btnBarComposite, SWT.SEPARATOR | SWT.VERTICAL);
-					GridData gd_label = new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1);
-					gd_label.heightHint = 25;
-					label.setLayoutData(gd_label);
-					formToolkit.adapt(label, true, true);
-					
-					btnResetPassword.addListener(SWT.Selection, new Listener() {
-						public void handleEvent(Event e){
-							switch (e.type) {
-							case SWT.Selection:
-								edit_account.changePass("");
+							  	//Active List
+									for(Filter fil: imported)
+										filterActiveList.add(fil.toString());
+							  	  }
+							  	  
+									
+							  
+							  	  
+							  }
+							  else
+								  displayFiles(file.list());
 							}
 						}
-					});
-					
-				}
+					}
+				});
+				
+					//File handle for import/export
+					textHandle = new Text(btnBarComposite, SWT.BORDER);
+					GridData gd_textHandle = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+					gd_textHandle.widthHint = 371;
+					textHandle.setLayoutData(gd_textHandle);
+					formToolkit.adapt(textHandle, true, true);
 		}
 			
 			
@@ -495,6 +560,46 @@ public class EditShell {
 							}
 							accounts.exportFilters(filtersToExport, file);
 						}
+						else if(opened_user_account){
+							if(btnCreateFilters.getSelection()){
+								account.addPermission(Permission.CREATEFILTER);
+							}
+							else account.removePermission(Permission.CREATEFILTER);
+							if(btnDeleteFilters.getSelection()){
+								account.addPermission(Permission.DELETEFILTER);
+							}
+							else account.removePermission(Permission.DELETEFILTER);
+							if(btnEditFilters.getSelection()){
+								account.addPermission(Permission.EDITFILTER);
+							}
+							else account.removePermission(Permission.EDITFILTER);
+							
+						}
+						else if(opened_user_group){
+							EnumSet<Permission> p = EnumSet.noneOf(Permission.class);
+							if(btnCreateFilters.getSelection()){
+								p.add(Permission.CREATEFILTER);
+							}
+							if(btnDeleteFilters.getSelection()){
+								p.add(Permission.DELETEFILTER);
+							}
+							if(btnEditFilters.getSelection()){
+								p.add(Permission.EDITFILTER);
+							}
+							switch(edit_group){
+							case ADMINISTRATOR:
+								accounts.setAdminPermissions(p);
+								break;
+							case POWER:
+								accounts.setPowerPermission(p);
+								break;
+							case STANDARD:
+								accounts.setStandardPermission(p);
+							}
+							accounts.saveAccounts();
+							
+							}
+						
 						shell.close();
 						shell.dispose();
 						

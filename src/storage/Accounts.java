@@ -14,6 +14,7 @@ public class Accounts implements Serializable,Iterable<Account> {
 	private EnumSet<Permission> groupAdminPermission = EnumSet.allOf(Permission.class);
 	private EnumSet<Permission> groupPowerPermission = EnumSet.allOf(Permission.class);
 	private EnumSet<Permission> groupStandardPermission = EnumSet.of(Permission.CREATEFILTER,Permission.DELETEFILTER,Permission.EDITFILTER);
+	private int portNumber = 8080;
 	public boolean addAccount(Account a){
 		if(!containsAccount(a.getName())){
 			accounts.add(a);
@@ -202,6 +203,24 @@ public class Accounts implements Serializable,Iterable<Account> {
 		return imported;
 		
 	}
+	public void setPortNumber(int p){
+		portNumber = p;
+	}
+	public void setAdminPermissions(EnumSet<Permission> p){
+		groupAdminPermission = EnumSet.copyOf(p);
+		applyPermissions();
+	}
+	public void setPowerPermission(EnumSet<Permission> p){
+		groupPowerPermission = EnumSet.copyOf(p);
+		applyPermissions();
+	}
+	public void setStandardPermission(EnumSet<Permission> p){
+		groupStandardPermission = EnumSet.copyOf(p);
+		applyPermissions();
+	}
+	public EnumSet<Permission> getAdminPermissions(){return groupAdminPermission;}
+	public EnumSet<Permission> getPowerPermissions(){return groupPowerPermission;}
+	public EnumSet<Permission> getStandardPermissions(){return groupStandardPermission;}
 	private void applyPermissions(){
 		for(Account a: accounts){
 			switch(a.getGroup()){
