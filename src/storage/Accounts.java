@@ -104,7 +104,6 @@ public class Accounts implements Serializable,Iterable<Account> {
 	public boolean saveAccounts(){
 		ObjectOutputStream objOut = null;
 		FileOutputStream fileOut = null;
-		File f = null;
 		try {
 			fileOut = new FileOutputStream("./data.dat");
 			objOut = new ObjectOutputStream(fileOut);
@@ -114,7 +113,6 @@ public class Accounts implements Serializable,Iterable<Account> {
 			objOut.writeObject(groupPowerPermission);
 			objOut.writeObject(groupStandardPermission);
 			objOut.close();
-			f = new File("./data.dat");
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -136,7 +134,6 @@ public class Accounts implements Serializable,Iterable<Account> {
 				groupAdminPermission = (EnumSet<Permission>) objIn.readObject();
 				groupPowerPermission = (EnumSet<Permission>) objIn.readObject();
 				groupStandardPermission = (EnumSet<Permission>) objIn.readObject();
-				for(Account ac: accounts) System.out.println(ac.toString());
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 				return false;

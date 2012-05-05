@@ -96,9 +96,10 @@ public class EditShell {
 	 * @param accName account being edited
 	 * @param group Group
 	 */
-	public EditShell(Display d, Account accToEdit, Accounts acc){
+	public EditShell(Display d, Account accToEdit,Account adminAccount, Accounts acc){
 		display = d;
 		edit_account = accToEdit;
+		account = adminAccount;
 		sName = "Edit: " + edit_account.getName() + " Settings";
 		opened_user_account = true;
 		accounts = acc;
@@ -235,7 +236,11 @@ public class EditShell {
 					}
 				
 		}
-		
+		if(opened_user_account){
+			for(Filter f: account.getAllFilters()){
+				filterActiveList_1.add(f.getName());
+			}
+		}
 		//Button composite
 		Composite filterBtnComposite = new Composite(filterComposite_1, SWT.NONE);
 		filterBtnComposite.setLayout(new FillLayout(SWT.VERTICAL));
@@ -289,7 +294,7 @@ public class EditShell {
 			final ListViewer filterInactiveListViewer = new ListViewer(filterInactiveComposite, SWT.BORDER | SWT.V_SCROLL);
 			List inactiveList = filterInactiveListViewer.getList();
 			if(opened_user_account){
-				for(Filter f: edit_account.getAllFilters())
+				for(Filter f: edit_account.getDefaultFilters())
 					inactiveList.add(f.getName());
 			}
 			Composite btnBarComposite = new Composite(filterComposite, SWT.NONE);
@@ -453,7 +458,8 @@ public class EditShell {
 				public void handleEvent(Event e){
 					switch (e.type) {
 					case SWT.Selection:
-						edit_account.changePass("");
+						accounts.getAccount(edit_account.getName()).changePass(accounts.hashPass(""));
+						accounts.saveAccounts();
 					}
 				}
 			});
@@ -574,7 +580,19 @@ public class EditShell {
 								edit_account.addPermission(Permission.EDITFILTER);
 							}
 							else edit_account.removePermission(Permission.EDITFILTER);
+							
+							List exportFilters = filterInactiveListViewer.getList();
+							String[] filtersStrings = exportFilters.getItems();
+							for(Filter f: account.getAllFilters()){
+								String filterName = f.getName();
+								for(int i = 0; i < filtersStrings.length; ++i){
+									if(filterName.equals(filtersStrings[i])){
+										accounts.getAccount(edit_account).addDefaultFilter(f);
+									}
+								}
+							}
 							accounts.saveAccounts();
+
 						}
 						else if(opened_user_group){
 							EnumSet<Permission> p = EnumSet.noneOf(Permission.class);

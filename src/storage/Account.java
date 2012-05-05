@@ -172,6 +172,10 @@ public class Account implements Serializable{
 	public EnumSet<Permission> getPermissions(){
 		return permissions;
 	}
+	public void addDefaultFilter(Filter f){
+		if(!defaultFilters.contains(f))
+			defaultFilters.add(f);
+	}
 	@Override
 	public boolean equals(Object o){
 		try{

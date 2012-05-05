@@ -121,7 +121,7 @@ public class ApplicationWindow{
 	 */
 	private boolean editUserAccount(Account a){
 		Display display = Display.getDefault();
-		EditShell eShell = new EditShell(display, a, accounts);
+		EditShell eShell = new EditShell(display, a,account, accounts);
 		
 		//Disable the main window
 		shlButterfly.setEnabled(false);
@@ -512,6 +512,12 @@ public class ApplicationWindow{
 			ArrayList<Filter> f = account.getActiveFilters();
 			for(Filter fil: f){
 				filterActiveList.add(fil.toString());
+			}
+			if(account.getGroup()!= Group.STANDARD){
+				f = account.getDefaultFilters();
+				for(Filter fil : f){
+					filterActiveList.add(fil.toString());
+				}
 			}
 			
 		//Filter middle button bar
