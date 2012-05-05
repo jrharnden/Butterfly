@@ -16,6 +16,7 @@ public class CustomHttpResponseFilter implements HttpFilter {
 	}
 
 	public int getMaxResponseSize() {
-		return 4096;
+		//Netty uses 1048576
+		return 1024 * 200;
 	}
 }
