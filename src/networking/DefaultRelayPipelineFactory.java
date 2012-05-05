@@ -79,8 +79,8 @@ public class DefaultRelayPipelineFactory implements ChannelPipelineFactory {
 				shouldFilter = filter.filterResponses(httpRequest);
 				
 				if(shouldFilter) {
-					pipeline.addLast("inflater", new HttpContentDecompressor());
-					pipeline.addLast("aggregator", new HttpChunkAggregator(filter.getMaxResponseSize()));
+					//pipeline.addLast("inflater", new HttpContentDecompressor());
+					//pipeline.addLast("aggregator", new HttpChunkAggregator(filter.getMaxResponseSize()));
 				}
 			}
 		}
