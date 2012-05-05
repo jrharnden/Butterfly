@@ -181,8 +181,8 @@ public class ProxyLog {
 			case WROTE_REQUEST:
 				update += "Wrote a request to ";
 				update += server;
-				update += " to ";
-				update += server;
+				update += " from ";
+				update += client;
 				break;
 			case WROTE_RESPONSE:
 				update += "Wrote a response to ";

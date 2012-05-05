@@ -153,7 +153,7 @@ public class HttpRelayingHandler extends SimpleChannelUpstreamHandler {
 			 * ProxyLog for dialog
 			 * Author: Zong
 			 */
-			ProxyLog.appendDialog(ProxyLog.clientToString(browserToProxyChannel), ProxyLog.clientToString(browserToProxyChannel), ProxyLog.WROTE_RESPONSE);
+			ProxyLog.appendDialog(ProxyLog.clientToString(browserToProxyChannel), ProxyLog.serverToString(me.getChannel()), ProxyLog.WROTE_RESPONSE);
 			
 			if(writeEndBuffer) {
 				future = browserToProxyChannel.write(ChannelBuffers.EMPTY_BUFFER);
