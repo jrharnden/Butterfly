@@ -30,6 +30,7 @@ import javax.swing.DropMode;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.io.File;
+import java.util.regex.PatternSyntaxException;
 
 public class FilterShell {
 	private String fName = ""; 
@@ -233,20 +234,39 @@ public class FilterShell {
 					String replaceText = textAreaReplacement.getText();
 					String regexText = textAreaRegExp.getText();
 					String name = textName.getText();
-					if(editFilter != null){
-						account.removeFilter(editFilter.getName());
-						editFilter.changeName(name);
-						editFilter.changeReplaceWith(replaceText);
-						editFilter.changeRegex(regexText);
-						account.addFilter(editFilter);
+					if(!name.equals("")) {
+						if(editFilter != null){
+							account.removeFilter(editFilter.getName());
+							editFilter.changeName(name);
+							editFilter.changeReplaceWith(replaceText);
+							editFilter.changeRegex(regexText);
+							try {
+								account.addFilter(editFilter);
+							}
+							catch(PatternSyntaxException pse){
+								//TODO make this a dialogue box that pops up
+								System.err.println(pse.getDescription());
+							}
+						}
+						else{
+							editFilter = new Filter(name,regexText,replaceText);
+							try {
+								account.addFilter(editFilter);
+							}
+							catch(PatternSyntaxException pse){
+								//TODO make this a dialogue box that pops up
+								System.err.println(pse.getDescription());
+							}
+						}
+
+						accounts.saveAccounts();
+						shell.close();
+						shell.dispose();
 					}
-					else{
-						editFilter = new Filter(name,regexText,replaceText);
-						account.addFilter(editFilter);
+					else {
+						//TODO make this a dialogue box that pops up
+						System.err.println("Filter name cannot be empty!");
 					}
-					accounts.saveAccounts();
-					shell.close();
-					shell.dispose();
 				}
 			}
 		});

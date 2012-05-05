@@ -286,7 +286,7 @@ public class AccountShell extends Dialog {
 					if(changepassword){
 						Accounts a = new Accounts();
 						a.loadAccounts();
-						a.getAccount(accname).changePass(a.hashPass(accPassText.getText()));
+						a.getAccount(accname).setPass(a.hashPass(accPassText.getText()));
 						a.saveAccounts();
 						shell.close();
 						shell.dispose();

@@ -458,7 +458,7 @@ public class EditShell {
 				public void handleEvent(Event e){
 					switch (e.type) {
 					case SWT.Selection:
-						accounts.getAccount(edit_account.getName()).changePass(accounts.hashPass(""));
+						accounts.getAccount(edit_account.getName()).setPass(accounts.hashPass(""));
 						accounts.saveAccounts();
 					}
 				}

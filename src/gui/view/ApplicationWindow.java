@@ -65,6 +65,7 @@ import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 
 import storage.*;
+
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.jface.text.TextViewer;
 import org.eclipse.swt.widgets.Text;
@@ -196,13 +197,13 @@ public class ApplicationWindow{
 		accounts.loadAccounts();
 		List filterInactiveList = filterInactiveListViewer.getList();
 		filterInactiveList.removeAll();
-		ArrayList<Filter> fml = account.getInactiveFilters();
+		java.util.List<Filter> fml = account.getInactiveFilters();
 		for(Filter fia: fml){
 			filterInactiveList.add(fia.toString());
 		}
 		List filteractiveList = filterActiveListViewer.getList();
 		filteractiveList.removeAll();
-		ArrayList<Filter> fma = account.getActiveFilters();
+		java.util.List<Filter> fma = account.getActiveFilters();
 		for(Filter fia: fma){
 			filteractiveList.add(fia.toString());
 		}	
@@ -520,7 +521,7 @@ public class ApplicationWindow{
 				// Active filter list viewer
 				filterActiveListViewer = new ListViewer(filterActiveComposite, SWT.BORDER | SWT.V_SCROLL);
 				List filterActiveList = filterActiveListViewer.getList();
-			ArrayList<Filter> f = account.getActiveFilters();
+			java.util.List<Filter> f = account.getActiveFilters();
 			for(Filter fil: f){
 				filterActiveList.add(fil.toString());
 			}
@@ -578,9 +579,8 @@ public class ApplicationWindow{
 				//Inactive List viewer
 				filterInactiveListViewer = new ListViewer(filterInactiveComposite, SWT.BORDER | SWT.V_SCROLL);
 				List filterInactiveList = filterInactiveListViewer.getList();
-			ArrayList<Filter> fml = account.getInactiveFilters();
+			java.util.List<Filter> fml = account.getInactiveFilters();
 			for(Filter fil: fml){
-
 				filterInactiveList.add(fil.toString());
 			}
 		//Filter Button Bar
@@ -1081,7 +1081,7 @@ public class ApplicationWindow{
 			accounts.saveAccounts();
 			inactiveFilters.removeAll();
 			activeFilters.removeAll();
-			ArrayList<Filter> fml = account.getInactiveFilters();
+			java.util.List<Filter> fml = account.getInactiveFilters();
 			for(Filter fia: fml){
 				inactiveFilters.add(fia.toString());
 			}
@@ -1133,13 +1133,13 @@ public class ApplicationWindow{
 		//Repopulate filter lists
 		List filterInactiveList = filterInactiveListViewer.getList();
 		filterInactiveList.removeAll();
-		ArrayList<Filter> fml = account.getInactiveFilters();
+		java.util.List<Filter> fml = account.getInactiveFilters();
 		for(Filter fia: fml){
 			filterInactiveList.add(fia.toString());
 		}
 		List filteractiveList = filterActiveListViewer.getList();
 		filteractiveList.removeAll();
-		ArrayList<Filter> fma = account.getActiveFilters();
+		java.util.List<Filter> fma = account.getActiveFilters();
 		for(Filter fia: fma){
 			filteractiveList.add(fia.toString());
 		}
@@ -1160,13 +1160,13 @@ public class ApplicationWindow{
 			//Repopulate filter lists
 			List filterInactiveList = filterInactiveListViewer.getList();
 			filterInactiveList.removeAll();
-			ArrayList<Filter> fml = account.getInactiveFilters();
+			java.util.List<Filter> fml = account.getInactiveFilters();
 			for(Filter fia: fml){
 				filterInactiveList.add(fia.toString());
 			}
 			List filteractiveList = filterActiveListViewer.getList();
 			filteractiveList.removeAll();
-			ArrayList<Filter> fma = account.getActiveFilters();
+			java.util.List<Filter> fma = account.getActiveFilters();
 			for(Filter fia: fma){
 				filteractiveList.add(fia.toString());
 			}

@@ -5,7 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
 
 
 public class Accounts implements Serializable,Iterable<Account> {
@@ -151,11 +151,11 @@ public class Accounts implements Serializable,Iterable<Account> {
 	 * @param f File that the filters will be exported to
 	 * @return true if successful
 	 */
-	public boolean exportFilters(ArrayList<Filter> filters, File f){
+	public boolean exportFilters(List<Filter> list, File f){
 		try{
 			PrintWriter fwr = new PrintWriter(new FileWriter(f));
 			
-			for(Filter filt: filters){
+			for(Filter filt: list){
 				String s = filt.getName()+":"+filt.getRegex()+":"+filt.getReplaceWith();
 				fwr.println(s);
 			}
