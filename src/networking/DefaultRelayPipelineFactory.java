@@ -85,7 +85,7 @@ public class DefaultRelayPipelineFactory implements ChannelPipelineFactory {
 			}
 		}
 
-		if(!shouldFilter) {
+		if(shouldFilter) {
 			handler = new HttpRelayingHandler(browserToProxyChannel, channelGroup, filter, relayListener, hostAndPort);
 		}
 		else {

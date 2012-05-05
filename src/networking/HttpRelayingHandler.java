@@ -64,7 +64,7 @@ public class HttpRelayingHandler extends SimpleChannelUpstreamHandler {
 	public void messageReceived(final ChannelHandlerContext ctx, final MessageEvent me) throws Exception {
 		final Object messageToWrite;
 		final boolean writeEndBuffer;
-		
+				
 		/**
 		 * Edit:
 		 * ProxyLog for dialog
