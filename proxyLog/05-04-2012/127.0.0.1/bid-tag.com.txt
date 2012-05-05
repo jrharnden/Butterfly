@@ -1,0 +1,339 @@
+Client writes to server
+---------
+DefaultHttpRequest(chunked: false)
+GET http://bid-tag.com/Scripts/AC_OETags.js HTTP/1.1
+Accept: application/javascript, */*;q=0.8
+Referer: http://www.bluesnews.com/
+Accept-Language: en-US
+User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)
+Accept-Encoding: gzip, deflate
+Host: bid-tag.com
+Proxy-Connection: Keep-Alive
+Pragma: no-cache
+---Content---
+
+---End---
+
+Client writes to server
+---------
+DefaultHttpRequest(chunked: false)
+GET http://bid-tag.com/Ads/2-2-86/?cachebuster=4712578753&siteid=0000784329&adid=0001184024&segid=1183&country=United%20States&prov=Wisconsin&city=Menomonee%20Falls&dma=Milwaukee&zip=Wi%20(530)&nextstop=http://r1-ads.ace.advertising.com/click/site=0000784329/mnum=0001184024/cstr=8353826=_4fa4769c,4712578753,784329_1184024_1183_0,1_/xsxdata=$xsxdata/bnum=8353826/optn=64?trg= HTTP/1.1
+Accept: application/javascript, */*;q=0.8
+Referer: http://www.bluesnews.com/
+Accept-Language: en-US
+User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)
+Accept-Encoding: gzip, deflate
+Host: bid-tag.com
+Proxy-Connection: Keep-Alive
+Pragma: no-cache
+---Content---
+
+---End---
+
+Server writes to client
+---------
+DefaultHttpResponse(chunked: false)
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: *
+Cache-Control: no-cache, no-store, must-revalidate
+Content-Type: text/javascript; charset=utf-8
+Date: Sat, 05 May 2012 00:38:52 GMT
+Expires: -1
+Pragma: no-cache
+Server: Microsoft-IIS/7.0
+Set-Cookie: bid-tag=038c34d1-7be0-4a4c-95bb-fda7c003285d; expires=Fri, 05-May-2017 00:38:52 GMT; path=/
+X-AspNet-Version: 4.0.30319
+X-Powered-By: ASP.NET
+Content-Length: 1616
+Connection: keep-alive
+---Content---
+document.write('<script language="JavaScript" type="text/javascript">var hasReqestedVersion = DetectFlashVer(6, 0, 21);if (hasReqestedVersion) {{AC_FL_RunContent("src", "http://cdn.bid-tag.com/0dd06f5f-66b8-44e1-a1f4-5042b57958bd.swf?clickTag=http%3a%2f%2fr1-ads.ace.advertising.com%2fclick%2fsite%3d0000784329%2fmnum%3d0001184024%2fcstr%3d8353826%3d_4fa4769c%2c4712578753%2c784329_1184024_1183_0%2c1_%2fxsxdata%3d%24xsxdata%2fbnum%3d8353826%2foptn%3d64%3ftrg%3dhttp%253a%252f%252fbid-tag.com%252fAds%252f3-2-86-%252f%253fnextstop%253dhttp%25253a%25252f%25252flp.aionline.edu%25252fdisplay%25252fgen-tm%25252f%25253fven%25253dDISPLAY%252526src%25253dADVE2%252526adid%25253d%25255b%25255bMediaId%25255d%25255d","width", "300","height", "250","align", "center","wmode", "transparent","id", "bid-tag","quality", "high","name", "bid-tag","allowScriptAccess","sameDomain","type", "application/x-shockwave-flash","codebase", "http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab","pluginspage", "http://www.adobe.com/go/getflashplayer")}} else {{document.write("<a href=\'http://r1-ads.ace.advertising.com/click/site=0000784329/mnum=0001184024/cstr=8353826=_4fa4769c,4712578753,784329_1184024_1183_0,1_/xsxdata=$xsxdata/bnum=8353826/optn=64?trg=http%3a%2f%2fbid-tag.com%2fAds%2f3-2-86-%2f%3fnextstop%3dhttp%253a%252f%252flp.aionline.edu%252fdisplay%252fgen-tm%252f%253fven%253dDISPLAY%2526src%253dADVE2%2526adid%253d86\'; target=\'_blank\' ><img src=\'http://cdn.bid-tag.com/3ec99565-2526-483a-ba00-21fa86f2c181.gif\' width=\'300\' height=\'250\' border=\'0\' alt=\'Advertisement\' \/></a>");}}</script>');
+---End---
+
+Server writes to client
+---------
+DefaultHttpResponse(chunked: false)
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Content-Type: application/x-javascript
+Date: Sat, 05 May 2012 00:38:52 GMT
+ETag: "e85a8392b27cd1:0"
+Last-Modified: Mon, 30 Apr 2012 23:43:26 GMT
+Server: Microsoft-IIS/7.0
+X-Powered-By: ASP.NET
+Content-Length: 9476
+Connection: keep-alive
+---Content---
+// Flash Player Version Detection - Rev 1.6
+// Detect Client Browser type
+// Copyright(c) 2005-2006 Adobe Macromedia Software, LLC. All rights reserved.
+var isIE = (navigator.appVersion.indexOf("MSIE") != -1) ? true : false;
+var isWin = (navigator.appVersion.toLowerCase().indexOf("win") != -1) ? true : false;
+var isOpera = (navigator.userAgent.indexOf("Opera") != -1) ? true : false;
+// Major version of Flash required
+var requiredMajorVersion = 6;
+// Minor version of Flash required
+var requiredMinorVersion = 0;
+// Minor version of Flash required
+var requiredRevision = 21;
+
+function ControlVersion() {
+    var version;
+    var axo;
+    var e;
+
+    // NOTE : new ActiveXObject(strFoo) throws an exception if strFoo isn't in the registry
+
+    try {
+        // version will be set for 7.X or greater players
+        axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.7");
+        version = axo.GetVariable("$version");
+    } catch (e) {
+    }
+
+    if (!version) {
+        try {
+            // version will be set for 6.X players only
+            axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.6");
+
+            // installed player is some revision of 6.0
+            // GetVariable("$version") crashes for versions 6.0.22 through 6.0.29,
+            // so we have to be careful. 
+
+            // default to the first public version
+            version = "WIN 6,0,21,0";
+
+            // throws if AllowScripAccess does not exist (introduced in 6.0r47)		
+            axo.AllowScriptAccess = "always";
+
+            // safe to call for 6.0r47 or greater
+            version = axo.GetVariable("$version");
+
+        } catch (e) {
+        }
+    }
+
+    if (!version) {
+        try {
+            // version will be set for 4.X or 5.X player
+            axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.3");
+            version = axo.GetVariable("$version");
+        } catch (e) {
+        }
+    }
+
+    if (!version) {
+        try {
+            // version will be set for 3.X player
+            axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.3");
+            version = "WIN 3,0,18,0";
+        } catch (e) {
+        }
+    }
+
+    if (!version) {
+        try {
+            // version will be set for 2.X player
+            axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash");
+            version = "WIN 2,0,0,11";
+        } catch (e) {
+            version = -1;
+        }
+    }
+
+    return version;
+}
+
+// JavaScript helper required to detect Flash Player PlugIn version information
+function GetSwfVer() {
+    // NS/Opera version >= 3 check for Flash plugin in plugin array
+    var flashVer = -1;
+
+    if (navigator.plugins != null && navigator.plugins.length > 0) {
+        if (navigator.plugins["Shockwave Flash 2.0"] || navigator.plugins["Shockwave Flash"]) {
+            var swVer2 = navigator.plugins["Shockwave Flash 2.0"] ? " 2.0" : "";
+            var flashDescription = navigator.plugins["Shockwave Flash" + swVer2].description;
+            var descArray = flashDescription.split(" ");
+            var tempArrayMajor = descArray[2].split(".");
+            var versionMajor = tempArrayMajor[0];
+            var versionMinor = tempArrayMajor[1];
+            var versionRevision = descArray[3];
+            if (versionRevision == "") {
+                versionRevision = descArray[4];
+            }
+            if (versionRevision[0] == "d") {
+                versionRevision = versionRevision.substring(1);
+            } else if (versionRevision[0] == "r") {
+                versionRevision = versionRevision.substring(1);
+                if (versionRevision.indexOf("d") > 0) {
+                    versionRevision = versionRevision.substring(0, versionRevision.indexOf("d"));
+                }
+            }
+            var flashVer = versionMajor + "." + versionMinor + "." + versionRevision;
+        }
+    }
+    // MSN/WebTV 2.6 supports Flash 4
+    else if (navigator.userAgent.toLowerCase().indexOf("webtv/2.6") != -1) flashVer = 4;
+    // WebTV 2.5 supports Flash 3
+    else if (navigator.userAgent.toLowerCase().indexOf("webtv/2.5") != -1) flashVer = 3;
+    // older WebTV supports Flash 2
+    else if (navigator.userAgent.toLowerCase().indexOf("webtv") != -1) flashVer = 2;
+    else if (isIE && isWin && !isOpera) {
+        flashVer = ControlVersion();
+    }
+    return flashVer;
+}
+
+// When called with reqMajorVer, reqMinorVer, reqRevision returns true if that version or greater is available
+function DetectFlashVer() {
+    versionStr = GetSwfVer();
+    if (versionStr == -1) {
+        return false;
+    } else if (versionStr != 0) {
+        if (isIE && isWin && !isOpera) {
+            // Given "WIN 2,0,0,11"
+            tempArray = versionStr.split(" "); 	// ["WIN", "2,0,0,11"]
+            tempString = tempArray[1]; 		// "2,0,0,11"
+            versionArray = tempString.split(","); // ['2', '0', '0', '11']
+        } else {
+            versionArray = versionStr.split(".");
+        }
+        var versionMajor = versionArray[0];
+        var versionMinor = versionArray[1];
+        var versionRevision = versionArray[2];
+
+        // is the major.revision >= requested major.revision AND the minor version >= requested minor
+        if (versionMajor > parseFloat(requiredMajorVersion)) {
+            return true;
+        } else if (versionMajor == parseFloat(requiredMajorVersion)) {
+            if (versionMinor > parseFloat(requiredMinorVersion))
+                return true;
+            else if (versionMinor == parseFloat(requiredMinorVersion)) {
+                if (versionRevision >= parseFloat(requiredRevision))
+                    return true;
+            }
+        }
+        return false;
+    }
+}
+
+function AC_AddExtension(src, ext) {
+    if (src.indexOf('?') != -1)
+        return src.replace(/\?/, ext + '?');
+    else
+        return src + ext;
+}
+
+function AC_Generateobj(objAttrs, params, embedAttrs) {
+    str = '';
+    if (isIE && isWin && !isOpera) {
+        str += '<object ';
+        for (var i in objAttrs)
+            str += i + '="' + objAttrs[i] + '" ';
+        for (var i in params)
+            str += '><param name="' + i + '" value="' + params[i] + '" /> ';
+        str += '></object>';
+    } else {
+        str += '<div><param name="wmode" value="transparent"> <embed ';
+        for (var i in embedAttrs)
+            str += i + '="' + embedAttrs[i] + '" ';
+        str += '> </embed></div>';
+    }
+    document.write(str);
+}
+
+function AC_FL_RunContent() {
+    var ret =
+    AC_GetArgs
+    (arguments, ".swf", "movie", "clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
+     , "application/x-shockwave-flash"
+    );
+    AC_Generateobj(ret.objAttrs, ret.params, ret.embedAttrs);
+}
+
+function AC_GetArgs(args, ext, srcParamName, classid, mimeType) {
+    var ret = new Object();
+    ret.embedAttrs = new Object();
+    ret.params = new Object();
+    ret.objAttrs = new Object();
+    for (var i = 0; i < args.length; i = i + 2) {
+        var currArg = args[i].toLowerCase();
+
+        switch (currArg) {
+            case "classid":
+                break;
+            case "pluginspage":
+                ret.embedAttrs[args[i]] = args[i + 1];
+                break;
+            case "src":
+            case "movie":
+                ret.embedAttrs["src"] = args[i + 1];
+                ret.params[srcParamName] = args[i + 1];
+                break;
+            case "onafterupdate":
+            case "onbeforeupdate":
+            case "onblur":
+            case "oncellchange":
+            case "onclick":
+            case "ondblClick":
+            case "ondrag":
+            case "ondragend":
+            case "ondragenter":
+            case "ondragleave":
+            case "ondragover":
+            case "ondrop":
+            case "onfinish":
+            case "onfocus":
+            case "onhelp":
+            case "onmousedown":
+            case "onmouseup":
+            case "onmouseover":
+            case "onmousemove":
+            case "onmouseout":
+            case "onkeypress":
+            case "onkeydown":
+            case "onkeyup":
+            case "onload":
+            case "onlosecapture":
+            case "onpropertychange":
+            case "onreadystatechange":
+            case "onrowsdelete":
+            case "onrowenter":
+            case "onrowexit":
+            case "onrowsinserted":
+            case "onstart":
+            case "onscroll":
+            case "onbeforeeditfocus":
+            case "onactivate":
+            case "onbeforedeactivate":
+            case "ondeactivate":
+            case "type":
+            case "codebase":
+                ret.objAttrs[args[i]] = args[i + 1];
+                break;
+            case "id":
+            case "width":
+            case "height":
+            case "align":
+            case "vspace":
+            case "hspace":
+            case "class":
+            case "title":
+            case "accesskey":
+            case "name":
+            case "tabindex":
+                ret.embedAttrs[args[i]] = ret.objAttrs[args[i]] = args[i + 1];
+                break;
+            default:
+                ret.embedAttrs[args[i]] = ret.params[args[i]] = args[i + 1];
+        }
+    }
+    ret.objAttrs["classid"] = classid;
+    if (mimeType) ret.embedAttrs["type"] = mimeType;
+    return ret;
+}
+
+
+
+---End---
+

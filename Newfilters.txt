@@ -1,0 +1,8 @@
+active
+Kill Nosey JavaScripts:*(.(referrer|plugins|cookie|colorDepth|pixelDepth|external)|history.length)*:<!-- Killed Nosey JavaScript -->
+Disable JavaScript (and meta) cookies:.cookie(*[(;)=])|http-equiv="Set-Cookie:.Cracker
+Kill alert/confirm boxes: (<!DOCTYPE*> |):$STOP()
+<!--//--><script> 
+inactive
+Dummy Inactive Filter: (<!DOCTYPE*> |):$STOP()
+<!--//--><script> 

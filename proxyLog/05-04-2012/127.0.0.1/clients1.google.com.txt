@@ -1,0 +1,56 @@
+Client writes to server
+---------
+DefaultHttpRequest(chunked: false)
+GET http://clients1.google.com/generate_204 HTTP/1.1
+Accept: image/png, image/svg+xml, image/*;q=0.8, */*;q=0.5
+Referer: http://news.google.com/nwshp?hl=en&tab=wn
+Accept-Language: en-US
+User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)
+Accept-Encoding: gzip, deflate
+Host: clients1.google.com
+Proxy-Connection: Keep-Alive
+Cookie: PREF=ID=9658824a00f823b7:FF=0:TM=1336116348:LM=1336116348:S=1FwUujjrzWBNSbcY; NID=59=Uen63kNnRq5CQ8r2Sk74aOYmT4vPBJ3AXiHxa5Yv7NQa1oiqlJbojjCLxaFOFyuwa0KRgWFAOZzBkRVD8d4h5Znk6PBwt_g1w_amw1S2wtxlylVia6wmHK7dRBvkmpL2
+---Content---
+
+---End---
+
+Server writes to client
+---------
+DefaultHttpResponse(chunked: false)
+HTTP/1.1 204 No Content
+Content-Length: 0
+Content-Type: text/html
+Date: Fri, 04 May 2012 07:25:55 GMT
+Server: GFE/2.0
+---Content---
+
+---End---
+
+Client writes to server
+---------
+DefaultHttpRequest(chunked: false)
+GET http://clients1.google.com/generate_204 HTTP/1.1
+Accept: image/png, image/svg+xml, image/*;q=0.8, */*;q=0.5
+Referer: http://news.google.com/nwshp?hl=en&tab=wn
+Accept-Language: en-US
+User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)
+Accept-Encoding: gzip, deflate
+Host: clients1.google.com
+Proxy-Connection: Keep-Alive
+Cookie: PREF=ID=c497c5b997c79466:U=e1d54779b222a67f:FF=0:TM=1336174872:LM=1336174875:S=Gwp-tnZp54oce5pS; NID=59=G-TCeqcbYdMJ1utwRxaXMk8F20Nqw3UdQW1q4qe6Hyq0ondmuLJYtJPRJTEiDDK5bUbHm4ytC2gEJyOefhEDPQcztf4G7QEH2gZDCD3Epti-C83T0M6m4gEQGLZ_wiA_
+---Content---
+
+---End---
+
+Server writes to client
+---------
+DefaultHttpResponse(chunked: false)
+HTTP/1.1 204 No Content
+Content-Length: 0
+Content-Type: text/html
+Date: Sat, 05 May 2012 00:31:51 GMT
+Server: GFE/2.0
+---Content---
+
+---End---
+

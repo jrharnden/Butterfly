@@ -1,0 +1,37 @@
+Client writes to server
+---------
+DefaultHttpRequest(chunked: false)
+GET http://odeo.com/img/badge-channel-black.gif HTTP/1.1
+Accept: image/png, image/svg+xml, image/*;q=0.8, */*;q=0.5
+Referer: http://www.eclipse.org/resources/
+Accept-Language: en-US
+User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)
+Accept-Encoding: gzip, deflate
+Host: odeo.com
+Proxy-Connection: Keep-Alive
+---Content---
+
+---End---
+
+Server writes to client
+---------
+DefaultHttpResponse(chunked: false)
+HTTP/1.1 404 Not Found
+Date: Fri, 04 May 2012 07:26:06 GMT
+Server: Apache/2.2.9 (Fedora)
+Content-Length: 298
+Connection: close
+Content-Type: text/html; charset=iso-8859-1
+---Content---
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>404 Not Found</title>
+</head><body>
+<h1>Not Found</h1>
+<p>The requested URL /img/badge-channel-black.gif was not found on this server.</p>
+<hr>
+<address>Apache/2.2.9 (Fedora) Server at odeo.com Port 80</address>
+</body></html>
+
+---End---
+
