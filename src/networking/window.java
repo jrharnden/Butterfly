@@ -77,11 +77,7 @@ public class window {
 					btnListen.setText("Listen");
 				}
 				else {
-					server = new ProxyServer(Integer.parseInt(txtPort.getText()), new HttpResponseFilters() {
-						public HttpFilter getFilter(String hostAndPort) {
-							return new CustomHttpResponseFilter(); //TODO Changed from null
-						}
-					}, null);
+					server = ProxyServer.createServer(Integer.parseInt(txtPort.getText()));
 					server.start();
 					btnListen.setText("Stop");
 				}
