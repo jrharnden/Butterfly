@@ -234,8 +234,8 @@ public class FilterShell {
 							account.removeFilter(editFilter.getId());
 							editFilter.changeName(name);
 							editFilter.changeReplaceWith(replaceText);
-							editFilter.changeRegex(regexText);
 							try {
+								editFilter.changeRegex(regexText);
 								account.addFilter(editFilter);
 							}
 							catch(PatternSyntaxException pse){
@@ -244,8 +244,8 @@ public class FilterShell {
 							}
 						}
 						else{
-							editFilter = new Filter(name,regexText,replaceText);
 							try {
+								editFilter = new Filter(name,regexText,replaceText);
 								account.addFilter(editFilter);
 							}
 							catch(PatternSyntaxException pse){
