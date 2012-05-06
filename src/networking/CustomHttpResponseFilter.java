@@ -1,23 +1,38 @@
 package networking;
 
-import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import java.util.regex.Matcher;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
-
-import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
-import org.jboss.netty.handler.codec.http.DefaultHttpResponse;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpResponse;
+
+import storage.Filter;
 
 /**
 * Custom HTTP filter.
 */
 public class CustomHttpResponseFilter implements HttpFilter {
 	
-	public CustomHttpResponseFilter() {
+	private final List<CompiledFilter> filters;
+	
+	private final class CompiledFilter{ 
+		private final Pattern filter;
+		private final String replaceWith;
 		
+		public CompiledFilter(String regex, String replaceWith){
+			filter = Pattern.compile(regex);
+			this.replaceWith = replaceWith;
+		}
+	}
+	
+	public CustomHttpResponseFilter(List<Filter> filters) {
+		this.filters = new ArrayList<CompiledFilter>();
+		
+		for(Filter filter : filters) {
+			this.filters.add(new CompiledFilter(filter.getRegex(), filter.getReplaceWith()));
+		}
 	}
 	
 	public boolean filterResponses(final HttpRequest httpRequest) {
@@ -32,10 +47,12 @@ public class CustomHttpResponseFilter implements HttpFilter {
 			if(header.contains("text/html")) {
 				if(header.contains("charset")){
 					html = response.getContent().toString(Charset.forName(ProxyUtils.substringAfter(header, "=")));
+					html = filterHtmlString(html);
 					response.setContent(ChannelBuffers.copiedBuffer(ChannelBuffers.BIG_ENDIAN, html.getBytes(Charset.forName("UTF-8"))));
 				}
 				else {
 					html = response.getContent().toString(Charset.forName("ISO-8859-1"));
+					html = filterHtmlString(html);
 					response.setContent(ChannelBuffers.copiedBuffer(ChannelBuffers.BIG_ENDIAN, html.getBytes(Charset.forName("UTF-8"))));					
 				}
 			}
@@ -45,7 +62,14 @@ public class CustomHttpResponseFilter implements HttpFilter {
 	}
 
 	public int getMaxResponseSize() {
-		//Netty uses 1048576
 		return 1048576;
+	}
+	
+	private String filterHtmlString(String html){
+		for(CompiledFilter filter : filters){
+			html = filter.filter.matcher(html).replaceAll(filter.replaceWith);
+		}
+		
+		return html;
 	}
 }
