@@ -1,14 +1,11 @@
 package gui.view;
 
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Widget;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Label;
@@ -26,10 +23,8 @@ import java.awt.Panel;
 import java.awt.BorderLayout;
 import javax.swing.JRootPane;
 import javax.swing.JTextArea;
-import javax.swing.DropMode;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
-import java.io.File;
 import java.util.regex.PatternSyntaxException;
 
 public class FilterShell {

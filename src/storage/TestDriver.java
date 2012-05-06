@@ -1,8 +1,6 @@
 package storage;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
 
 public class TestDriver {
 	public static void main(String[] args){
