@@ -1,6 +1,8 @@
 package storage;
 
 import java.io.Serializable;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 public class Filter implements Serializable {
 	private static final long serialVersionUID = -3172281602532772481L;
@@ -9,7 +11,8 @@ public class Filter implements Serializable {
 	private String regex, name, replaceWith;
 
 	// TODO should probably have flags for the Pattern class and some way to set them in UI
-	public Filter(String name, String regex, String replaceWith) {
+	public Filter(String name, String regex, String replaceWith) throws PatternSyntaxException {
+		Pattern.compile(regex);
 		id = ids++;
 		this.regex = regex;
 		this.name = name;
@@ -52,7 +55,8 @@ public class Filter implements Serializable {
 		id = i;
 	}
 
-	public void changeRegex(String r) {
+	public void changeRegex(String r) throws PatternSyntaxException {
+		Pattern.compile(r);
 		regex = r;
 	}
 

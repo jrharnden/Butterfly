@@ -72,7 +72,7 @@ public class Account implements Serializable {
 	 * @param filterName
 	 * @return
 	 */
-	public Filter getDefaultFilter(int filterID) {
+	public Filter getDefaultFilter(final int filterID) {
 		int defaultLength = defaultFilters.size();
 		
 		for(int i = 0; i < defaultLength; ++i) {
@@ -88,7 +88,7 @@ public class Account implements Serializable {
 		return Collections.unmodifiableList(defaultFilters);
 	}
 	
-	public Filter getFilter(int filterID) {
+	public Filter getFilter(final int filterID) {
 		final int activeLength = activeFilters.size();
 		
 		for(int i = 0; i < activeLength; ++i) {
@@ -153,46 +153,50 @@ public class Account implements Serializable {
 	/******************************************************************************************************************/
 
 	
-	public void addFilter(final Filter filter) throws PatternSyntaxException {
+	public void addFilter(final Filter filter) {
 		if(filter == null) throw new IllegalArgumentException();
 		
-		if (filter != null) {
-			Pattern.compile(filter.getRegex());
-			activeFilters.add(filter);
-		}
+		if(!activeFilters.contains(filter))
+			activeFilters.add(new Filter(filter));
 	}
 	
-	public void addFilter(Collection<Filter> filters) {
+	public void addFilter(final Collection<Filter> filters) {
+		if(filters == null) throw new IllegalArgumentException();
+		
 		for (Filter filter : filters) {
-			activeFilters.add(filter);
+			if (!activeFilters.contains(filter))
+				activeFilters.add(new Filter(filter));
 		}
 	}
 	
-	public void addDefaultFilter(Filter f) {
-		if (!defaultFilters.contains(f))
-			defaultFilters.add(f);
-	}
-	
-	public void addInactiveFilter(final Filter filter) throws PatternSyntaxException {
+	public void addDefaultFilter(final Filter filter) {
 		if(filter == null) throw new IllegalArgumentException();
 		
-		if (filter != null) {
-			Pattern.compile(filter.getRegex());
+		if (!defaultFilters.contains(filter))
+			defaultFilters.add(new Filter(filter));
+	}
+	
+	public void addInactiveFilter(final Filter filter) {
+		if(filter == null) throw new IllegalArgumentException();
+		
+		if (!inactiveFilters.contains(filter))
 			inactiveFilters.add(new Filter(filter));
-		}
 	}
 		
-	public void addInactiveFilter(Collection<Filter> filters) {
+	public void addInactiveFilter(final Collection<Filter> filters) {
+		if(filters == null) throw new IllegalArgumentException();
+		
 		for (Filter filter : filters) {
-			inactiveFilters.add(new Filter(filter)); 
+			if (!inactiveFilters.contains(filter))
+				inactiveFilters.add(new Filter(filter));
 		}
 	}
 	
-	public void addPermission(Permission perm) {
+	public void addPermission(final Permission perm) {
 		permissions.add(perm);
 	}
 	
-	public void addPermission(EnumSet<Permission> perm) {
+	public void addPermission(final EnumSet<Permission> perm) {
 		permissions.addAll(perm);
 	}
 	
@@ -207,7 +211,7 @@ public class Account implements Serializable {
 	 *            the filter to be removed
 	 * @return removed filter
 	 */
-	public Filter removeFilter(int filterID) {
+	public Filter removeFilter(final int filterID) {
 		final int activeLength = activeFilters.size();
 				
 		for(int i = 0; i < activeLength; ++i) {
@@ -234,7 +238,7 @@ public class Account implements Serializable {
 	 *            filter to be removed
 	 * @return removed filter
 	 */
-	public Filter removeActiveFilter(int filterID) {
+	public Filter removeActiveFilter(final int filterID) {
 		final int activeLength = activeFilters.size();
 		
 		for(int i = 0; i < activeLength; ++i) {
@@ -252,7 +256,7 @@ public class Account implements Serializable {
 	 *            name of the filter to be removed
 	 * @return removed filter
 	 */
-	public Filter removeInactiveFilter(int filterID) {
+	public Filter removeInactiveFilter(final int filterID) {
 		final int inactiveLength = inactiveFilters.size();
 		
 		for(int i = 0; i < inactiveLength; ++i) {
@@ -263,11 +267,11 @@ public class Account implements Serializable {
 		return null;
 	}
 
-	public void removePermission(Permission perm) {
+	public void removePermission(final Permission perm) {
 		permissions.remove(perm);
 	}
 
-	public void removePermission(EnumSet<Permission> perm) {
+	public void removePermission(final EnumSet<Permission> perm) {
 		permissions.removeAll(perm);
 	}
 	
