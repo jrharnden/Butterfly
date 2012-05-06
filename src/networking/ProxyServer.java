@@ -65,6 +65,7 @@ public class ProxyServer {
 		future.awaitUninterruptibly(6 * 1000);
 		serverBootstrap.releaseExternalResources();
 		isRunning = false;
+		ProxyLog.clearConnections();
 	}
 
 	public boolean isRunning() {
