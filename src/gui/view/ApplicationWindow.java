@@ -273,7 +273,7 @@ public class ApplicationWindow{
 	 */
 	public void open() {
 		Display display = Display.getDefault();
-		final Shell shell = new Shell();
+		final Shell shell = new Shell(display);
 		authenticate(shell);
 		createContents();
 		shlButterfly.open();
@@ -283,6 +283,11 @@ public class ApplicationWindow{
 				display.sleep();
 			}
 		}
+		if (!shlButterfly.isDisposed()) {
+			shlButterfly.dispose();
+		}
+		display.dispose();
+		System.exit(0);
 	}
 
 	/**
@@ -356,9 +361,11 @@ public class ApplicationWindow{
 		
 			// Initialize text area connection list
 			textAreaConnectionList = new JTextArea();
-			rootPane_1.getContentPane().add(textAreaConnectionList);
+			//rootPane_1.getContentPane().add(textAreaConnectionList);
 			textAreaConnectionList.setEditable(false);
 			textAreaConnectionList.setBorder(border);
+			JScrollPane sbConnectionList = new JScrollPane(textAreaConnectionList);
+			rootPane_1.getContentPane().add(sbConnectionList);
 		
 		Composite composite = new Composite(statusCompositeLeft, SWT.BORDER);
 		GridData gd_composite = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
@@ -690,7 +697,6 @@ public class ApplicationWindow{
 		formToolkit.paintBordersFor(admComposite);
 		admComposite.setLayout(new GridLayout(3, false));
 			
-			//Accounts label
 			Label lblAccounts = new Label(admComposite, SWT.NONE);
 			lblAccounts.setAlignment(SWT.CENTER);
 			GridData gd_lblAccounts = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);
@@ -959,7 +965,9 @@ public class ApplicationWindow{
 						if (server != null && server.isRunning()) {
 							server.stop();
 						}
-						shlButterfly.dispose();
+						if (!shlButterfly.isDisposed()) {
+							shlButterfly.dispose();
+						}
 						open();
 					}
 				}
@@ -972,7 +980,9 @@ public class ApplicationWindow{
 				public void handleEvent(Event e){
 					switch (e.type){
 					case SWT.Selection:
-						System.exit(0);
+						if (!shlButterfly.isDisposed()) {
+							shlButterfly.dispose();
+						}
 					}
 				}
 			});
@@ -1004,73 +1014,88 @@ public class ApplicationWindow{
 				if (accounts.isConnectionListEnabled()) {
 					ProxyLog.setConnectionText(textAreaConnectionList);
 				}
-				if (account.getGroup()==Group.ADMINISTRATOR) {
+				if (account.getGroup()==Group.ADMINISTRATOR || accounts.isDialogEnabled()) {
 					MenuItem mntmLogging = new MenuItem(menu, SWT.CASCADE);
 					mntmLogging.setText("Logging");
 					
 					Menu menu_logging = new Menu(mntmLogging);
 					mntmLogging.setMenu(menu_logging);
-					
+
 					/*
-					 * MenuItem for Enable Log
+					 *  Menu Item for Clear Dialog
 					 */
-					final MenuItem mntmEnableLogging = new MenuItem(menu_logging, SWT.CHECK);
-					mntmEnableLogging.setText("Enable Log");
-					
-					// Load default/previous setting
-					mntmEnableLogging.setSelection(accounts.isLogEnabled());
-					
-					// Listener for selection
-					mntmEnableLogging.addListener(SWT.Selection, new Listener(){
+					final MenuItem mntmClearDialog = new MenuItem(menu_logging, SWT.NONE);
+					mntmClearDialog.setText("Clear Dialog");
+
+					// Listener for selection of Clear Dialog
+					mntmClearDialog.addListener(SWT.Selection, new Listener(){
 						public void handleEvent(Event e) {
-							ProxyLog.setLogEnabled(mntmEnableLogging.getSelection());
-							accounts.setLogEnabled(mntmEnableLogging.getSelection());
+							ProxyLog.clearDialog();
 						}
 					});
-					
-					/*
-					 * MenuItem for Dialog
-					 */
-					final MenuItem mntmNewCheckbox = new MenuItem(menu_logging, SWT.CHECK);
-					mntmNewCheckbox.setText("Enable Dialog");
-					
-					// Load default/previous setting
-					mntmNewCheckbox.setSelection(accounts.isDialogEnabled());
-					
-					// Listener for selection
-					mntmNewCheckbox.addListener(SWT.Selection, new Listener(){
-						public void handleEvent(Event e) {
-							if (mntmNewCheckbox.getSelection() == true) {
-								ProxyLog.setDialogText(textAreaDialog);
-								accounts.setDialogEnabled(true);
-							} else {
-								ProxyLog.setDialogText(null);
-								accounts.setDialogEnabled(false);
+					if (account.getGroup()==Group.ADMINISTRATOR) {
+						
+						/*
+						 * MenuItem for Enable Log
+						 */
+						final MenuItem mntmEnableLogging = new MenuItem(menu_logging, SWT.CHECK);
+						mntmEnableLogging.setText("Enable Log");
+						
+						// Load default/previous setting
+						mntmEnableLogging.setSelection(accounts.isLogEnabled());
+						
+						// Listener for selection of Enable Log
+						mntmEnableLogging.addListener(SWT.Selection, new Listener(){
+							public void handleEvent(Event e) {
+								ProxyLog.setLogEnabled(mntmEnableLogging.getSelection());
+								accounts.setLogEnabled(mntmEnableLogging.getSelection());
 							}
-						}
-					});
-					
-					/*
-					 *  Menu Item for Connection List
-					 */
-					final MenuItem mntmEnableConnectionList = new MenuItem(menu_logging, SWT.CHECK);
-					mntmEnableConnectionList.setText("Enable Connection List");
-					
-					// Load default/previous setting
-					mntmEnableConnectionList.setSelection(accounts.isConnectionListEnabled());
-					
-					// Listener for selection
-					mntmEnableConnectionList.addListener(SWT.Selection, new Listener(){
-						public void handleEvent(Event e) {
-							if (mntmEnableConnectionList.getSelection() == true) {
-								ProxyLog.setConnectionText(textAreaConnectionList);
-								accounts.setConnectionListEnabled(true);
-							} else {
-								ProxyLog.setConnectionText(null);
-								accounts.setConnectionListEnabled(false);
+						});
+						
+						/*
+						 * MenuItem for Enable Dialog
+						 */
+						final MenuItem mntmNewCheckbox = new MenuItem(menu_logging, SWT.CHECK);
+						mntmNewCheckbox.setText("Enable Dialog");
+						
+						// Load default/previous setting
+						mntmNewCheckbox.setSelection(accounts.isDialogEnabled());
+						
+						// Listener for selection of Enable Dialog
+						mntmNewCheckbox.addListener(SWT.Selection, new Listener(){
+							public void handleEvent(Event e) {
+								if (mntmNewCheckbox.getSelection() == true) {
+									ProxyLog.setDialogText(textAreaDialog);
+									accounts.setDialogEnabled(true);
+								} else {
+									ProxyLog.setDialogText(null);
+									accounts.setDialogEnabled(false);
+								}
 							}
-						}
-					});
+						});
+						
+						/*
+						 *  Menu Item for Connection List
+						 */
+						final MenuItem mntmEnableConnectionList = new MenuItem(menu_logging, SWT.CHECK);
+						mntmEnableConnectionList.setText("Enable Connection List");
+						
+						// Load default/previous setting
+						mntmEnableConnectionList.setSelection(accounts.isConnectionListEnabled());
+						
+						// Listener for selection of Enable Connection List
+						mntmEnableConnectionList.addListener(SWT.Selection, new Listener(){
+							public void handleEvent(Event e) {
+								if (mntmEnableConnectionList.getSelection() == true) {
+									ProxyLog.setConnectionText(textAreaConnectionList);
+									accounts.setConnectionListEnabled(true);
+								} else {
+									ProxyLog.setConnectionText(null);
+									accounts.setConnectionListEnabled(false);
+								}
+							}
+						});
+					}
 				}
 				
 				
