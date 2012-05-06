@@ -685,8 +685,6 @@ public class EditShell {
 							String filter = al.getSelection()[0];
 							String[] fil = filter.split(":");
 							String filterName = fil[0];
-							Filter removedFilter = account.removeActiveFilter(filterName);
-							account.addInactiveFilter(removedFilter);
 							al.remove(filter);
 							il.add(filter);
 						}catch(ArrayIndexOutOfBoundsException e){
