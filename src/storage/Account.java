@@ -281,14 +281,20 @@ public class Account implements Serializable {
 
 	@Override
 	public boolean equals(Object o) {
-		try {
-			Account acc = (Account) o;
-			return acc.getName().equals(accName) && acc.getPassHash().equals(passHash);
-		} 
-		catch (ClassCastException e) {
-			return false;
-		}
+		
+		if(this == o) return true;
+		if(!(o instanceof Account)) return false;
+		
+		Account acc = (Account) o;
+		
+		return acc.getName().equals(accName) && acc.getPassHash().equals(passHash);
 	}
+	
+	@Override
+	public int hashCode(){
+		return accName.hashCode()+passHash.hashCode();
+	}
+
 
 	@Override
 	public String toString() {
