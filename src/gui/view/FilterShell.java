@@ -236,7 +236,7 @@ public class FilterShell {
 					String name = textName.getText();
 					if(!name.equals("")) {
 						if(editFilter != null){
-							account.removeFilter(editFilter.getName());
+							account.removeFilter(editFilter.getId());
 							editFilter.changeName(name);
 							editFilter.changeReplaceWith(replaceText);
 							editFilter.changeRegex(regexText);

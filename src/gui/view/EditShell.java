@@ -657,7 +657,7 @@ public class EditShell {
 								String filter = il.getSelection()[0];
 								String[] fil = filter.split(":");
 								String filterName = fil[0];
-								Filter removedFilter = account.removeInactiveFilter(filterName);
+								Filter removedFilter = account.removeInactiveFilter(Integer.parseInt(filterName));
 								account.addFilter(removedFilter);
 								il.remove(filter);
 								al.add(filter);
@@ -685,7 +685,7 @@ public class EditShell {
 							String filter = al.getSelection()[0];
 							String[] fil = filter.split(":");
 							String filterName = fil[0];
-							Filter removedFilter = account.removeActiveFilter(filterName);
+							Filter removedFilter = account.removeActiveFilter(Integer.parseInt(filterName));
 							account.addInactiveFilter(removedFilter);
 							al.remove(filter);
 							il.add(filter);

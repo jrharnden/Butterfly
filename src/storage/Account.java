@@ -54,35 +54,66 @@ public class Account implements Serializable {
 		return accountId;
 	}
 	
+	public List<Filter> getActiveFilters() {
+		return Collections.unmodifiableList(activeFilters);
+	}
+	
+	public List<Filter> getAllFilters() {
+		List<Filter> allFilters = new ArrayList<Filter>();
+		allFilters.addAll(inactiveFilters);
+		allFilters.addAll(activeFilters);
+		allFilters.addAll(defaultFilters);
+		return Collections.unmodifiableList(allFilters);
+	}
+	
 	/**
-	 * Returns a default filter should only be used by admin
+	 * Returns a default filter should only be used by Administrator
 	 * 
 	 * @param filterName
 	 * @return
 	 */
-	public Filter getDefaultFilter(String filterName) {
-		for (Filter filter : defaultFilters) {
-			if (filter.getName().equals(filterName))
-				return filter;
-		}
+	public Filter getDefaultFilter(int filterID) {
+		int defaultLength = defaultFilters.size();
 		
+		for(int i = 0; i < defaultLength; ++i) {
+			if(defaultFilters.get(i).getId() == filterID) {
+				return new Filter(defaultFilters.get(i));
+			}
+		}
+				
 		return null;
 	}
 	
-	public Filter getFilter(String filterName) {
-		for (Filter filter : activeFilters) {
-			if (filter.getName().equals(filterName))
-				return filter;
+	public List<Filter> getDefaultFilters() {
+		return Collections.unmodifiableList(defaultFilters);
+	}
+	
+	public Filter getFilter(int filterID) {
+		final int activeLength = activeFilters.size();
+		
+		for(int i = 0; i < activeLength; ++i) {
+			if (activeFilters.get(i).getId() == filterID) {
+				return new Filter(activeFilters.get(i));
+			}
 		}
-		for (Filter filter : inactiveFilters) {
-			if (filter.getName().equals(filterName))
-				return filter;
+		
+		final int inactiveLength = inactiveFilters.size();
+		
+		for(int i = 0; i < inactiveLength; ++i) {
+			if (inactiveFilters.get(i).getId() == filterID) {
+				return new Filter(inactiveFilters.get(i));
+			}
 		}
+
 		return null;
 	}
 	
 	public Group getGroup() {
 		return group;
+	}
+	
+	public List<Filter> getInactiveFilters() {
+		return Collections.unmodifiableList(inactiveFilters);
 	}
 	
 	public String getName() {
@@ -93,24 +124,8 @@ public class Account implements Serializable {
 		return passHash;
 	}
 	
-	public List<Filter> getAllFilters() {
-		List<Filter> allFilters = new ArrayList<Filter>();
-		allFilters.addAll(inactiveFilters);
-		allFilters.addAll(activeFilters);
-		allFilters.addAll(defaultFilters);
-		return allFilters;
-	}
-
-	public List<Filter> getActiveFilters() {
-		return Collections.unmodifiableList(activeFilters);
-	}
-
-	public List<Filter> getDefaultFilters() {
-		return Collections.unmodifiableList(defaultFilters);
-	}
-	
-	public List<Filter> getInactiveFilters() {
-		return Collections.unmodifiableList(inactiveFilters);
+	public EnumSet<Permission> getPermissions() {
+		return permissions;
 	}
 	
 	
@@ -133,6 +148,11 @@ public class Account implements Serializable {
 		passHash = newPass;
 	}
 
+	/*******************************************************************************************************************
+	/ Adding 
+	/******************************************************************************************************************/
+
+	
 	public void addFilter(final Filter filter) throws PatternSyntaxException {
 		if(filter == null) throw new IllegalArgumentException();
 		
@@ -142,47 +162,68 @@ public class Account implements Serializable {
 		}
 	}
 	
-	public void addInactiveFilter(final Filter filter) throws PatternSyntaxException {
-		if(filter == null) throw new IllegalArgumentException();
-		
-		if (filter != null) {
-			Pattern.compile(filter.getRegex());
-			inactiveFilters.add(filter);
-		}
-	}
-	
 	public void addFilter(Collection<Filter> filters) {
 		for (Filter filter : filters) {
 			activeFilters.add(filter);
 		}
 	}
 	
-	public void addInactiveFilter(Collection<Filter> filters) {
-		for (Filter filter : filters) {
-			inactiveFilters.add(filter); 
+	public void addDefaultFilter(Filter f) {
+		if (!defaultFilters.contains(f))
+			defaultFilters.add(f);
+	}
+	
+	public void addInactiveFilter(final Filter filter) throws PatternSyntaxException {
+		if(filter == null) throw new IllegalArgumentException();
+		
+		if (filter != null) {
+			Pattern.compile(filter.getRegex());
+			inactiveFilters.add(new Filter(filter));
 		}
 	}
+		
+	public void addInactiveFilter(Collection<Filter> filters) {
+		for (Filter filter : filters) {
+			inactiveFilters.add(new Filter(filter)); 
+		}
+	}
+	
+	public void addPermission(Permission perm) {
+		permissions.add(perm);
+	}
+	
+	public void addPermission(EnumSet<Permission> perm) {
+		permissions.addAll(perm);
+	}
+	
+	/*******************************************************************************************************************
+	/ Removing
+	/******************************************************************************************************************/
 
 	/**
 	 * Removes a filter from the users inactive or active filter list
 	 * 
-	 * @param filterName
+	 * @param filterID
 	 *            the filter to be removed
 	 * @return removed filter
 	 */
-	public Filter removeFilter(String filterName) {
-		for (Filter f : activeFilters) {
-			if (f.getName().equals(filterName)) {
-				activeFilters.remove(f);
-				return f;
+	public Filter removeFilter(int filterID) {
+		final int activeLength = activeFilters.size();
+				
+		for(int i = 0; i < activeLength; ++i) {
+			if (activeFilters.get(i).getId() == filterID) {
+				return activeFilters.remove(i);
 			}
 		}
-		for (Filter f : inactiveFilters) {
-			if (f.getName().equals(filterName)) {
-				inactiveFilters.remove(f);
-				return f;
+		
+		final int inactiveLength = inactiveFilters.size();
+		
+		for(int i = 0; i < inactiveLength; ++i) {
+			if (inactiveFilters.get(i).getId() == filterID) {
+				return inactiveFilters.remove(i);
 			}
 		}
+
 		return null;
 	}
 
@@ -193,11 +234,12 @@ public class Account implements Serializable {
 	 *            filter to be removed
 	 * @return removed filter
 	 */
-	public Filter removeActiveFilter(String filterName) {
-		for (Filter f : activeFilters) {
-			if (f.getName().equals(filterName)) {
-				activeFilters.remove(f);
-				return f;
+	public Filter removeActiveFilter(int filterID) {
+		final int activeLength = activeFilters.size();
+		
+		for(int i = 0; i < activeLength; ++i) {
+			if (activeFilters.get(i).getId() == filterID) {
+				return activeFilters.remove(i);
 			}
 		}
 		return null;
@@ -210,18 +252,15 @@ public class Account implements Serializable {
 	 *            name of the filter to be removed
 	 * @return removed filter
 	 */
-	public Filter removeInactiveFilter(String filterName) {
-		for (Filter f : inactiveFilters) {
-			if (f.getName().equals(filterName)) {
-				inactiveFilters.remove(f);
-				return f;
+	public Filter removeInactiveFilter(int filterID) {
+		final int inactiveLength = inactiveFilters.size();
+		
+		for(int i = 0; i < inactiveLength; ++i) {
+			if (inactiveFilters.get(i).getId() == filterID) {
+				return inactiveFilters.remove(i);
 			}
 		}
 		return null;
-	}
-
-	public void addPermission(Permission perm) {
-		permissions.add(perm);
 	}
 
 	public void removePermission(Permission perm) {
@@ -231,19 +270,10 @@ public class Account implements Serializable {
 	public void removePermission(EnumSet<Permission> perm) {
 		permissions.removeAll(perm);
 	}
-
-	public void addPermission(EnumSet<Permission> perm) {
-		permissions.addAll(perm);
-	}
-
-	public EnumSet<Permission> getPermissions() {
-		return permissions;
-	}
-
-	public void addDefaultFilter(Filter f) {
-		if (!defaultFilters.contains(f))
-			defaultFilters.add(f);
-	}
+	
+	/*******************************************************************************************************************
+	/ Utility Methods 
+	/******************************************************************************************************************/
 
 	@Override
 	public boolean equals(Object o) {

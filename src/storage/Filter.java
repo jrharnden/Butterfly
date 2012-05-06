@@ -1,48 +1,67 @@
 package storage;
+
 import java.io.Serializable;
 
 public class Filter implements Serializable {
 	private static final long serialVersionUID = -3172281602532772481L;
-	static int ids = 0;
+	static int ids = 0; //TODO this needs to be saved so unique IDs can't be reused when the program is restarted
 	private int id;
 	private String regex, name, replaceWith;
-	//TODO should probably have flags for the Pattern class and some way to set them in UI
-	public Filter(String name, String regex, String replaceWith){
+
+	// TODO should probably have flags for the Pattern class and some way to set them in UI
+	public Filter(String name, String regex, String replaceWith) {
 		id = ids++;
 		this.regex = regex;
 		this.name = name;
 		this.replaceWith = replaceWith;
 	}
-	public Filter(String r){
+
+	public Filter(Filter other) {
+		id = other.getId();
+		regex = other.getRegex();
+		name = other.getName();
+		replaceWith = other.getReplaceWith();
+	}
+
+	public Filter(String r) {
 		id = ids++;
 		regex = name = r;
-	}	
-	public String getRegex(){
+	}
+
+	public String getRegex() {
 		return regex;
-	}	
-	public String getReplaceWith(){
+	}
+
+	public String getReplaceWith() {
 		return replaceWith;
-	}	
-	public int getId(){
+	}
+
+	public int getId() {
 		return id;
 	}
-	public String getName(){
+
+	public String getName() {
 		return name;
 	}
-	public void changeName(String n){
+
+	public void changeName(String n) {
 		name = n;
 	}
-	public void changeId(int i){
+
+	public void changeId(int i) {
 		id = i;
 	}
-	public void changeRegex(String r){
+
+	public void changeRegex(String r) {
 		regex = r;
 	}
-	public void changeReplaceWith(String r){
+
+	public void changeReplaceWith(String r) {
 		replaceWith = r;
 	}
+
 	@Override
-	public String toString(){
-		return name;
+	public String toString() {
+		return id+": "+name;
 	}
 }

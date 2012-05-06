@@ -1077,7 +1077,7 @@ public class ApplicationWindow{
 				filter = activeFilters.getSelection()[0];
 			String[] fil = filter.split(":");
 			String filterName = fil[0];
-			account.removeFilter(filterName);
+			account.removeFilter(Integer.parseInt(filterName));
 			accounts.saveAccounts();
 			inactiveFilters.removeAll();
 			activeFilters.removeAll();
@@ -1102,7 +1102,7 @@ public class ApplicationWindow{
 			String filter = il.getSelection()[0];
 			String[] fil = filter.split(":");
 			String filterName = fil[0];
-			Filter removedFilter = account.removeInactiveFilter(filterName);
+			Filter removedFilter = account.removeInactiveFilter(Integer.parseInt(filterName));
 			account.addFilter(removedFilter);
 			accounts.saveAccounts();
 			il.remove(filter);
@@ -1119,7 +1119,7 @@ public class ApplicationWindow{
 			String filter = al.getSelection()[0];
 			String[] fil = filter.split(":");
 			String filterName = fil[0];
-			Filter removedFilter = account.removeActiveFilter(filterName);
+			Filter removedFilter = account.removeActiveFilter(Integer.parseInt(filterName));
 			account.addInactiveFilter(removedFilter);
 			accounts.saveAccounts();
 			al.remove(filter);
@@ -1155,7 +1155,7 @@ public class ApplicationWindow{
 				filter = activeFilters.getSelection()[0];
 			String[] fil = filter.split(":");
 			String filterName = fil[0];
-			Filter editFilter = account.getFilter(filterName);
+			Filter editFilter = account.getFilter(Integer.parseInt(filterName));
 			filterEdit(EDIT,editFilter);
 			//Repopulate filter lists
 			List filterInactiveList = filterInactiveListViewer.getList();
