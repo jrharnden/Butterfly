@@ -231,14 +231,14 @@ public class EditShell {
 		if(sName.equalsIgnoreCase("Export")){
 			
 				for(Filter f: account.getAllFilters()){
-					filterActiveList_1.add(f.getName());
+					filterActiveList_1.add(f.toString());
 						
 					}
 				
 		}
 		if(opened_user_account){
 			for(Filter f: account.getAllFilters()){
-				filterActiveList_1.add(f.getName());
+				filterActiveList_1.add(f.toString());
 			}
 		}
 		//Button composite
@@ -295,7 +295,7 @@ public class EditShell {
 			List inactiveList = filterInactiveListViewer.getList();
 			if(opened_user_account){
 				for(Filter f: edit_account.getDefaultFilters())
-					inactiveList.add(f.getName());
+					inactiveList.add(f.toString());
 			}
 			Composite btnBarComposite = new Composite(filterComposite, SWT.NONE);
 			btnBarComposite.setLayout(new GridLayout(11, false));
