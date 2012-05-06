@@ -436,6 +436,7 @@ public class ApplicationWindow{
 		lblConnections.setText("Connection Count:");
 		
 			// Initialize connection count text field
+			//TODO change to JTextArea not Text
 			textConnectionCount = new Text(composite, SWT.BORDER);
 			textConnectionCount.setText("0");
 			GridData gd_textConnectionCount = new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1);
@@ -444,7 +445,7 @@ public class ApplicationWindow{
 			formToolkit.adapt(textConnectionCount, true, true);
 			//disable the fields
 			textConnectionCount.setEnabled(false);
-			ProxyLog.setCountText(textConnectionCount);
+			//ProxyLog.setCountText(textConnectionCount);
 		
 		Composite statusCompositeRight = new Composite(statusComposite, SWT.NONE);
 		formToolkit.adapt(statusCompositeRight);
