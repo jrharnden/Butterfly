@@ -2,6 +2,9 @@ package gui.view;
 
 import networking.ProxyLog;
 import networking.ProxyServer;
+import networking.HttpFilter;
+import networking.HttpResponseFilters;
+import networking.CustomHttpResponseFilter;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -414,7 +417,10 @@ public class ApplicationWindow{
 						}
 						else {
 							accounts.setPortNumber(Integer.parseInt(textPort.getText()));
-							server = ProxyServer.createServer(accounts.getPortNumber());
+							server = new ProxyServer(accounts.getPortNumber(), new HttpResponseFilters() {
+								public HttpFilter getFilter(String hostAndPort) {
+									return new CustomHttpResponseFilter(account.getActiveFilters());
+								}}, null);
 							server.start();
 							btnListen.setText("Stop");
 						}

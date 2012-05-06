@@ -3,6 +3,8 @@ package networking;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import java.io.IOException;
+import java.util.ArrayList;
+
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -11,6 +13,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.SwingConstants;
 import javax.swing.JTextArea;
+
+import storage.Filter;
 
 /**
  * window Dummy window to start the demo
@@ -77,7 +81,10 @@ public class window {
 					btnListen.setText("Listen");
 				}
 				else {
-					server = ProxyServer.createServer(Integer.parseInt(txtPort.getText()));
+					server = new ProxyServer(Integer.parseInt(txtPort.getText()), new HttpResponseFilters() {
+						public HttpFilter getFilter(String hostAndPort) {
+							return new CustomHttpResponseFilter(new ArrayList<Filter>());
+						}}, null);
 					server.start();
 					btnListen.setText("Stop");
 				}
