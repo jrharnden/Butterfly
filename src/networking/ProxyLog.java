@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.JTextArea;
+import org.eclipse.swt.widgets.Text;
 
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.handler.codec.http.HttpChunk;
@@ -30,7 +31,7 @@ public class ProxyLog {
 	private volatile static String				root		= "./proxyLog";
 	private static AtomicInteger				connectionCount = new AtomicInteger(0);
 	private static final Object					connectionLock = new Object(), dialogLock = new Object(), fileLock = new Object();
-	private volatile static JTextArea			countText = null;
+	private volatile static Object				countText = null;
 	private volatile static JTextArea 			dialogText = null;
 	private volatile static JTextArea			connectionText = null;
 	private volatile static ArrayList<String>	connectionList = new ArrayList<String>();
@@ -46,7 +47,7 @@ public class ProxyLog {
 		isLogEnabled = value;
 	}
 	
-	public static void setCountText(JTextArea inText) {
+	public static void setCountText(Object inText) {
 		countText = inText;
 	}
 	
@@ -67,8 +68,18 @@ public class ProxyLog {
 		if (connectionText != null) {
 			connectionText.setText("");
 		}
+		connectionCount.set(0);
+		writeCountText();
+	}
+	
+	private static void writeCountText() {
 		if (countText != null) {
-			countText.setText("");
+			if (countText instanceof JTextArea) {
+				((JTextArea) countText).setText(Integer.toString(connectionCount.get()));
+			}
+			else if (countText instanceof Text) {
+				((Text) countText).setText(Integer.toString(connectionCount.get()));
+			}
 		}
 	}
 	
@@ -118,9 +129,7 @@ public class ProxyLog {
 			
 			// write the new connection count to the text 
 			// if it has been set
-			if (countText != null) {
-				countText.setText(Integer.toString(connectionCount.get()));
-			}
+			writeCountText();
 			return true;
 			
 		}
@@ -165,9 +174,7 @@ public class ProxyLog {
 					
 					// write the new connection count to the label 
 					// if it has been set
-					if (countText != null) {
-						countText.setText(Integer.toString(connectionCount.get()));
-					}
+					writeCountText();
 					return true;
 				} // end connection check
 			} // end for loop through connection list

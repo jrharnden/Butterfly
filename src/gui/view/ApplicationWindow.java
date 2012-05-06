@@ -30,6 +30,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JRootPane;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -376,11 +377,14 @@ public class ApplicationWindow{
 		
 			// Initialize Port Text Field
 			textPort = new Text(composite, SWT.BORDER);
-			textPort.setText("8080");
+			textPort.setText(Integer.toString(accounts.getPortNumber()));
 			GridData gd_textPort = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
 			gd_textPort.widthHint = 262;
 			textPort.setLayoutData(gd_textPort);
 			formToolkit.adapt(textPort, true, true);
+			if (!account.getPermissions().contains(Permission.SETPORT)) {
+				textPort.setEditable(false);
+			}
 		
 			// Initialize Listen Button for the port
 			final Button btnListen = new Button(composite, SWT.NONE);
@@ -402,7 +406,8 @@ public class ApplicationWindow{
 							btnListen.setText("Listen");
 						}
 						else {
-							server = ProxyServer.createServer(Integer.parseInt(textPort.getText()));
+							accounts.setPortNumber(Integer.parseInt(textPort.getText()));
+							server = ProxyServer.createServer(accounts.getPortNumber());
 							server.start();
 							btnListen.setText("Stop");
 						}
@@ -417,7 +422,6 @@ public class ApplicationWindow{
 		lblConnections.setText("Connection Count:");
 		
 			// Initialize connection count text field
-			// TODO Andrew - Can you make the Text to JTextArea, I don't want to break anything so I'm leaving this for now
 			textConnectionCount = new Text(composite, SWT.BORDER);
 			textConnectionCount.setText("0");
 			GridData gd_textConnectionCount = new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1);
@@ -426,7 +430,7 @@ public class ApplicationWindow{
 			formToolkit.adapt(textConnectionCount, true, true);
 			//disable the fields
 			textConnectionCount.setEnabled(false);
-			//ProxyLog.setCountText(textConnectionCount);
+			ProxyLog.setCountText(textConnectionCount);
 		
 		Composite statusCompositeRight = new Composite(statusComposite, SWT.NONE);
 		formToolkit.adapt(statusCompositeRight);
@@ -471,9 +475,11 @@ public class ApplicationWindow{
 			// Initialize Text Area for Dialog
 			textAreaDialog= new JTextArea();
 			textAreaDialog.setLineWrap(true);
-			rootPane.getContentPane().add(textAreaDialog);
+			//rootPane.getContentPane().add(textAreaDialog);
 			textAreaDialog.setBorder(border); //set border
 			textAreaDialog.setEditable(false); // meddling in my text area
+			JScrollPane sbDialog = new JScrollPane(textAreaDialog);
+			rootPane.getContentPane().add(sbDialog);
 		
 		//-----------------------------------------------------------------
 		// Filters menu item
@@ -719,7 +725,7 @@ public class ApplicationWindow{
 			formToolkit.paintBordersFor(admTableTreeComposite);
 			admTableTreeComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
 			
-			// Acccount viewer
+			// Account viewer
 			AccountListViewer = new ListViewer(admTableTreeComposite, SWT.BORDER | SWT.V_SCROLL);
 			final List AccountList = AccountListViewer.getList();
 			
@@ -949,7 +955,12 @@ public class ApplicationWindow{
 				public void handleEvent(Event e){
 					switch (e.type){
 					case SWT.Selection:
-						//TODO Logout
+						//TODO Logout, currently I (Zong) implemented this naive way of doing it. Please correct it if its wrong
+						if (server != null && server.isRunning()) {
+							server.stop();
+						}
+						shlButterfly.dispose();
+						open();
 					}
 				}
 			}
@@ -984,82 +995,83 @@ public class ApplicationWindow{
 						
 					}
 				});
-				
-				MenuItem mntmLogging = new MenuItem(menu, SWT.CASCADE);
-				mntmLogging.setText("Logging");
-				
-				Menu menu_logging = new Menu(mntmLogging);
-				mntmLogging.setMenu(menu_logging);
-				
-				/*
-				 * MenuItem for Enable Log
-				 */
-				final MenuItem mntmEnableLogging = new MenuItem(menu_logging, SWT.CHECK);
-				mntmEnableLogging.setText("Enable Log");
-				
-				// Load default/previous setting
-				// TODO Only defaulting, needs to load previous setting
-				mntmEnableLogging.setSelection(false);
-				ProxyLog.setLogEnabled(mntmEnableLogging.getSelection());
-				
-				// Listener for selection
-				mntmEnableLogging.addListener(SWT.Selection, new Listener(){
-					public void handleEvent(Event e) {
-						ProxyLog.setLogEnabled(mntmEnableLogging.getSelection());
-					}
-				});
-				
-				/*
-				 * MenuItem for Dialog
-				 */
-				final MenuItem mntmNewCheckbox = new MenuItem(menu_logging, SWT.CHECK);
-				mntmNewCheckbox.setText("Enable Dialog");
-				
-				// Load default/previous setting
-				// TODO Only defaulting, needs to load previous setting
-				mntmNewCheckbox.setSelection(true);
-				if (mntmNewCheckbox.getSelection() == true) {
+
+				// Initialize proxy log items to settings previously set
+				ProxyLog.setLogEnabled(accounts.isLogEnabled());
+				if (accounts.isDialogEnabled()) {
 					ProxyLog.setDialogText(textAreaDialog);
-				} else {
-					ProxyLog.setDialogText(null);
 				}
-				
-				// Listener for selection
-				mntmNewCheckbox.addListener(SWT.Selection, new Listener(){
-					public void handleEvent(Event e) {
-						if (mntmNewCheckbox.getSelection() == true) {
-							ProxyLog.setDialogText(textAreaDialog);
-						} else {
-							ProxyLog.setDialogText(null);
-						}
-					}
-				});
-				
-				/*
-				 *  Menu Item for Connection List
-				 */
-				final MenuItem mntmEnableConnectionList = new MenuItem(menu_logging, SWT.CHECK);
-				mntmEnableConnectionList.setText("Enable Connection List");
-				
-				// Load default/previous setting
-				// TODO Only defaulting, needs to load previous setting
-				mntmEnableConnectionList.setSelection(true);
-				if (mntmEnableConnectionList.getSelection() == true) {
+				if (accounts.isConnectionListEnabled()) {
 					ProxyLog.setConnectionText(textAreaConnectionList);
-				} else {
-					ProxyLog.setConnectionText(null);
 				}
-				
-				// Listener for selection
-				mntmEnableConnectionList.addListener(SWT.Selection, new Listener(){
-					public void handleEvent(Event e) {
-						if (mntmEnableConnectionList.getSelection() == true) {
-							ProxyLog.setConnectionText(textAreaConnectionList);
-						} else {
-							ProxyLog.setConnectionText(null);
+				if (account.getGroup()==Group.ADMINISTRATOR) {
+					MenuItem mntmLogging = new MenuItem(menu, SWT.CASCADE);
+					mntmLogging.setText("Logging");
+					
+					Menu menu_logging = new Menu(mntmLogging);
+					mntmLogging.setMenu(menu_logging);
+					
+					/*
+					 * MenuItem for Enable Log
+					 */
+					final MenuItem mntmEnableLogging = new MenuItem(menu_logging, SWT.CHECK);
+					mntmEnableLogging.setText("Enable Log");
+					
+					// Load default/previous setting
+					mntmEnableLogging.setSelection(accounts.isLogEnabled());
+					
+					// Listener for selection
+					mntmEnableLogging.addListener(SWT.Selection, new Listener(){
+						public void handleEvent(Event e) {
+							ProxyLog.setLogEnabled(mntmEnableLogging.getSelection());
+							accounts.setLogEnabled(mntmEnableLogging.getSelection());
 						}
-					}
-				});
+					});
+					
+					/*
+					 * MenuItem for Dialog
+					 */
+					final MenuItem mntmNewCheckbox = new MenuItem(menu_logging, SWT.CHECK);
+					mntmNewCheckbox.setText("Enable Dialog");
+					
+					// Load default/previous setting
+					mntmNewCheckbox.setSelection(accounts.isDialogEnabled());
+					
+					// Listener for selection
+					mntmNewCheckbox.addListener(SWT.Selection, new Listener(){
+						public void handleEvent(Event e) {
+							if (mntmNewCheckbox.getSelection() == true) {
+								ProxyLog.setDialogText(textAreaDialog);
+								accounts.setDialogEnabled(true);
+							} else {
+								ProxyLog.setDialogText(null);
+								accounts.setDialogEnabled(false);
+							}
+						}
+					});
+					
+					/*
+					 *  Menu Item for Connection List
+					 */
+					final MenuItem mntmEnableConnectionList = new MenuItem(menu_logging, SWT.CHECK);
+					mntmEnableConnectionList.setText("Enable Connection List");
+					
+					// Load default/previous setting
+					mntmEnableConnectionList.setSelection(accounts.isConnectionListEnabled());
+					
+					// Listener for selection
+					mntmEnableConnectionList.addListener(SWT.Selection, new Listener(){
+						public void handleEvent(Event e) {
+							if (mntmEnableConnectionList.getSelection() == true) {
+								ProxyLog.setConnectionText(textAreaConnectionList);
+								accounts.setConnectionListEnabled(true);
+							} else {
+								ProxyLog.setConnectionText(null);
+								accounts.setConnectionListEnabled(false);
+							}
+						}
+					});
+				}
 				
 				
 	}
