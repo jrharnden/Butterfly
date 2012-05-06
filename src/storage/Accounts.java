@@ -14,8 +14,7 @@ public class Accounts implements Serializable,Iterable<Account> {
 	private EnumSet<Permission> groupAdminPermission = EnumSet.allOf(Permission.class);
 	private EnumSet<Permission> groupPowerPermission = EnumSet.allOf(Permission.class);
 	private EnumSet<Permission> groupStandardPermission = EnumSet.of(Permission.CREATEFILTER,Permission.DELETEFILTER,Permission.EDITFILTER);
-	private int portNumber = 8080;
-	private boolean logEnabled = false, dialogEnabled = true, connectionListEnabled = true;
+	private ServerSettings settings = new ServerSettings();
 	public boolean addAccount(Account a){
 		if(!containsAccount(a.getName())){
 			accounts.add(a);
@@ -108,7 +107,7 @@ public class Accounts implements Serializable,Iterable<Account> {
 		try {
 			fileOut = new FileOutputStream("./data.dat");
 			objOut = new ObjectOutputStream(fileOut);
-			
+			objOut.writeObject(settings);
 			objOut.writeObject(accounts);
 			objOut.writeObject(groupAdminPermission);
 			objOut.writeObject(groupPowerPermission);
@@ -131,6 +130,7 @@ public class Accounts implements Serializable,Iterable<Account> {
 			
 			
 			try {
+				settings = (ServerSettings) objIn.readObject();
 				accounts = (ArrayList<Account>) objIn.readObject();
 				groupAdminPermission = (EnumSet<Permission>) objIn.readObject();
 				groupPowerPermission = (EnumSet<Permission>) objIn.readObject();
@@ -208,28 +208,28 @@ public class Accounts implements Serializable,Iterable<Account> {
 		
 	}
 	public void setPortNumber(int p){
-		portNumber = p;
+		settings.serverPort = p;
 	}
 	public int getPortNumber() {
-		return portNumber;
+		return settings.serverPort;
 	}
 	public void setLogEnabled(boolean value) {
-		logEnabled = value;
+		settings.logEnabled = value;
 	}
 	public boolean isLogEnabled() {
-		return logEnabled;
+		return settings.logEnabled;
 	}
 	public void setDialogEnabled(boolean value) {
-		dialogEnabled = value;
+		settings.dialogEnabled = value;
 	}
 	public boolean isDialogEnabled() {
-		return dialogEnabled;
+		return settings.dialogEnabled;
 	}
 	public void setConnectionListEnabled(boolean value) {
-		connectionListEnabled = value;
+		settings.connectionListEnabled = value;
 	}
 	public boolean isConnectionListEnabled() {
-		return connectionListEnabled;
+		return settings.connectionListEnabled;
 	}
 	public void setAdminPermissions(EnumSet<Permission> p){
 		groupAdminPermission = EnumSet.copyOf(p);

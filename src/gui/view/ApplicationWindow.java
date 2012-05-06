@@ -418,6 +418,7 @@ public class ApplicationWindow{
 							server.start();
 							btnListen.setText("Stop");
 						}
+						accounts.saveAccounts();
 					}
 				}
 			});
@@ -908,6 +909,7 @@ public class ApplicationWindow{
 		Menu menu_main = new Menu(mntmMain);
 		mntmMain.setMenu(menu_main);
 		
+		/* commented this out because we moved it but I'm leaving this here for now
 		//Listen if the user is not a standard user
 		if (account.getGroup() != Group.STANDARD) {
 			final MenuItem mntmListen = new MenuItem(menu_main, SWT.CHECK);
@@ -925,7 +927,7 @@ public class ApplicationWindow{
 					}
 				}
 			});
-		}
+		}*/
 			//Import
 			MenuItem mntmImport = new MenuItem(menu_main, SWT.NONE);
 			mntmImport.setText(IMPORT);
@@ -1049,6 +1051,7 @@ public class ApplicationWindow{
 							public void handleEvent(Event e) {
 								ProxyLog.setLogEnabled(mntmEnableLogging.getSelection());
 								accounts.setLogEnabled(mntmEnableLogging.getSelection());
+								accounts.saveAccounts();
 							}
 						});
 						
@@ -1071,6 +1074,7 @@ public class ApplicationWindow{
 									ProxyLog.setDialogText(null);
 									accounts.setDialogEnabled(false);
 								}
+								accounts.saveAccounts();
 							}
 						});
 						
@@ -1093,6 +1097,7 @@ public class ApplicationWindow{
 									ProxyLog.setConnectionText(null);
 									accounts.setConnectionListEnabled(false);
 								}
+								accounts.saveAccounts();
 							}
 						});
 					}
