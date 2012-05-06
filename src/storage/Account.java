@@ -26,7 +26,7 @@ public class Account implements Serializable {
 	public Account(final String name, final String pass, final Group gr) {
 		passHash = pass;
 		accName = name;
-		
+
 		if (gr != null) {
 			group = gr;
 			

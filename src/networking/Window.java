@@ -20,7 +20,7 @@ import storage.Filter;
  * window Dummy window to start the demo
  * @author Zong
  */
-public class window {
+public class Window {
 	private JTextArea					txtNumConn, txtConnections, txtDialog;
 	private JFrame						frame;
 	private ProxyServer					server;
@@ -34,7 +34,7 @@ public class window {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					window window = new window();
+					Window window = new Window();
 					window.frame.setVisible(true);
 				}
 				catch(Exception e) {
@@ -48,7 +48,7 @@ public class window {
 	 * Create the application.
 	 * @throws IOException
 	 */
-	public window() throws IOException {
+	public Window() throws IOException {
 		initialize();
 	}
 

@@ -94,6 +94,7 @@ public class AccountShell extends Dialog {
 		return passlabel;
 	}
 	
+	//TODO why are both paths of the if else the same???????????????????????
 	private String getPassLabelConf(boolean changepass){
 		String passlabelconf;
 		if (changepass){

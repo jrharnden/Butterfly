@@ -393,9 +393,11 @@ public class EditShell {
 			case POWER:
 				if(accounts.getPowerPermissions().contains(Permission.DELETEFILTER))
 					btnDeleteFilters.setSelection(true);
+				break;
 			case STANDARD:
 				if(accounts.getStandardPermissions().contains(Permission.DELETEFILTER))
 					btnDeleteFilters.setSelection(true);
+				break;
 			}
 		}
 		btnDeleteFilters.addSelectionListener(new SelectionAdapter() {

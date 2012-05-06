@@ -178,7 +178,7 @@ public class Accounts implements Serializable,Iterable<Account> {
 	 * @return true if successful
 	 */
 	public ArrayList<Filter> importFilters(File f){
-		BufferedReader br;
+		BufferedReader br = null;
 		ArrayList<Filter> imported = new ArrayList<Filter>();
 		try {
 			
@@ -188,7 +188,6 @@ public class Accounts implements Serializable,Iterable<Account> {
 				String[] filt= fstr.split(":");
 				
 				if(filt.length==3){ 
-					//TODO I had to add what we were replacing the regex with, don't know if I broke this
 					imported.add(new Filter(filt[0],filt[1],filt[2]));
 				}
 				else{
@@ -204,6 +203,14 @@ public class Accounts implements Serializable,Iterable<Account> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		try {
+			br.close();
+		}
+		catch(IOException e) {
+			//Ignore
+		}
+		
 		return imported;
 		
 	}

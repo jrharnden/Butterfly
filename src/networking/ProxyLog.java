@@ -112,16 +112,18 @@ public class ProxyLog {
 			// write the new connection to the text
 			// if it has been set
 			if (connectionText != null) {
-				String updatedList = "";
+				StringBuffer updatedList = new StringBuffer();
 
 				for(int i = 0; i < connectionList.size(); i += 2) {
-					updatedList += connectionList.get(i);
-					updatedList += " connected to ";
-					updatedList += connectionList.get(i + 1);
-					updatedList += "\n";
+					updatedList.append(connectionList.get(i));
+					updatedList.append(" connected to ");
+					updatedList.append(connectionList.get(i + 1));
+					updatedList.append("\n");
 				}
 
-				connectionText.setText(updatedList);
+				String result = updatedList.toString();
+				
+				connectionText.setText(result);
 			}
 			
 			// increase connection count
@@ -157,16 +159,18 @@ public class ProxyLog {
 					// write the new connection to the text
 					// if it has been set
 					if (connectionText != null) {
-						String updatedList = "";
+						StringBuffer updatedList = new StringBuffer();
 
 						for(int j = 0; j < connectionList.size(); j += 2) {
-							updatedList += connectionList.get(j);
-							updatedList += " connected to ";
-							updatedList += connectionList.get(j + 1);
-							updatedList += "\n";
+							updatedList.append(connectionList.get(j));
+							updatedList.append(" connected to ");
+							updatedList.append(connectionList.get(j + 1));
+							updatedList.append("\n");
 						}
+						
+						String result = updatedList.toString();
 
-						connectionText.setText(updatedList);
+						connectionText.setText(result);
 					}
 					
 					// decrease connection counter
