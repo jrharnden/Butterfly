@@ -71,6 +71,7 @@ public class ApplicationWindow{
 	private JTextArea textAreaDialog;
 	private JTextArea textAreaConnectionList;
 	private Text textPort;
+	private JTextArea textAreaConnectionCount;
 	
 	/**
 	 * Launches Login window
@@ -429,11 +430,8 @@ public class ApplicationWindow{
 		panel_2.add(rootPane_2);
 		rootPane_2.getContentPane().setLayout(new java.awt.GridLayout(1, 0, 0, 0));
 			
-			//*********************************************************
-			//zong where is my automobile
 			// Jtext area for the connection count
-			//*********************************************************
-			JTextArea textAreaConnectionCount = new JTextArea();
+			textAreaConnectionCount = new JTextArea();
 			rootPane_2.getContentPane().add(textAreaConnectionCount);
 			textAreaConnectionCount.setEnabled(false);
 		
@@ -961,7 +959,6 @@ public class ApplicationWindow{
 				public void handleEvent(Event e){
 					switch (e.type){
 					case SWT.Selection:
-						//TODO Logout, currently I (Zong) implemented this naive way of doing it. Please correct it if its wrong
 						if (server != null && server.isRunning()) {
 							server.stop();
 						}
@@ -1014,6 +1011,7 @@ public class ApplicationWindow{
 				}
 				if (accounts.isConnectionListEnabled()) {
 					ProxyLog.setConnectionText(textAreaConnectionList);
+					ProxyLog.setCountText(textAreaConnectionCount);
 				}
 				if (account.getGroup()==Group.ADMINISTRATOR || accounts.isDialogEnabled()) {
 					MenuItem mntmLogging = new MenuItem(menu, SWT.CASCADE);
@@ -1069,8 +1067,10 @@ public class ApplicationWindow{
 								if (mntmNewCheckbox.getSelection() == true) {
 									ProxyLog.setDialogText(textAreaDialog);
 									accounts.setDialogEnabled(true);
+									ProxyLog.setCountText(textAreaConnectionCount);
 								} else {
 									ProxyLog.setDialogText(null);
+									ProxyLog.setCountText(null);
 									accounts.setDialogEnabled(false);
 								}
 								accounts.saveAccounts();

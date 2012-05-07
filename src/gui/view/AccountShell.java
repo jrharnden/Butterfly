@@ -293,6 +293,12 @@ public class AccountShell extends Dialog {
 							Accounts a = new Accounts();
 							a.loadAccounts();
 							Account newAcc= new Account(username, a.hashPass(pass), Group.valueOf(userGroup.toUpperCase()));
+							if (newAcc.getGroup() == Group.POWER) {
+								newAcc.addPermission(a.getPowerPermissions());
+							}
+							else if (newAcc.getGroup() == Group.STANDARD) {
+								newAcc.addPermission(a.getStandardPermissions());
+							}
 							
 							a.addAccount(newAcc);
 								

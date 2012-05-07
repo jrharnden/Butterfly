@@ -616,6 +616,10 @@ public class EditShell {
 									edit_account.addPermission(Permission.EDITFILTER);
 								}
 								else edit_account.removePermission(Permission.EDITFILTER);
+								if(btnSetProxyListening.getSelection()){
+									edit_account.addPermission(Permission.SETPORT);
+								}
+								else edit_account.removePermission(Permission.SETPORT);
 								
 								List exportFilters = filterInactiveListViewer.getList();
 								String[] filtersStrings = exportFilters.getItems();
@@ -640,6 +644,9 @@ public class EditShell {
 								}
 								if(btnEditFilters.getSelection()){
 									p.add(Permission.EDITFILTER);
+								}
+								if(btnSetProxyListening.getSelection()) {
+									p.add(Permission.SETPORT);
 								}
 								switch(edit_group){
 								case ADMINISTRATOR:
