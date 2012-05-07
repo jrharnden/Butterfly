@@ -4,6 +4,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.layout.FillLayout;
@@ -77,7 +78,7 @@ public class FilterShell {
 	 * @wbp.parser.entryPoint
 	 */
 	protected void createContents() {
-		shell = new Shell(display, SWT.ON_TOP | SWT.CLOSE | SWT.TITLE);
+		shell = new Shell(display,  SWT.CLOSE | SWT.TITLE);
 		shell.setSize(786, 510);
 		shell.setText(fName + " Filters");
 		shell.setLayout(new FillLayout(SWT.HORIZONTAL));
@@ -242,8 +243,9 @@ public class FilterShell {
 								account.addFilter(editFilter);
 							}
 							catch(PatternSyntaxException pse){
-								//TODO make this a dialogue box that pops up
-								System.err.println(pse.getDescription());
+								Shell shell = new Shell(display);
+								ErrorMessageBox mb = new ErrorMessageBox(shell, pse.getDescription());
+								mb.open();
 							}
 						}
 						else{
@@ -252,8 +254,9 @@ public class FilterShell {
 								account.addFilter(editFilter);
 							}
 							catch(PatternSyntaxException pse){
-								//TODO make this a dialogue box that pops up
-								System.err.println(pse.getDescription());
+								Shell shell = new Shell(display);
+								ErrorMessageBox mb = new ErrorMessageBox(shell, pse.getDescription());
+								mb.open();
 							}
 						}
 
@@ -262,8 +265,9 @@ public class FilterShell {
 						shell.dispose();
 					}
 					else {
-						//TODO make this a dialogue box that pops up
-						System.err.println("Filter name cannot be empty!");
+						Shell shell = new Shell(display);
+						ErrorMessageBox mb = new ErrorMessageBox(shell, "Filter name cannot be empty!");
+						mb.open();
 					}
 				}
 			}
@@ -281,4 +285,6 @@ public class FilterShell {
 	
 				
 	}
+	
+	
 }

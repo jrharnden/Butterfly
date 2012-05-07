@@ -180,7 +180,7 @@ public class EditShell {
 	 * @wbp.parser.entryPoint
 	 */
 	protected void createContents() {
-		shell = new Shell(display, SWT.ON_TOP | SWT.CLOSE | SWT.TITLE);
+		shell = new Shell(display, SWT.CLOSE | SWT.TITLE);
 		shell.setText(sName + " Filters");
 		shell.setSize(786, 600);
 		shell.setLayout(new FillLayout(SWT.HORIZONTAL));

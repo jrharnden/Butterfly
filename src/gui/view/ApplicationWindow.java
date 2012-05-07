@@ -273,7 +273,7 @@ public class ApplicationWindow{
 	 * @wbp.parser.entryPoint
 	 */
 	protected void createContents(){
-		shlButterfly = new Shell(SWT.ON_TOP | SWT.CLOSE | SWT.TITLE | SWT.MIN);
+		shlButterfly = new Shell(SWT.CLOSE | SWT.TITLE | SWT.MIN);
 		shlButterfly.setSize(800, 600);
 		shlButterfly.setText("Butterfly - Logged in as "+ account.getName());
 		shlButterfly.setLayout(new FillLayout(SWT.HORIZONTAL));
