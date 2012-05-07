@@ -42,6 +42,7 @@ public class Account implements Serializable {
 		inactiveFilters = new ArrayList<Filter>();
 		defaultFilters = new ArrayList<Filter>();
 		accountId = ids++;
+		
 	}
 	
 	/******************************************************************************************************************

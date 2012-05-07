@@ -604,22 +604,23 @@ public class EditShell {
 								accounts.exportFilters(filtersToExport, file);
 							}
 							else if(opened_user_account){
+								
 								if(btnCreateFilters.getSelection()){
-									edit_account.addPermission(Permission.CREATEFILTER);
+									accounts.getAccount(edit_account).addPermission(Permission.CREATEFILTER);
 								}
-								else account.removePermission(Permission.CREATEFILTER);
+								else accounts.getAccount(edit_account).removePermission(Permission.CREATEFILTER);
 								if(btnDeleteFilters.getSelection()){
-									edit_account.addPermission(Permission.DELETEFILTER);
+									accounts.getAccount(edit_account).addPermission(Permission.DELETEFILTER);
 								}
-								else account.removePermission(Permission.DELETEFILTER);
+								else accounts.getAccount(edit_account).removePermission(Permission.DELETEFILTER);
 								if(btnEditFilters.getSelection()){
-									edit_account.addPermission(Permission.EDITFILTER);
+									accounts.getAccount(edit_account).addPermission(Permission.EDITFILTER);
 								}
-								else edit_account.removePermission(Permission.EDITFILTER);
+								else accounts.getAccount(edit_account).removePermission(Permission.EDITFILTER);
 								if(btnSetProxyListening.getSelection()){
-									edit_account.addPermission(Permission.SETPORT);
+									accounts.getAccount(edit_account).addPermission(Permission.SETPORT);
 								}
-								else edit_account.removePermission(Permission.SETPORT);
+								else accounts.getAccount(edit_account).removePermission(Permission.SETPORT);
 								
 								List exportFilters = filterInactiveListViewer.getList();
 								String[] filtersStrings = exportFilters.getItems();
