@@ -1,5 +1,6 @@
 package gui.view;
 
+import networking.CustomHttpRequestFilter;
 import networking.ProxyLog;
 import networking.ProxyServer;
 import networking.HttpFilter;
@@ -396,7 +397,7 @@ public class ApplicationWindow{
 							server = new ProxyServer(accounts.getPortNumber(), new HttpResponseFilters() {
 								public HttpFilter getFilter(String hostAndPort) {
 									return new CustomHttpResponseFilter(account.getActiveAndDefaultFilters());
-								}}, null);
+								}}, new CustomHttpRequestFilter(account.getActiveAndDefaultFilters()));
 							server.start();
 							btnListen.setText("Stop");
 						}

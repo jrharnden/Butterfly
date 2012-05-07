@@ -38,6 +38,7 @@ public class FilterShell {
 	private Filter editFilter;
 	private Account account;
 	private Accounts accounts;
+	private Boolean header;
 	//TODO implement method to set the text of the text area upon editing a filter
 	//TODO imp1ement method to save the text of the text area to a filter 
 	
@@ -132,7 +133,7 @@ public class FilterShell {
 			btnCancel.setLayoutData(gd_btnCancel);
 			btnCancel.setText("Cancel");
 			
-		
+			/*
 			//Check button composite
 			Composite chkComposite = new Composite(innerComposite, SWT.NONE);
 			chkComposite.setLayout(new GridLayout(1, false));
@@ -148,12 +149,12 @@ public class FilterShell {
 				btnHeader.addListener(SWT.Selection, new Listener(){
 					public void handleEvent(Event e){
 						if (btnHeader.getSelection() == true) {
-							
+							header = true;
 						} else {
-							
+							header = false;
 						}
 					}
-				});
+				}); */
 		
 		//Regular Express text composite
 		Label lblRegularExpression = new Label(mainComposite, SWT.NONE);
@@ -241,6 +242,7 @@ public class FilterShell {
 							account.removeFilter(editFilter.getId());
 							editFilter.changeName(name);
 							editFilter.changeReplaceWith(replaceText);
+							editFilter.changeHeader(header);
 							try {
 								editFilter.changeRegex(regexText);
 								account.addFilter(editFilter);
@@ -253,7 +255,7 @@ public class FilterShell {
 						}
 						else{
 							try {
-								editFilter = new Filter(name,regexText,replaceText, false);
+								editFilter = new Filter(name,regexText,replaceText, header);
 								account.addFilter(editFilter);
 							}
 							catch(PatternSyntaxException pse){

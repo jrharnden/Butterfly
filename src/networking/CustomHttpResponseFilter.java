@@ -31,7 +31,8 @@ public class CustomHttpResponseFilter implements HttpFilter {
 		this.filters = new ArrayList<CompiledFilter>();
 		
 		for(Filter filter : filters) {
-			this.filters.add(new CompiledFilter(filter.getRegex(), filter.getReplaceWith()));
+			if(!filter.getHeader())
+				this.filters.add(new CompiledFilter(filter.getRegex(), filter.getReplaceWith()));
 		}
 	}
 	

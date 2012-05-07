@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import networking.ProxyUtils;
+
 public class Filter implements Serializable {
 	private static final long serialVersionUID = -3172281602532772481L;
 	public static int ids = 0;
@@ -12,7 +14,13 @@ public class Filter implements Serializable {
 	private boolean header;
 
 	public Filter(String name, String regex, String replaceWith, Boolean header) throws PatternSyntaxException {
-		Pattern.compile(regex);
+		if(header) {
+			Pattern.compile(ProxyUtils.substringAfter(regex, ":"));
+		}
+		else {
+			Pattern.compile(regex);
+		}
+		
 		id = ids++;
 		this.regex = regex;
 		this.name = name;

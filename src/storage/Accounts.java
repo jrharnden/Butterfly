@@ -316,8 +316,6 @@ public class Accounts implements Serializable,Iterable<Account> {
 				a.removePermission(EnumSet.complementOf(groupStandardPermission));
 				a.addPermission(groupStandardPermission);
 			}
-			
-	
 	}
 	@Override
 	public Iterator<Account> iterator() {
