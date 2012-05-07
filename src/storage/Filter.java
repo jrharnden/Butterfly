@@ -9,14 +9,15 @@ public class Filter implements Serializable {
 	public static int ids = 0;
 	private int id;
 	private String regex, name, replaceWith;
+	private boolean header;
 
-	// TODO should probably have flags for the Pattern class and some way to set them in UI
-	public Filter(String name, String regex, String replaceWith) throws PatternSyntaxException {
+	public Filter(String name, String regex, String replaceWith, Boolean header) throws PatternSyntaxException {
 		Pattern.compile(regex);
 		id = ids++;
 		this.regex = regex;
 		this.name = name;
 		this.replaceWith = replaceWith;
+		this.header = header;
 	}
 
 	public Filter(Filter other) {
@@ -48,6 +49,10 @@ public class Filter implements Serializable {
 	public int getId() {
 		return id;
 	}
+	
+	public Boolean getHeader() {
+		return header;
+	}
 
 	public String getName() {
 		return name;
@@ -59,6 +64,10 @@ public class Filter implements Serializable {
 
 	public void changeId(int i) {
 		id = i;
+	}
+	
+	public void changeHeader(Boolean h) {
+		header = h;
 	}
 
 	public void changeRegex(String r) throws PatternSyntaxException {

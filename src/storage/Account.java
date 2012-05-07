@@ -64,6 +64,7 @@ public class Account implements Serializable {
 		allFilters.addAll(defaultFilters);
 		return Collections.unmodifiableList(allFilters);
 	}
+	
 	public List<Filter> getActiveAndDefaultFilters(){
 		List<Filter> activedefault = new ArrayList<Filter>();
 		activedefault.addAll(activeFilters);

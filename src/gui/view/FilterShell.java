@@ -250,7 +250,7 @@ public class FilterShell {
 						}
 						else{
 							try {
-								editFilter = new Filter(name,regexText,replaceText);
+								editFilter = new Filter(name,regexText,replaceText, false);
 								account.addFilter(editFilter);
 							}
 							catch(PatternSyntaxException pse){

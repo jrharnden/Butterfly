@@ -241,7 +241,7 @@ public class Accounts implements Serializable,Iterable<Account> {
 				String[] filt= fstr.split(":");
 				
 				if(filt.length==3){ 
-					imported.add(new Filter(filt[0],filt[1],filt[2]));
+					imported.add(new Filter(filt[0],filt[1],filt[2],Boolean.parseBoolean(filt[3])));
 				}
 				else{
 				}
