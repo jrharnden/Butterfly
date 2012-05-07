@@ -140,8 +140,9 @@ public class FilterShell {
 			gd_chkComposite.heightHint = 148;
 			gd_chkComposite.widthHint = 116;
 			chkComposite.setLayoutData(gd_chkComposite);
-		
-				//Case Sensitive
+				
+				//TODO Header listener
+				//Header
 				final Button btnHeader = new Button(chkComposite, SWT.CHECK);
 				btnHeader.setText("Header");
 				btnHeader.addListener(SWT.Selection, new Listener(){
