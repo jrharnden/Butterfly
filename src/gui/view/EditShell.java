@@ -352,7 +352,11 @@ public class EditShell {
 			}
 		});
 		
-		if(opened_user_account && edit_account.getPermissions().contains(Permission.CREATEFILTER)) btnCreateFilters.setSelection(true);
+		
+		if(opened_user_account && edit_account.getPermissions().contains(Permission.CREATEFILTER)) {
+			System.out.println("The user account contains the create filter permission: " + edit_account.getPermissions().contains(Permission.CREATEFILTER));
+			btnCreateFilters.setSelection(true);
+		}
 		else if(opened_user_group){
 			switch(edit_group){
 			case ADMINISTRATOR:
@@ -361,6 +365,7 @@ public class EditShell {
 				break;
 			case POWER:
 				if(accounts.getPowerPermissions().contains(Permission.CREATEFILTER))
+					
 				btnCreateFilters.setSelection(true);
 				break;
 			case STANDARD:
@@ -386,7 +391,11 @@ public class EditShell {
 			}
 		});
 		
-		if(opened_user_account && edit_account.getPermissions().contains(Permission.EDITFILTER)) btnEditFilters.setSelection(true);
+	
+		if(opened_user_account && edit_account.getPermissions().contains(Permission.EDITFILTER)) {
+			System.out.println("The user account contains the edit filter permission: " + edit_account.getPermissions().contains(Permission.EDITFILTER));
+			btnEditFilters.setSelection(true);
+		}
 		else if(opened_user_group){
 			switch(edit_group){
 			case ADMINISTRATOR:
@@ -423,7 +432,13 @@ public class EditShell {
 						}
 					}
 				});
-		if(opened_user_account && edit_account.getPermissions().contains(Permission.DELETEFILTER)) btnDeleteFilters.setSelection(true);
+				
+		
+		if(opened_user_account && edit_account.getPermissions().contains(Permission.DELETEFILTER)) {
+			btnDeleteFilters.setSelection(true);
+			System.out.println("The user account contains the delete filter permission: " + edit_account.getPermissions().contains(Permission.DELETEFILTER));
+		}
+		
 		else if(opened_user_group){
 			switch(edit_group){
 			case ADMINISTRATOR:
@@ -458,7 +473,12 @@ public class EditShell {
 				}
 			});
 		
-		if(opened_user_account && edit_account.getPermissions().contains(Permission.SETPORT)) btnSetProxyListening.setSelection(true);
+		}
+		
+		if(opened_user_account && edit_account.getPermissions().contains(Permission.SETPORT)) {
+			btnSetProxyListening.setSelection(true);
+			System.out.println("The user account contains the set port permission: " + edit_account.getPermissions().contains(Permission.SETPORT));
+		}
 		else if(opened_user_group){
 			switch(edit_group){
 			case ADMINISTRATOR:
@@ -467,6 +487,7 @@ public class EditShell {
 				break;
 			case POWER:
 				if(accounts.getPowerPermissions().contains(Permission.SETPORT))
+				
 				btnSetProxyListening.setSelection(true);
 				break;
 			case STANDARD:
@@ -712,9 +733,7 @@ public class EditShell {
 				}
 				
 			});
-			
-		}
-	
+				
 	}
 	 private void displayFiles(String[] files) {
 		 for (int i = 0; files != null && i < files.length; i++) {
