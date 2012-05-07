@@ -296,11 +296,7 @@ public class EditShell {
 			formToolkit.adapt(btnRemove, true, true);
 			btnRemove.setText(">");
 			
-			//South Button Composite
-			Composite filterBtnComposite_SOUTH = new Composite(filterBtnComposite, SWT.NONE);
-			formToolkit.adapt(filterBtnComposite_SOUTH);
-			formToolkit.paintBordersFor(filterBtnComposite_SOUTH);
-			filterBtnComposite_SOUTH.setLayout(new FillLayout(SWT.HORIZONTAL));
+			
 	
 		//Inactive filter composite
 		Composite filterInactiveComposite = new Composite(filterComposite_1, SWT.NONE);
@@ -529,7 +525,21 @@ public class EditShell {
 		formToolkit.adapt(label, true, true);
 			
 			
-			
+		//South Button Composite
+		Composite filterBtnComposite_SOUTH = new Composite(filterBtnComposite, SWT.NONE);
+		formToolkit.adapt(filterBtnComposite_SOUTH);
+		formToolkit.paintBordersFor(filterBtnComposite_SOUTH);
+		filterBtnComposite_SOUTH.setLayout(new GridLayout(1, false));
+		
+		
+		//REMOVE BUTTON FOR editing user groups
+		// Zong 
+		Button btnREmove = new Button(filterBtnComposite_SOUTH, SWT.NONE);
+		GridData gd_btnREmove = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
+		gd_btnREmove.widthHint = 77;
+		btnREmove.setLayoutData(gd_btnREmove);
+		formToolkit.adapt(btnREmove, true, true);
+		btnREmove.setText("Remove");
 				
 			
 					
