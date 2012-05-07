@@ -6,7 +6,7 @@ import java.util.regex.PatternSyntaxException;
 
 public class Filter implements Serializable {
 	private static final long serialVersionUID = -3172281602532772481L;
-	static int ids = 0; //TODO this needs to be saved so unique IDs can't be reused when the program is restarted
+	public static int ids = 0;
 	private int id;
 	private String regex, name, replaceWith;
 
@@ -24,6 +24,12 @@ public class Filter implements Serializable {
 		regex = other.getRegex();
 		name = other.getName();
 		replaceWith = other.getReplaceWith();
+	}
+	
+	public Filter makeCopyWithNewId() {
+		Filter fil = new Filter(this);
+		fil.changeId(ids++);
+		return fil;
 	}
 
 	public Filter(String r) {

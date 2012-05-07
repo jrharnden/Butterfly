@@ -87,6 +87,21 @@ public class EditShell {
 	}
 	
 	/**
+	 * Constructor for editing user group settings
+	 * @param d
+	 * @param group
+	 */
+	public EditShell(Display d, Group group, Account admin, Accounts acc){
+		display = d;
+		edit_group = group;
+		sName = "Edit Default Group Settings";
+		opened_user_account = false;
+		opened_user_group = true;
+		accounts = acc;
+		account = admin;
+	}
+	
+	/**
 	 * Constructor for editing user account settings
 	 * @param d display default
 	 * @param accName account being edited
@@ -235,9 +250,17 @@ public class EditShell {
 					}
 				
 		}
-		if(opened_user_account){
+		if(opened_user_account) {
+			for(Filter f: edit_account.getAllFilters()){
+				if (!account.getDefaultFilters().contains(f)) {
+					filterActiveList_1.add(f.toString());
+				}
+			}
+		} else if (opened_user_group) {
 			for(Filter f: account.getAllFilters()){
-				filterActiveList_1.add(f.toString());
+				if (!accounts.getDefaultFilters(edit_group).contains(f)) {
+					filterActiveList_1.add(f.toString());
+				}
 			}
 		}
 		//Button composite
@@ -295,6 +318,10 @@ public class EditShell {
 			if(opened_user_account){
 				for(Filter f: edit_account.getDefaultFilters())
 					inactiveList.add(f.toString());
+			} else if (opened_user_group) {
+				for(Filter f: accounts.getDefaultFilters(edit_group)) {
+					inactiveList.add(f.toString());
+				}
 			}
 			Composite btnBarComposite = new Composite(filterComposite, SWT.BORDER);
 			btnBarComposite.setLayout(new GridLayout(9, false));
@@ -659,6 +686,20 @@ public class EditShell {
 								case STANDARD:
 									accounts.setStandardPermission(p);
 								}
+								
+								// Reset and add default filters
+								accounts.removeAllDefaultFilters(edit_group);
+								List exportFilters = filterInactiveListViewer.getList();
+								String[] filtersStrings = exportFilters.getItems();
+								for(Filter f: account.getAllFilters()){
+									String filterName = f.toString();
+									for(int i = 0; i < filtersStrings.length; ++i){
+										if(filterName.equals(filtersStrings[i])){
+											accounts.addDefaultFilter(edit_group, f);
+										}
+									}
+								}
+								
 								accounts.saveAccounts();
 								
 							}
@@ -709,7 +750,6 @@ public class EditShell {
 								String[] fil = filter.split(":");
 								if(opened_user_account){
 									accounts.getAccount(edit_account).removeDefaultFilter(Integer.parseInt(fil[0]));
-
 								}
 								
 								il.remove(filter);

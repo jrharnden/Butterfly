@@ -3,6 +3,7 @@ import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
@@ -15,6 +16,8 @@ public class Accounts implements Serializable,Iterable<Account> {
 	private EnumSet<Permission> groupPowerPermission = EnumSet.allOf(Permission.class);
 	private EnumSet<Permission> groupStandardPermission = EnumSet.of(Permission.CREATEFILTER,Permission.DELETEFILTER,Permission.EDITFILTER);
 	private ServerSettings settings = new ServerSettings();
+	private ArrayList<Filter> groupPowerDefaultFilters = new ArrayList<Filter>();
+	private ArrayList<Filter> groupStandardDefaultFilters = new ArrayList<Filter>();
 	public boolean addAccount(Account a){
 		if(!containsAccount(a.getName())){
 			applyPermissions(a);
@@ -25,6 +28,44 @@ public class Accounts implements Serializable,Iterable<Account> {
 	}
 	public boolean removeAccount(Account a){
 		return accounts.remove(a);
+	}
+	public boolean addDefaultFilter(Group g, Filter fil) {
+		if (g == Group.POWER) {
+			return groupPowerDefaultFilters.add(fil);
+		}
+		else if (g==Group.STANDARD) {
+			return groupStandardDefaultFilters.add(fil);
+		}
+		return false;
+	}
+	public boolean removeDefaultFilter(Group g, Filter fil) {
+		if (g == Group.POWER) {
+			return groupPowerDefaultFilters.remove(fil);
+		}
+		else if (g==Group.STANDARD) {
+			return groupStandardDefaultFilters.remove(fil);
+		}
+		return false;
+	}
+	public boolean removeAllDefaultFilters(Group g) {
+		if (g == Group.POWER) {
+			groupPowerDefaultFilters.clear();
+			return true;
+		}
+		else if (g==Group.STANDARD) {
+			groupStandardDefaultFilters.clear();
+			return true;
+		}
+		return false;
+	}
+	public List<Filter> getDefaultFilters(Group g) {
+		if (g == Group.POWER) {
+			return Collections.unmodifiableList(groupPowerDefaultFilters);
+		}
+		else if (g==Group.STANDARD) {
+			return Collections.unmodifiableList(groupStandardDefaultFilters);
+		}
+		return null;
 	}
 	/**
 	 * Checks if an account with the same name and password exists
@@ -107,11 +148,14 @@ public class Accounts implements Serializable,Iterable<Account> {
 		try {
 			fileOut = new FileOutputStream("./data.dat");
 			objOut = new ObjectOutputStream(fileOut);
+			objOut.writeInt(Filter.ids);
 			objOut.writeObject(settings);
 			objOut.writeObject(accounts);
 			objOut.writeObject(groupAdminPermission);
 			objOut.writeObject(groupPowerPermission);
 			objOut.writeObject(groupStandardPermission);
+			objOut.writeObject(groupPowerDefaultFilters);
+			objOut.writeObject(groupStandardDefaultFilters);
 			objOut.close();
 			return true;
 		} catch (IOException e) {
@@ -130,11 +174,14 @@ public class Accounts implements Serializable,Iterable<Account> {
 			
 			
 			try {
+				Filter.ids = objIn.readInt();
 				settings = (ServerSettings) objIn.readObject();
 				accounts = (ArrayList<Account>) objIn.readObject();
 				groupAdminPermission = (EnumSet<Permission>) objIn.readObject();
 				groupPowerPermission = (EnumSet<Permission>) objIn.readObject();
 				groupStandardPermission = (EnumSet<Permission>) objIn.readObject();
+				groupPowerDefaultFilters = (ArrayList<Filter>) objIn.readObject();
+				groupStandardDefaultFilters = (ArrayList<Filter>) objIn.readObject();
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 				return false;

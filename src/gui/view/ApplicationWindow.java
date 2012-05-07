@@ -130,7 +130,7 @@ public class ApplicationWindow{
 	 */
 	private boolean editUserGroup(Group g){
 		Display display = Display.getDefault();
-		EditShell eShell = new EditShell(display, g, accounts);
+		EditShell eShell = new EditShell(display, g, account, accounts);
 		
 		//Disable the main window
 		shlButterfly.setEnabled(false);
@@ -685,7 +685,7 @@ public class ApplicationWindow{
 		//-----------------------------------------------------------------
 		//Administrator Tab
 		//-----------------------------------------------------------------
-		//if(account.getGroup()==Group.ADMINISTRATOR){
+		if(account.getGroup()==Group.ADMINISTRATOR){
 		CTabItem tbtmAdministrator = new CTabItem(tabFolder, SWT.NONE);
 		tbtmAdministrator.setText("Administrator");
 		
@@ -915,7 +915,7 @@ public class ApplicationWindow{
 				
 			
 		
-	//	}
+		}
 		
 		//-----------------------------------------------------------------
 		//Main menu bar

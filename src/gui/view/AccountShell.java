@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Event;
 import storage.Account;
 import storage.Accounts;
+import storage.Filter;
 import storage.Group;
 
 public class AccountShell extends Dialog {
@@ -302,9 +303,15 @@ public class AccountShell extends Dialog {
 							Account newAcc= new Account(username, a.hashPass(pass), Group.valueOf(userGroup.toUpperCase()));
 							if (newAcc.getGroup() == Group.POWER) {
 								newAcc.addPermission(a.getPowerPermissions());
+								for (Filter f : a.getDefaultFilters(Group.POWER)) {
+									newAcc.addFilter(f.makeCopyWithNewId());
+								}
 							}
 							else if (newAcc.getGroup() == Group.STANDARD) {
 								newAcc.addPermission(a.getStandardPermissions());
+								for (Filter f : a.getDefaultFilters(Group.STANDARD)) {
+									newAcc.addDefaultFilter(f);
+								}
 							}
 							
 							a.addAccount(newAcc);
