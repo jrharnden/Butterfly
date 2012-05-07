@@ -207,7 +207,7 @@ public class Accounts implements Serializable,Iterable<Account> {
 			PrintWriter fwr = new PrintWriter(new FileWriter(f));
 			
 			for(Filter filt: list){
-				fwr.println(filt.getName()+":"+filt.getRegex()+":"+filt.getReplaceWith());
+				fwr.println(filt.getName()+":"+filt.getRegex()+":"+filt.getReplaceWith()+":"+filt.getHeader());
 			}
 		
 			fwr.close();	
