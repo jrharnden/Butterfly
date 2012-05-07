@@ -587,10 +587,6 @@ public class EditShell {
 				}
 			});
 			
-			// ************************* YO YO YO YO ZONG ZONG ZONG ******************************
-			//TODO zong zong zong zong zong hey there good job with everything
-			//TODO ALMOST DONE
-			
 			// User group label in the north center panel
 			Label lblUserPermissions = new Label(filterBtnComposite_NORTH, SWT.NONE);
 			formToolkit.adapt(lblUserPermissions, true, true);
@@ -611,7 +607,7 @@ public class EditShell {
 			btnPower.addSelectionListener(new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
 					if (btnPower.getSelection() == true){
-						
+						accounts.getAccount(edit_account).setGroup(Group.POWER);
 					}
 				}
 			});
@@ -621,7 +617,7 @@ public class EditShell {
 			btnStandard.addSelectionListener(new SelectionAdapter(){
 				public void widgetSelected(SelectionEvent e){
 					if (btnStandard.getSelection() == true){
-						
+						accounts.getAccount(edit_account).setGroup(Group.STANDARD);
 					}
 				}
 			});
@@ -757,6 +753,23 @@ public class EditShell {
 												accounts.getAccount(edit_account).addDefaultFilter(f);
 											}
 										}
+									}
+								}
+								if (edit_account.getGroup() != accounts.getAccount(edit_account).getGroup()) {
+									accounts.getAccount(edit_account).removePermission(EnumSet.allOf(Permission.class));
+									if (accounts.getAccount(edit_account).getGroup()==Group.POWER) {
+										accounts.getAccount(edit_account).addPermission(accounts.getPowerPermissions());
+										accounts.getAccount(edit_account).removeAllDefaultFilters();
+										for (Filter f : accounts.getDefaultFilters(Group.POWER)) {
+											accounts.getAccount(edit_account).addFilter(f.makeCopyWithNewId());
+										}
+									}
+									else if (accounts.getAccount(edit_account).getGroup()==Group.STANDARD){
+										accounts.getAccount(edit_account).addPermission(accounts.getStandardPermissions());
+										for (Filter f : accounts.getDefaultFilters(Group.STANDARD)) {
+											accounts.getAccount(edit_account).addDefaultFilter(f);
+										}
+										
 									}
 								}
 								accounts.saveAccounts();

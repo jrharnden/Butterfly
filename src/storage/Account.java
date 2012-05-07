@@ -246,6 +246,9 @@ public class Account implements Serializable {
 		}
 		return null;
 	}
+	public void removeAllDefaultFilters() {
+		defaultFilters.clear();
+	}
 	/**
 	 * Removes a filter from the users active filters
 	 * 
