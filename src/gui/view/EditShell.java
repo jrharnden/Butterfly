@@ -575,7 +575,7 @@ public class EditShell {
 							List importFilters = filterInactiveListViewer.getList();
 							String[] filtersToImport = importFilters.getItems();
 							for(Filter f: imported){
-								String filterName = f.getName();
+								String filterName = f.toString();
 								for(int i = 0; i < filtersToImport.length; ++i){
 									if(filterName.equals(filtersToImport[i])){
 										account.addFilter(f);
@@ -594,7 +594,7 @@ public class EditShell {
 								List exportFilters = filterInactiveListViewer.getList();
 								String[] filtersStrings = exportFilters.getItems();
 								for(Filter f: account.getAllFilters()){
-									String filterName = f.getName();
+									String filterName = f.toString();
 									for(int i = 0; i < filtersStrings.length; ++i){
 										if(filterName.equals(filtersStrings[i])){
 											filtersToExport.add(f);
@@ -699,10 +699,10 @@ public class EditShell {
 							List il = filterInactiveListViewer.getList();
 							try{
 								String filter = il.getSelection()[0];
-								String[] fil = filter.split(":");
-								String filterName = fil[0];
-								Filter removedFilter = account.removeInactiveFilter(Integer.parseInt(filterName));
-								account.addFilter(removedFilter);
+								//String[] fil = filter.split(":");
+								//String filterName = fil[0];
+								//Filter removedFilter = account.removeInactiveFilter(Integer.parseInt(filterName));
+								//account.addFilter(removedFilter);
 								il.remove(filter);
 								al.add(filter);
 							}catch(ArrayIndexOutOfBoundsException e){
@@ -727,12 +727,10 @@ public class EditShell {
 							List il = filterInactiveListViewer.getList();
 							
 							String filter = al.getSelection()[0];
-							String[] fil = filter.split(":");
-							String filterName = fil[0];
-							Filter removedFilter = account.removeActiveFilter(Integer.parseInt(filterName));
-							account.addInactiveFilter(removedFilter);
-							al.remove(filter);
-							il.add(filter);
+	
+							
+							al.remove(filter.toString());
+							il.add(filter.toString());
 						}catch(ArrayIndexOutOfBoundsException e){
 							System.err.println("Didn't select anything");
 						}
