@@ -1,6 +1,5 @@
 package storage;
 
-import java.io.File;
 
 public class TestDriver {
 	public static void main(String[] args){
@@ -25,14 +24,11 @@ public class TestDriver {
 			user.addFilter(new Filter("No Nosccript","(?i)(?s)<noscript(.)*?</noscript>","<!-- Killed Noscript -->"));
 			user.addFilter(new Filter("No Objects", "(?i)(?s)<object(.)*?</object>", "<!-- Killed Object -->"));
 			user.addInactiveFilter(new Filter("No Applets", "(?i)(?s)<applet(.)*?</applet>", "<!-- Killed Applet -->"));
-			Account admin = accounts.getAccount("Admin",accounts.hashPass("admin"));
 			user.addFilter(new Filter("No Images", "(?i)(?s)<img(.)*?>", "<!-- Killed Image -->"));
 			user.addFilter(new Filter("No Script", "(?i)(?s)<script(.)*?</script>", "<!-- Killed Script -->"));
 			user.addFilter(new Filter("No Nosccript","(?i)(?s)<noscript(.)*?</noscript>","<!-- Killed Noscript -->"));
 			user.addFilter(new Filter("No Objects", "(?i)(?s)<object(.)*?</object>", "<!-- Killed Object -->"));
 			user.addInactiveFilter(new Filter("No Applets", "(?i)(?s)<applet(.)*?</applet>", "<!-- Killed Applet -->"));
-			accounts.exportFilters(admin.getActiveFilters(), new File("Newfilters.txt"));
-			cd.addFilter(accounts.importFilters(new File("Newfilters.txt")));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

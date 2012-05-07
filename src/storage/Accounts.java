@@ -17,6 +17,7 @@ public class Accounts implements Serializable,Iterable<Account> {
 	private ServerSettings settings = new ServerSettings();
 	public boolean addAccount(Account a){
 		if(!containsAccount(a.getName())){
+			applyPermissions(a);
 			accounts.add(a);
 			return true;
 		}
@@ -36,7 +37,6 @@ public class Accounts implements Serializable,Iterable<Account> {
 			if(a.getName().equals(name) && a.getPassHash().equals(hashPass))
 				return true;
 		}
-		System.err.println("Couldn't find "+name + " "+ hashPass);
 		return false;
 	}
 	/**
@@ -157,16 +157,19 @@ public class Accounts implements Serializable,Iterable<Account> {
 			PrintWriter fwr = new PrintWriter(new FileWriter(f));
 			
 			for(Filter filt: list){
-				String s = filt.getName()+":"+filt.getRegex()+":"+filt.getReplaceWith();
-				fwr.println(s);
+				fwr.println(filt.getName()+":"+filt.getRegex()+":"+filt.getReplaceWith());
 			}
 		
 			fwr.close();	
+			return true;
 			
 		}
 		catch(IOException e){
 			System.err.println(e.getMessage());
 			//TODO: Something meaningful
+		}
+		catch(NullPointerException e2){
+			return false;
 		}
 		return false;
 		
@@ -191,7 +194,6 @@ public class Accounts implements Serializable,Iterable<Account> {
 					imported.add(new Filter(filt[0],filt[1],filt[2]));
 				}
 				else{
-					System.err.println("Malformed regex read");
 				}
 				
 			}
@@ -240,26 +242,21 @@ public class Accounts implements Serializable,Iterable<Account> {
 	}
 	public void setAdminPermissions(EnumSet<Permission> p){
 		groupAdminPermission = EnumSet.copyOf(p);
-		applyPermissions();
 	}
 	public void setPowerPermission(EnumSet<Permission> p){
 		groupPowerPermission = EnumSet.copyOf(p);
-		applyPermissions();
 	}
 	public void setStandardPermission(EnumSet<Permission> p){
 		groupStandardPermission = EnumSet.copyOf(p);
-		applyPermissions();
 	}
 	public EnumSet<Permission> getAdminPermissions(){return groupAdminPermission;}
 	public EnumSet<Permission> getPowerPermissions(){return groupPowerPermission;}
 	public EnumSet<Permission> getStandardPermissions(){return groupStandardPermission;}
-	private void applyPermissions(){
-		for(Account a: accounts){
+	private void applyPermissions(Account a){
 			switch(a.getGroup()){
 			case ADMINISTRATOR:
 				a.removePermission(EnumSet.complementOf(groupAdminPermission));
 				a.addPermission(groupAdminPermission);
-				System.err.println(groupAdminPermission + " " + a.getName() + " " + a.getPermissions());
 				break;
 			case POWER:
 				a.removePermission(EnumSet.complementOf(groupPowerPermission));
@@ -270,7 +267,7 @@ public class Accounts implements Serializable,Iterable<Account> {
 				a.addPermission(groupStandardPermission);
 			}
 			
-		}
+	
 	}
 	@Override
 	public Iterator<Account> iterator() {
