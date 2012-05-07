@@ -745,8 +745,14 @@ public class EditShell {
 									String filterName = f.toString();
 									for(int i = 0; i < filtersStrings.length; ++i){
 										if(filterName.equals(filtersStrings[i])){
-											if (edit_account.getGroup()==Group.POWER) {
-												accounts.getAccount(edit_account).addFilter(f.makeCopyWithNewId());
+											if (accounts.getAccount(edit_account).getGroup()==Group.POWER) {
+												if (accounts.getAccount(edit_account).removeActiveFilter(f.getId())!= null) {
+													accounts.getAccount(edit_account).addFilter(f);
+												} else if (accounts.getAccount(edit_account).removeInactiveFilter(f.getId())!=null){
+													accounts.getAccount(edit_account).addInactiveFilter(f);
+												} else {
+													accounts.getAccount(edit_account).addFilter(f.makeCopyWithNewId());
+												}
 											} else {
 												accounts.getAccount(edit_account).addDefaultFilter(f);
 											}
