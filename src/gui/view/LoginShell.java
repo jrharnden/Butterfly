@@ -100,37 +100,7 @@ public class LoginShell extends Dialog {
 		
 		txtPassword = new Text(composite_1, SWT.BORDER | SWT.PASSWORD);
 		txtPassword.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		txtPassword.addKeyListener( new KeyAdapter(){
-			
-			public void keyPressed(KeyEvent e){
-				if(e.keyCode == SWT.CR){
-					Accounts accounts = new Accounts();
-					accounts.loadAccounts();
-					String username = (String) txtUsername.getText();
-					String pass = (String) txtPassword.getText();
-					String errEmpty = "Error: Enter nonblank  username/password";
-					String errInvalid = "Error: Invalid username/password";
-					
-					if(!pass.isEmpty() || !username.isEmpty()) {
-						if(accounts.containsAccount(username, accounts.hashPass(pass))){
-							System.out.println("LOGIN SUCCESS!");
-							
-								ap.setAccount(accounts.getAccount(username, accounts.hashPass(pass)));
-								ap.setAccounts(accounts);
-							
-							shell.close();
-							shell.dispose();
-						}	else	{
-								//lblErrorLabel.setText(errInvalid);
-								System.err.println("LOGIN FAILED!");
-						}
-					}	else {
-						//lblErrorLabel.setText(errEmpty);
-					}
-				
-				}
-			}
-		});
+	
 		//Error Composite
 		Composite errComposite = new Composite(loginComposite, SWT.NONE);
 		errComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
@@ -173,7 +143,6 @@ public class LoginShell extends Dialog {
 				
 				if(!pass.isEmpty() || !username.isEmpty()) {
 					if(accounts.containsAccount(username, accounts.hashPass(pass))){
-						System.out.println("LOGIN SUCCESS!");
 						
 							ap.setAccount(accounts.getAccount(username, accounts.hashPass(pass)));
 							ap.setAccounts(accounts);
@@ -182,7 +151,6 @@ public class LoginShell extends Dialog {
 						shell.dispose();
 					}	else	{
 							lblErrorLabel.setText(errInvalid);
-							System.err.println("LOGIN FAILED!");
 					}
 				}	else {
 					lblErrorLabel.setText(errEmpty);
@@ -190,7 +158,35 @@ public class LoginShell extends Dialog {
 			}
 				
 		});
-		
+	txtPassword.addKeyListener( new KeyAdapter(){
+			
+			public void keyPressed(KeyEvent e){
+				if(e.keyCode == SWT.CR){
+					Accounts accounts = new Accounts();
+					accounts.loadAccounts();
+					String username = (String) txtUsername.getText();
+					String pass = (String) txtPassword.getText();
+					String errEmpty = "Error: Enter nonblank  username/password";
+					String errInvalid = "Error: Invalid username/password";
+					
+					if(!pass.isEmpty() || !username.isEmpty()) {
+						if(accounts.containsAccount(username, accounts.hashPass(pass))){
+							
+								ap.setAccount(accounts.getAccount(username, accounts.hashPass(pass)));
+								ap.setAccounts(accounts);
+							
+							shell.close();
+							shell.dispose();
+						}	else	{
+								lblErrorLabel.setText(errInvalid);
+						}
+					}	else {
+						lblErrorLabel.setText(errEmpty);
+					}
+				
+				}
+			}
+		});
 		/*
 		 * Cancel Button
 		 * Closes out of the login window which should in turn exit out of the main application

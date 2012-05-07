@@ -26,8 +26,8 @@ import storage.Group;
 import storage.Permission;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+//import org.eclipse.swt.events.SelectionAdapter;
+//import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Event;
 
@@ -115,10 +115,13 @@ public class EditShell {
 	 */
 	public String getInactiveLabel(){
 		String out  = "";
-		//If the window was opened for user accoutn editing
-		if (opened_user_account || opened_user_group){
-			out = "Inactive Filters";
-		} else {
+		//If the window was opened for user account editing
+		if (opened_user_account){
+			out = "Default Filters for " + edit_account.getName();
+		
+		}
+		else if(opened_user_group){out = "Default Filters";}
+		else {
 			//If the window was opened for export
 			if (sName == ApplicationWindow.EXPORT){
 				out = "Filters to be exported";
@@ -140,7 +143,7 @@ public class EditShell {
 	public String getActiveLabel(){
 		String out = "";
 		if (opened_user_account || opened_user_group){
-			out = "Active Filters";
+			out = "Administrator's Filters";
 		} else {
 			//If the window was opened for export
 			if (sName == ApplicationWindow.EXPORT){
@@ -220,7 +223,6 @@ public class EditShell {
 		formToolkit.adapt(filterActiveComposite);
 		formToolkit.paintBordersFor(filterActiveComposite);
 		filterActiveComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
-		
 		//Active List
 		final ListViewer filterActiveListViewer = new ListViewer(filterActiveComposite, SWT.BORDER | SWT.V_SCROLL);
 		List filterActiveList_1 = filterActiveListViewer.getList();
@@ -323,7 +325,7 @@ public class EditShell {
 		formToolkit.adapt(btnCreateFilters, true, true);
 		
 		btnCreateFilters.setText("Create Filters");
-		
+		/*
 				btnCreateFilters.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
 						if (btnCreateFilters.getSelection()) {
@@ -333,7 +335,7 @@ public class EditShell {
 						}
 					}
 				});
-		
+		*/
 		
 		//Edit filters check box
 		btnEditFilters = new Button(btnBarComposite, SWT.CHECK);
@@ -342,7 +344,7 @@ public class EditShell {
 		btnEditFilters.setLayoutData(gd_btnEditFilters);
 		formToolkit.adapt(btnEditFilters, true, true);
 		btnEditFilters.setText("Edit Filters");
-		btnEditFilters.addSelectionListener(new SelectionAdapter() {
+		/*btnEditFilters.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				if (btnEditFilters.getSelection()) {
 					System.out.println("Checked");
@@ -351,10 +353,9 @@ public class EditShell {
 				}
 			}
 		});
-		
+		*/
 		
 		if(opened_user_account && edit_account.getPermissions().contains(Permission.CREATEFILTER)) {
-			System.out.println("The user account contains the create filter permission: " + edit_account.getPermissions().contains(Permission.CREATEFILTER));
 			btnCreateFilters.setSelection(true);
 		}
 		else if(opened_user_group){
@@ -381,7 +382,7 @@ public class EditShell {
 		btnDeleteFilters.setLayoutData(gd_btnDeleteFilters);
 		formToolkit.adapt(btnDeleteFilters, true, true);
 		btnDeleteFilters.setText("Delete Filters");
-		btnDeleteFilters.addSelectionListener(new SelectionAdapter() {
+/*		btnDeleteFilters.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				if (btnDeleteFilters.getSelection()) {
 					System.out.println("Checked");
@@ -390,10 +391,9 @@ public class EditShell {
 				}
 			}
 		});
-		
+		*/
 	
 		if(opened_user_account && edit_account.getPermissions().contains(Permission.EDITFILTER)) {
-			System.out.println("The user account contains the edit filter permission: " + edit_account.getPermissions().contains(Permission.EDITFILTER));
 			btnEditFilters.setSelection(true);
 		}
 		else if(opened_user_group){
@@ -422,7 +422,7 @@ public class EditShell {
 		btnSetProxyListening.setLayoutData(gd_btnSetProxyListening);
 		formToolkit.adapt(btnSetProxyListening, true, true);
 		btnSetProxyListening.setText("Change Port Number");
-		
+/*		
 				btnSetProxyListening.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
 						if (btnSetProxyListening.getSelection()) {
@@ -433,10 +433,9 @@ public class EditShell {
 					}
 				});
 				
-		
+		*/
 		if(opened_user_account && edit_account.getPermissions().contains(Permission.DELETEFILTER)) {
 			btnDeleteFilters.setSelection(true);
-			System.out.println("The user account contains the delete filter permission: " + edit_account.getPermissions().contains(Permission.DELETEFILTER));
 		}
 		
 		else if(opened_user_group){
@@ -467,7 +466,8 @@ public class EditShell {
 				public void handleEvent(Event e){
 					switch (e.type) {
 					case SWT.Selection:
-						accounts.getAccount(edit_account.getName()).setPass(accounts.hashPass(""));
+						edit_account = accounts.getAccount(edit_account);
+						edit_account.setPass(accounts.hashPass(""));
 						accounts.saveAccounts();
 					}
 				}
@@ -477,7 +477,6 @@ public class EditShell {
 		
 		if(opened_user_account && edit_account.getPermissions().contains(Permission.SETPORT)) {
 			btnSetProxyListening.setSelection(true);
-			System.out.println("The user account contains the set port permission: " + edit_account.getPermissions().contains(Permission.SETPORT));
 		}
 		else if(opened_user_group){
 			switch(edit_group){
@@ -601,7 +600,7 @@ public class EditShell {
 										}
 									}
 								}
-								accounts.exportFilters(filtersToExport, file);
+								if(!accounts.exportFilters(filtersToExport, file)) return;
 							}
 							else if(opened_user_account){
 								
@@ -625,7 +624,7 @@ public class EditShell {
 								List exportFilters = filterInactiveListViewer.getList();
 								String[] filtersStrings = exportFilters.getItems();
 								for(Filter f: account.getAllFilters()){
-									String filterName = f.getName();
+									String filterName = f.toString();
 									for(int i = 0; i < filtersStrings.length; ++i){
 										if(filterName.equals(filtersStrings[i])){
 											accounts.getAccount(edit_account).addDefaultFilter(f);
@@ -633,6 +632,7 @@ public class EditShell {
 									}
 								}
 								accounts.saveAccounts();
+
 
 							}
 							else if(opened_user_group){
@@ -688,7 +688,7 @@ public class EditShell {
 					}
 				}
 			});
-			//Add Filter from inactive to active list
+			//Add Filter from left to right list
 			btnAdd.addListener(SWT.Selection, new Listener(){
 
 				@Override
@@ -699,14 +699,16 @@ public class EditShell {
 							List il = filterInactiveListViewer.getList();
 							try{
 								String filter = il.getSelection()[0];
-								//String[] fil = filter.split(":");
-								//String filterName = fil[0];
-								//Filter removedFilter = account.removeInactiveFilter(Integer.parseInt(filterName));
-								//account.addFilter(removedFilter);
+								String[] fil = filter.split(":");
+								if(opened_user_account){
+									accounts.getAccount(edit_account).removeDefaultFilter(Integer.parseInt(fil[0]));
+
+								}
+								
 								il.remove(filter);
-								al.add(filter);
+								if(!opened_user_account)
+									al.add(filter);
 							}catch(ArrayIndexOutOfBoundsException e){
-								System.err.println("Didn't select anything");
 							}
 						
 						
@@ -727,12 +729,11 @@ public class EditShell {
 							List il = filterInactiveListViewer.getList();
 							
 							String filter = al.getSelection()[0];
-	
+							String[] fil = filter.split(":");
 							
 							al.remove(filter.toString());
 							il.add(filter.toString());
 						}catch(ArrayIndexOutOfBoundsException e){
-							System.err.println("Didn't select anything");
 						}
 					
 					}

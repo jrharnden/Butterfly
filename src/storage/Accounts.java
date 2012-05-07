@@ -37,7 +37,6 @@ public class Accounts implements Serializable,Iterable<Account> {
 			if(a.getName().equals(name) && a.getPassHash().equals(hashPass))
 				return true;
 		}
-		System.err.println("Couldn't find "+name + " "+ hashPass);
 		return false;
 	}
 	/**
@@ -162,11 +161,15 @@ public class Accounts implements Serializable,Iterable<Account> {
 			}
 		
 			fwr.close();	
+			return true;
 			
 		}
 		catch(IOException e){
 			System.err.println(e.getMessage());
 			//TODO: Something meaningful
+		}
+		catch(NullPointerException e2){
+			return false;
 		}
 		return false;
 		
@@ -191,7 +194,6 @@ public class Accounts implements Serializable,Iterable<Account> {
 					imported.add(new Filter(filt[0],filt[1],filt[2]));
 				}
 				else{
-					System.err.println("Malformed regex read");
 				}
 				
 			}

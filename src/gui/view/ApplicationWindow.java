@@ -21,7 +21,7 @@ import java.awt.Color;
 import java.awt.Panel;
 import java.awt.BorderLayout;
 import javax.swing.BorderFactory;
-import javax.swing.JFrame;
+//import javax.swing.JFrame;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -59,7 +59,7 @@ public class ApplicationWindow{
 	private ProxyServer server;
 	private Account account;
 	private Accounts accounts;
-	private JFrame frame;
+	//private JFrame frame;
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 	
 	private  ListViewer filterInactiveListViewer;
@@ -395,7 +395,7 @@ public class ApplicationWindow{
 							accounts.setPortNumber(Integer.parseInt(textPort.getText()));
 							server = new ProxyServer(accounts.getPortNumber(), new HttpResponseFilters() {
 								public HttpFilter getFilter(String hostAndPort) {
-									return new CustomHttpResponseFilter(account.getActiveFilters());
+									return new CustomHttpResponseFilter(account.getActiveAndDefaultFilters());
 								}}, null);
 							server.start();
 							btnListen.setText("Stop");
@@ -732,9 +732,26 @@ public class ApplicationWindow{
 			AccountListViewer = new ListViewer(admTableTreeComposite, SWT.BORDER | SWT.V_SCROLL);
 			final List AccountList = AccountListViewer.getList();
 			
-			AccountList.add("Administrator");
-			AccountList.add("Power");
-			AccountList.add("Standard");
+			AccountList.add("////////////////////Administrator////////////////////");
+			Accounts a = new Accounts();
+			a.loadAccounts(); 
+			for(Account acc: a){
+				if(acc.getGroup()==Group.ADMINISTRATOR)
+					AccountList.add("\t"+acc.getName());
+				
+			}
+			
+			AccountList.add("////////////////////Power////////////////////////");
+			for(Account acc: a){
+				if(acc.getGroup()==Group.POWER)
+					AccountList.add("\t"+acc.getName());
+			}
+			AccountList.add("////////////////////Standard/////////////////////");
+			for(Account acc: a){
+				if(acc.getGroup()==Group.STANDARD)
+						AccountList.add("\t"+acc.getName());
+					
+			}
 			
 			//TODO set active list to selections current active filters
 			ListViewer activeViewer = new ListViewer(admTableTreeComposite, SWT.BORDER | SWT.V_SCROLL);
@@ -770,7 +787,6 @@ public class ApplicationWindow{
 										}
 										);
 										
-										//TODO implement user group edit/accounts
 										//Edit User Groups/Accounts
 										Button admBtnEdit = new Button(admBtnBarComposite, SWT.NONE);
 										formToolkit.adapt(admBtnEdit, true, true);
@@ -786,8 +802,17 @@ public class ApplicationWindow{
 														String selection = AccountList.getSelection()[0].trim();
 														Account a =acc.getAccount(selection);
 														if(a == null){
-															if(Group.valueOf(selection.toUpperCase())!= null){
-																editUserGroup(Group.valueOf(selection.toUpperCase()));
+															Group g=null;
+															//This code is a security flaw
+															if(selection.contains("Administrator"))
+																g = Group.ADMINISTRATOR;
+															else if(selection.contains("Power"))
+																g = Group.POWER;
+															else if(selection.contains("Standard"))
+																g = Group.STANDARD;
+																
+															if(g!=null){
+																editUserGroup(g);
 															}
 														}
 														else{
@@ -816,24 +841,37 @@ public class ApplicationWindow{
 													case SWT.Selection:
 														Accounts acc = new Accounts();
 														acc.loadAccounts();
-														Account a =acc.getAccount(AccountList.getSelection()[0].trim());
-														if(a!=null){
-															if(!a.getName().equals(account.getName())){
-															acc.removeAccount(a);
+														Account ac =acc.getAccount(AccountList.getSelection()[0].trim());
+														if(ac!=null){
+															if(!ac.getName().equals(account.getName())){
+															acc.removeAccount(ac);
 															acc.saveAccounts();
 															AccountList.removeAll();
-															AccountList.add("Administrator");
-															AccountList.add("Power");
-															AccountList.add("Standard");
-															for(Account ac: acc){
+															
+															AccountList.add("////////////////////Administrator////////////////////");
+															acc.loadAccounts(); 
+															for(Account a: acc){
+																if(a.getGroup()==Group.ADMINISTRATOR)
+																	AccountList.add("\t"+a.getName());
 																
-																AccountList.add(ac.getName());
 															}
+															
+															AccountList.add("////////////////////Power////////////////////////");
+															for(Account a: acc){
+																if(a.getGroup()==Group.POWER)
+																	AccountList.add("\t"+a.getName());
+															}
+															AccountList.add("////////////////////Standard/////////////////////");
+															for(Account a: acc){
+																if(a.getGroup()==Group.STANDARD)
+																		AccountList.add("\t"+a.getName());
+																	
+															}
+															
 															}
 															
 														}
-														else
-															System.err.println("No account selected");
+														
 													}
 												}
 											});
@@ -844,7 +882,7 @@ public class ApplicationWindow{
 												public void selectionChanged(SelectionChangedEvent e) {
 													try{
 													String selection = AccountList.getSelection()[0].trim();
-													if(selection.equals("Administrator")||selection.equals("Power")||selection.equals("Standard")){
+													if(selection.contains("Administrator")||selection.contains("Power")||selection.contains("Standard")){ //Possible security flaw
 														activeList.removeAll();
 														inactiveList.removeAll();
 														admBtnDelete.setEnabled(false);
@@ -873,22 +911,9 @@ public class ApplicationWindow{
 											});
 		
 	
-				Accounts a = new Accounts();
-				a.loadAccounts(); 
-				for(Account acc: a){
-					if(acc.getGroup()==Group.ADMINISTRATOR)
-						AccountList.add("\t"+acc.getName());
-					
-				}
-				for(Account acc: a){
-					if(acc.getGroup()==Group.POWER)
-						AccountList.add("\t"+acc.getName());
-				}
-				for(Account acc: a){
-					if(acc.getGroup()==Group.STANDARD)
-							AccountList.add("\t"+acc.getName());
-						
-				}
+				
+				
+			
 		
 		}
 		
@@ -1133,7 +1158,6 @@ public class ApplicationWindow{
 			
 		}catch(ArrayIndexOutOfBoundsException exc){
 			
-			System.err.println("Didn't select anything");
 		}
 	}
 	private void btnAddHandleEvent(){
@@ -1149,7 +1173,6 @@ public class ApplicationWindow{
 			il.remove(filter);
 			al.add(filter);
 		}catch(ArrayIndexOutOfBoundsException e){
-			System.err.println("Didn't select anything");
 		}
 	}
 	private void btnRemoveHandleEvent(){
@@ -1161,12 +1184,14 @@ public class ApplicationWindow{
 			String[] fil = filter.split(":");
 			String filterName = fil[0];
 			Filter removedFilter = account.removeActiveFilter(Integer.parseInt(filterName));
+			//if filter is null could be a default filter try removing it from there
+			if(removedFilter == null)
+				removedFilter = account.removeDefaultFilter(Integer.parseInt(filterName));
 			account.addInactiveFilter(removedFilter);
 			accounts.saveAccounts();
 			al.remove(filter);
 			il.add(filter);
 		}catch(ArrayIndexOutOfBoundsException e){
-			System.err.println("Didn't select anything");
 		}
 	}
 	private void btnCreateHandleEvent(){
@@ -1212,7 +1237,6 @@ public class ApplicationWindow{
 				filteractiveList.add(fia.toString());
 			}
 		}catch(ArrayIndexOutOfBoundsException exc){
-			System.err.println("Didn't select anything");
 		}
 	}
 }

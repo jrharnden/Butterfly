@@ -64,7 +64,12 @@ public class Account implements Serializable {
 		allFilters.addAll(defaultFilters);
 		return Collections.unmodifiableList(allFilters);
 	}
-	
+	public List<Filter> getActiveAndDefaultFilters(){
+		List<Filter> activedefault = new ArrayList<Filter>();
+		activedefault.addAll(activeFilters);
+		activedefault.addAll(defaultFilters);
+		return Collections.unmodifiableList(activedefault);
+	}
 	/**
 	 * Returns a default filter should only be used by Administrator
 	 * 
@@ -170,8 +175,11 @@ public class Account implements Serializable {
 	
 	public void addDefaultFilter(final Filter filter) {
 		if(filter == null) throw new IllegalArgumentException();
-		
-		if (!defaultFilters.contains(filter))
+		boolean contain = false;
+		for(Filter f: defaultFilters){
+			if(f.toString().equals(filter.toString())) contain = true;
+		}
+		if (!contain)
 			defaultFilters.add(new Filter(filter));
 	}
 	
@@ -229,7 +237,15 @@ public class Account implements Serializable {
 
 		return null;
 	}
-
+	public Filter removeDefaultFilter(final int FilterID){
+		for(Filter f: defaultFilters){
+			if(f.getId()==FilterID){
+				defaultFilters.remove(f);
+				return f;
+			}
+		}
+		return null;
+	}
 	/**
 	 * Removes a filter from the users active filters
 	 * 

@@ -41,6 +41,7 @@ public class AccountShell extends Dialog {
 	private Text accPassConfirmText;
 	protected Object result;
 	protected Shell shell;
+	@SuppressWarnings("unused")
 	private ApplicationWindow ap;
 	
 	/**
@@ -281,12 +282,15 @@ public class AccountShell extends Dialog {
 					
 					//TODO add in check to changepassword for password changing 
 					if(changepassword){
+						if(accPassText.getText().equals(accPassConfirmText.getText())){
 						Accounts a = new Accounts();
 						a.loadAccounts();
 						a.getAccount(accname).setPass(a.hashPass(accPassText.getText()));
 						a.saveAccounts();
 						shell.close();
 						shell.dispose();
+						}
+						else errorLabel.setText("Error: Passwords do not match");
 						
 					}
 					else if (validate(username, pass, confPass, userGroup))	{
