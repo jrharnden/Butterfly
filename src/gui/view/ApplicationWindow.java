@@ -92,7 +92,10 @@ public class ApplicationWindow{
 		Display display = Display.getDefault();
 		FilterShell filterEdit = new FilterShell(display, s, account, accounts);
 		filterEdit.setFilter(editFilter);
+		shlButterfly.setEnabled(false);
 		filterEdit.open();
+		shlButterfly.setEnabled(true);
+		shlButterfly.setActive();
 		return true;
 	}
 	
