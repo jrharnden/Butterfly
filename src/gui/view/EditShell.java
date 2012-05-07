@@ -314,6 +314,11 @@ public class EditShell {
 			formToolkit.adapt(btnRemove, true, true);
 			btnRemove.setText(">");
 			
+		//South Button Composite
+		Composite filterBtnComposite_SOUTH = new Composite(filterBtnComposite, SWT.NONE);
+		formToolkit.adapt(filterBtnComposite_SOUTH);
+		formToolkit.paintBordersFor(filterBtnComposite_SOUTH);
+		filterBtnComposite_SOUTH.setLayout(new GridLayout(1, false));
 			
 	
 		//Inactive filter composite
@@ -541,13 +546,6 @@ public class EditShell {
 		gd_label.heightHint = 25;
 		label.setLayoutData(gd_label);
 		formToolkit.adapt(label, true, true);
-			
-			
-		//South Button Composite
-		Composite filterBtnComposite_SOUTH = new Composite(filterBtnComposite, SWT.NONE);
-		formToolkit.adapt(filterBtnComposite_SOUTH);
-		formToolkit.paintBordersFor(filterBtnComposite_SOUTH);
-		filterBtnComposite_SOUTH.setLayout(new GridLayout(1, false));
 		
 		
 		// if editing user account
