@@ -276,11 +276,5 @@ public class Accounts implements Serializable,Iterable<Account> {
 	public Iterator<Account> iterator() {
 		// TODO Auto-generated method stub
 		return accounts.iterator();
-	}
-	
-	 
-
-
-	
-	 
+	}	 
 }

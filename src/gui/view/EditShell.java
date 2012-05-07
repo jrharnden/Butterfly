@@ -116,7 +116,7 @@ public class EditShell {
 	public String getInactiveLabel(){
 		String out  = "";
 		//If the window was opened for user accoutn editing
-		if (opened_user_account){
+		if (opened_user_account || opened_user_group){
 			out = "Inactive Filters";
 		} else {
 			//If the window was opened for export
@@ -139,7 +139,7 @@ public class EditShell {
 	 */
 	public String getActiveLabel(){
 		String out = "";
-		if (opened_user_account){
+		if (opened_user_account || opened_user_group){
 			out = "Active Filters";
 		} else {
 			//If the window was opened for export
@@ -200,6 +200,7 @@ public class EditShell {
 		lblActiveFilters.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
 		formToolkit.adapt(lblActiveFilters, true, true);
 		lblActiveFilters.setText(getActiveLabel());
+		
 		new Label(filterComposite_1, SWT.NONE);
 		
 		//Inactive filter list/Filters to be imported
@@ -294,7 +295,7 @@ public class EditShell {
 					inactiveList.add(f.toString());
 			}
 			Composite btnBarComposite = new Composite(filterComposite, SWT.NONE);
-			btnBarComposite.setLayout(new GridLayout(11, false));
+			btnBarComposite.setLayout(new GridLayout(9, false));
 			GridData gd_btnBarComposite = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
 			gd_btnBarComposite.heightHint = 37;
 			gd_btnBarComposite.widthHint = 771;
@@ -307,8 +308,8 @@ public class EditShell {
 	if (opened_user_account || opened_user_group) {
 		
 		Label lblNewLabel = new Label(btnBarComposite, SWT.NONE);
-		GridData gd_lblNewLabel = new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1);
-		gd_lblNewLabel.widthHint = 94;
+		GridData gd_lblNewLabel = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_lblNewLabel.widthHint = 98;
 		lblNewLabel.setLayoutData(gd_lblNewLabel);
 		formToolkit.adapt(lblNewLabel, true, true);
 		lblNewLabel.setText("User Permissions:");
@@ -316,8 +317,41 @@ public class EditShell {
 		// ****************** PERMISSIONS *******************************************************
 		//Create button check box
 		btnCreateFilters = new Button(btnBarComposite, SWT.CHECK);
+		GridData gd_btnCreateFilters = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_btnCreateFilters.widthHint = 87;
+		btnCreateFilters.setLayoutData(gd_btnCreateFilters);
 		formToolkit.adapt(btnCreateFilters, true, true);
+		
 		btnCreateFilters.setText("Create Filters");
+		
+				btnCreateFilters.addSelectionListener(new SelectionAdapter() {
+					public void widgetSelected(SelectionEvent e) {
+						if (btnCreateFilters.getSelection()) {
+							System.out.println("Checked");
+						} else {
+							System.out.println("Unchecked");
+						}
+					}
+				});
+		
+		
+		//Edit filters check box
+		btnEditFilters = new Button(btnBarComposite, SWT.CHECK);
+		GridData gd_btnEditFilters = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_btnEditFilters.widthHint = 73;
+		btnEditFilters.setLayoutData(gd_btnEditFilters);
+		formToolkit.adapt(btnEditFilters, true, true);
+		btnEditFilters.setText("Edit Filters");
+		btnEditFilters.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				if (btnEditFilters.getSelection()) {
+					System.out.println("Checked");
+				} else {
+					System.out.println("Unchecked");
+				}
+			}
+		});
+		
 		if(opened_user_account && edit_account.getPermissions().contains(Permission.CREATEFILTER)) btnCreateFilters.setSelection(true);
 		else if(opened_user_group){
 			switch(edit_group){
@@ -334,10 +368,17 @@ public class EditShell {
 				btnCreateFilters.setSelection(true);
 			}
 		}
-
-		btnCreateFilters.addSelectionListener(new SelectionAdapter() {
+		
+		//Delete filters check box
+		btnDeleteFilters = new Button(btnBarComposite, SWT.CHECK);
+		GridData gd_btnDeleteFilters = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_btnDeleteFilters.widthHint = 87;
+		btnDeleteFilters.setLayoutData(gd_btnDeleteFilters);
+		formToolkit.adapt(btnDeleteFilters, true, true);
+		btnDeleteFilters.setText("Delete Filters");
+		btnDeleteFilters.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				if (btnCreateFilters.getSelection()) {
+				if (btnDeleteFilters.getSelection()) {
 					System.out.println("Checked");
 				} else {
 					System.out.println("Unchecked");
@@ -345,11 +386,6 @@ public class EditShell {
 			}
 		});
 		
-		
-		//Edit filters check box
-		btnEditFilters = new Button(btnBarComposite, SWT.CHECK);
-		formToolkit.adapt(btnEditFilters, true, true);
-		btnEditFilters.setText("Edit Filters");
 		if(opened_user_account && edit_account.getPermissions().contains(Permission.EDITFILTER)) btnEditFilters.setSelection(true);
 		else if(opened_user_group){
 			switch(edit_group){
@@ -366,23 +402,27 @@ public class EditShell {
 					btnEditFilters.setSelection(true);
 			}
 		}
-		btnEditFilters.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				if (btnEditFilters.getSelection()) {
-					System.out.println("Checked");
-				} else {
-					System.out.println("Unchecked");
-				}
-			}
-		});
 		
-		//Delete filters check box
-		btnDeleteFilters = new Button(btnBarComposite, SWT.CHECK);
-		GridData gd_btnDeleteFilters = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-		gd_btnDeleteFilters.widthHint = 87;
-		btnDeleteFilters.setLayoutData(gd_btnDeleteFilters);
-		formToolkit.adapt(btnDeleteFilters, true, true);
-		btnDeleteFilters.setText("Delete Filters");
+		//change port check box
+		btnSetProxyListening = new Button(btnBarComposite, SWT.CHECK);
+		//Make it pretty
+		boolean expand = true;
+		if (opened_user_account){expand = false;}
+		GridData gd_btnSetProxyListening = new GridData(SWT.LEFT, SWT.CENTER, expand, false, 1, 1);
+		gd_btnSetProxyListening.widthHint = 130;
+		btnSetProxyListening.setLayoutData(gd_btnSetProxyListening);
+		formToolkit.adapt(btnSetProxyListening, true, true);
+		btnSetProxyListening.setText("Change Port Number");
+		
+				btnSetProxyListening.addSelectionListener(new SelectionAdapter() {
+					public void widgetSelected(SelectionEvent e) {
+						if (btnSetProxyListening.getSelection()) {
+							System.out.println("Checked");
+						} else {
+							System.out.println("Unchecked");
+						}
+					}
+				});
 		if(opened_user_account && edit_account.getPermissions().contains(Permission.DELETEFILTER)) btnDeleteFilters.setSelection(true);
 		else if(opened_user_group){
 			switch(edit_group){
@@ -400,18 +440,24 @@ public class EditShell {
 				break;
 			}
 		}
-		btnDeleteFilters.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				if (btnDeleteFilters.getSelection()) {
-					System.out.println("Checked");
-				} else {
-					System.out.println("Unchecked");
-				}
-			}
-		});
 		
-		//change port check box
-		btnSetProxyListening = new Button(btnBarComposite, SWT.CHECK);
+		
+	//Change password button
+		if (opened_user_account){	
+			Button btnResetPassword = new Button(btnBarComposite, SWT.NONE);
+			formToolkit.adapt(btnResetPassword, true, true);
+			btnResetPassword.setText("Reset Password");
+			
+			btnResetPassword.addListener(SWT.Selection, new Listener() {
+				public void handleEvent(Event e){
+					switch (e.type) {
+					case SWT.Selection:
+						accounts.getAccount(edit_account.getName()).setPass(accounts.hashPass(""));
+						accounts.saveAccounts();
+					}
+				}
+			});
+		
 		if(opened_user_account && edit_account.getPermissions().contains(Permission.SETPORT)) btnSetProxyListening.setSelection(true);
 		else if(opened_user_group){
 			switch(edit_group){
@@ -428,51 +474,22 @@ public class EditShell {
 				btnSetProxyListening.setSelection(true);
 			}
 		}
-
-		btnSetProxyListening.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				if (btnSetProxyListening.getSelection()) {
-					System.out.println("Checked");
-				} else {
-					System.out.println("Unchecked");
-				}
-			}
-		});
-		formToolkit.adapt(btnSetProxyListening, true, true);
-		btnSetProxyListening.setText("Change Port Number");
 		
-		//Change password button
-		if (opened_user_account){	
-			Button btnResetPassword = new Button(btnBarComposite, SWT.NONE);
-			formToolkit.adapt(btnResetPassword, true, true);
-			btnResetPassword.setText("Reset Password");
-			Label label = new Label(btnBarComposite, SWT.SEPARATOR | SWT.VERTICAL);
-			GridData gd_label = new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1);
-			gd_label.heightHint = 25;
-			label.setLayoutData(gd_label);
-			formToolkit.adapt(label, true, true);
+		Label label = new Label(btnBarComposite, SWT.SEPARATOR | SWT.VERTICAL);
+		GridData gd_label = new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1);
+		gd_label.heightHint = 25;
+		label.setLayoutData(gd_label);
+		formToolkit.adapt(label, true, true);
 			
-			btnResetPassword.addListener(SWT.Selection, new Listener() {
-				public void handleEvent(Event e){
-					switch (e.type) {
-					case SWT.Selection:
-						accounts.getAccount(edit_account.getName()).setPass(accounts.hashPass(""));
-						accounts.saveAccounts();
-					}
-				}
-			});
 			
-		}
-		
-		
-		
 			
-		
 				
-			//Window was opened for editing user account/user group
-			//Add the extra check boxes for accounts and user groups
-			//Add reset password for accounts
-			} else {
+			
+					
+				//Window was opened for editing user account/user group
+				//Add the extra check boxes for accounts and user groups
+				//Add reset password for accounts
+		} else {
 				// Import/Export Button
 				Button btnImport = new Button(btnBarComposite, SWT.NONE);
 				GridData gd_btnImport = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
@@ -519,110 +536,110 @@ public class EditShell {
 					textHandle.setLayoutData(gd_textHandle);
 					formToolkit.adapt(textHandle, true, true);
 		}
-			
-			
-			//Save the changes
-			Button btnSave = new Button(btnBarComposite, SWT.NONE);
-			GridData gd_btnSave = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-			gd_btnSave.widthHint = 75;
-			btnSave.setLayoutData(gd_btnSave);
-			formToolkit.adapt(btnSave, true, true);
-			btnSave.setText("Save");
-			
-			btnSave.addListener(SWT.Selection, new Listener(){
-				public void handleEvent(Event e){
-					switch (e.type){
-					case SWT.Selection:
-						if(sName.equalsIgnoreCase("IMPORT")){
-						List importFilters = filterInactiveListViewer.getList();
-						String[] filtersToImport = importFilters.getItems();
-						for(Filter f: imported){
-							String filterName = f.getName();
-							for(int i = 0; i < filtersToImport.length; ++i){
-								if(filterName.equals(filtersToImport[i])){
-									account.addFilter(f);
-
-								}
-							}
-						}
-						
-						accounts.saveAccounts();
-						
-						
-							
-						}
-						else if(sName.equalsIgnoreCase("EXPORT")){
-							ArrayList<Filter> filtersToExport = new ArrayList<Filter>();
-							List exportFilters = filterInactiveListViewer.getList();
-							String[] filtersStrings = exportFilters.getItems();
-							for(Filter f: account.getAllFilters()){
+				
+				
+				//Save the changes
+				Button btnSave = new Button(btnBarComposite, SWT.NONE);
+				GridData gd_btnSave = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+				gd_btnSave.widthHint = 75;
+				btnSave.setLayoutData(gd_btnSave);
+				formToolkit.adapt(btnSave, true, true);
+				btnSave.setText("Save");
+				
+				btnSave.addListener(SWT.Selection, new Listener(){
+					public void handleEvent(Event e){
+						switch (e.type){
+						case SWT.Selection:
+							if(sName.equalsIgnoreCase("IMPORT")){
+							List importFilters = filterInactiveListViewer.getList();
+							String[] filtersToImport = importFilters.getItems();
+							for(Filter f: imported){
 								String filterName = f.getName();
-								for(int i = 0; i < filtersStrings.length; ++i){
-									if(filterName.equals(filtersStrings[i])){
-										filtersToExport.add(f);
+								for(int i = 0; i < filtersToImport.length; ++i){
+									if(filterName.equals(filtersToImport[i])){
+										account.addFilter(f);
+
 									}
 								}
 							}
-							accounts.exportFilters(filtersToExport, file);
-						}
-						else if(opened_user_account){
-							if(btnCreateFilters.getSelection()){
-								edit_account.addPermission(Permission.CREATEFILTER);
-							}
-							else account.removePermission(Permission.CREATEFILTER);
-							if(btnDeleteFilters.getSelection()){
-								edit_account.addPermission(Permission.DELETEFILTER);
-							}
-							else account.removePermission(Permission.DELETEFILTER);
-							if(btnEditFilters.getSelection()){
-								edit_account.addPermission(Permission.EDITFILTER);
-							}
-							else edit_account.removePermission(Permission.EDITFILTER);
 							
-							List exportFilters = filterInactiveListViewer.getList();
-							String[] filtersStrings = exportFilters.getItems();
-							for(Filter f: account.getAllFilters()){
-								String filterName = f.getName();
-								for(int i = 0; i < filtersStrings.length; ++i){
-									if(filterName.equals(filtersStrings[i])){
-										accounts.getAccount(edit_account).addDefaultFilter(f);
+							accounts.saveAccounts();
+							
+							
+								
+							}
+							else if(sName.equalsIgnoreCase("EXPORT")){
+								ArrayList<Filter> filtersToExport = new ArrayList<Filter>();
+								List exportFilters = filterInactiveListViewer.getList();
+								String[] filtersStrings = exportFilters.getItems();
+								for(Filter f: account.getAllFilters()){
+									String filterName = f.getName();
+									for(int i = 0; i < filtersStrings.length; ++i){
+										if(filterName.equals(filtersStrings[i])){
+											filtersToExport.add(f);
+										}
 									}
 								}
+								accounts.exportFilters(filtersToExport, file);
 							}
-							accounts.saveAccounts();
+							else if(opened_user_account){
+								if(btnCreateFilters.getSelection()){
+									edit_account.addPermission(Permission.CREATEFILTER);
+								}
+								else account.removePermission(Permission.CREATEFILTER);
+								if(btnDeleteFilters.getSelection()){
+									edit_account.addPermission(Permission.DELETEFILTER);
+								}
+								else account.removePermission(Permission.DELETEFILTER);
+								if(btnEditFilters.getSelection()){
+									edit_account.addPermission(Permission.EDITFILTER);
+								}
+								else edit_account.removePermission(Permission.EDITFILTER);
+								
+								List exportFilters = filterInactiveListViewer.getList();
+								String[] filtersStrings = exportFilters.getItems();
+								for(Filter f: account.getAllFilters()){
+									String filterName = f.getName();
+									for(int i = 0; i < filtersStrings.length; ++i){
+										if(filterName.equals(filtersStrings[i])){
+											accounts.getAccount(edit_account).addDefaultFilter(f);
+										}
+									}
+								}
+								accounts.saveAccounts();
 
-						}
-						else if(opened_user_group){
-							EnumSet<Permission> p = EnumSet.noneOf(Permission.class);
-							if(btnCreateFilters.getSelection()){
-								p.add(Permission.CREATEFILTER);
 							}
-							if(btnDeleteFilters.getSelection()){
-								p.add(Permission.DELETEFILTER);
+							else if(opened_user_group){
+								EnumSet<Permission> p = EnumSet.noneOf(Permission.class);
+								if(btnCreateFilters.getSelection()){
+									p.add(Permission.CREATEFILTER);
+								}
+								if(btnDeleteFilters.getSelection()){
+									p.add(Permission.DELETEFILTER);
+								}
+								if(btnEditFilters.getSelection()){
+									p.add(Permission.EDITFILTER);
+								}
+								switch(edit_group){
+								case ADMINISTRATOR:
+									accounts.setAdminPermissions(p);
+									break;
+								case POWER:
+									accounts.setPowerPermission(p);
+									break;
+								case STANDARD:
+									accounts.setStandardPermission(p);
+								}
+								accounts.saveAccounts();
+								
 							}
-							if(btnEditFilters.getSelection()){
-								p.add(Permission.EDITFILTER);
-							}
-							switch(edit_group){
-							case ADMINISTRATOR:
-								accounts.setAdminPermissions(p);
-								break;
-							case POWER:
-								accounts.setPowerPermission(p);
-								break;
-							case STANDARD:
-								accounts.setStandardPermission(p);
-							}
-							accounts.saveAccounts();
+							
+							shell.close();
+							shell.dispose();
 							
 						}
-						
-						shell.close();
-						shell.dispose();
-						
 					}
-				}
-			});
+				});
 			
 			//Cancel the changes
 			Button btnCancel = new Button(btnBarComposite, SWT.NONE);
@@ -696,9 +713,9 @@ public class EditShell {
 				
 			});
 			
+		}
+	
 	}
-	
-	
 	 private void displayFiles(String[] files) {
 		 for (int i = 0; files != null && i < files.length; i++) {
 			 textHandle.setText(files[i]);
