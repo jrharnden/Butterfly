@@ -140,17 +140,20 @@ public class FilterShell {
 			gd_chkComposite.heightHint = 148;
 			gd_chkComposite.widthHint = 116;
 			chkComposite.setLayoutData(gd_chkComposite);
-		
-				//Case Sensitive
-				Button btnCaseSensitive = new Button(chkComposite, SWT.CHECK);
-				btnCaseSensitive.setText("Case Sensitive");
 				
-				//Unicode 
-				Button btnUnicode = new Button(chkComposite, SWT.CHECK);
-				GridData gd_btnUnicode = new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1);
-				gd_btnUnicode.widthHint = 79;
-				btnUnicode.setLayoutData(gd_btnUnicode);
-				btnUnicode.setText("Unicode");
+				//TODO Header listener
+				//Header
+				final Button btnHeader = new Button(chkComposite, SWT.CHECK);
+				btnHeader.setText("Header");
+				btnHeader.addListener(SWT.Selection, new Listener(){
+					public void handleEvent(Event e){
+						if (btnHeader.getSelection() == true) {
+							
+						} else {
+							
+						}
+					}
+				});
 		
 		//Regular Express text composite
 		Label lblRegularExpression = new Label(mainComposite, SWT.NONE);

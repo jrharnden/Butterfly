@@ -30,6 +30,8 @@ import org.eclipse.swt.widgets.Text;
 //import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 
 
 public class EditShell {
@@ -289,7 +291,8 @@ public class EditShell {
 		Composite filterBtnComposite_NORTH = new Composite(filterBtnComposite, SWT.NONE);
 		formToolkit.adapt(filterBtnComposite_NORTH);
 		formToolkit.paintBordersFor(filterBtnComposite_NORTH);
-		filterBtnComposite_NORTH.setLayout(new FillLayout(SWT.HORIZONTAL));
+		filterBtnComposite_NORTH.setLayout(new GridLayout(1, false));
+		
 		
 		//Center Button Composite
 		Composite filterBtnComposite_CENTER = new Composite(filterBtnComposite, SWT.NONE);
@@ -548,7 +551,7 @@ public class EditShell {
 		
 		
 		// if editing user account
-		if (opened_user_account) {
+	if (opened_user_account) {
 			// add remove button to delete filters
 			Button btnREmove = new Button(filterBtnComposite_SOUTH, SWT.NONE);
 			GridData gd_btnREmove = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
@@ -583,6 +586,42 @@ public class EditShell {
 					}
 				}
 			});
+			
+			// User group label in the north center panel
+			Label lblUserPermissions = new Label(filterBtnComposite_NORTH, SWT.NONE);
+			formToolkit.adapt(lblUserPermissions, true, true);
+			lblUserPermissions.setText("User Group:");
+			
+			final Button btnPower = new Button(filterBtnComposite_NORTH, SWT.RADIO);
+			formToolkit.adapt(btnPower, true, true);
+			btnPower.setText("Power");
+			
+			final Button btnStandard = new Button(filterBtnComposite_NORTH, SWT.RADIO);
+			formToolkit.adapt(btnStandard, true, true);
+			btnStandard.setText("Standard");
+			
+			if (accounts.getAccount(edit_account).getGroup() == Group.POWER) {btnPower.setSelection(true);}
+			if (accounts.getAccount(edit_account).getGroup() == Group.STANDARD) {btnStandard.setSelection(true);}
+
+			// power selection listener
+			btnPower.addSelectionListener(new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent e) {
+					if (btnPower.getSelection() == true){
+						accounts.getAccount(edit_account).setGroup(Group.POWER);
+					}
+				}
+			});
+			
+			
+			// Standard seleciton listener
+			btnStandard.addSelectionListener(new SelectionAdapter(){
+				public void widgetSelected(SelectionEvent e){
+					if (btnStandard.getSelection() == true){
+						accounts.getAccount(edit_account).setGroup(Group.STANDARD);
+					}
+				}
+			});
+			
 		}
 				
 			
@@ -590,7 +629,7 @@ public class EditShell {
 				//Window was opened for editing user account/user group
 				//Add the extra check boxes for accounts and user groups
 				//Add reset password for accounts
-		} else {
+			} else {
 				// Import/Export Button
 				Button btnImport = new Button(btnBarComposite, SWT.NONE);
 				GridData gd_btnImport = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
@@ -716,6 +755,23 @@ public class EditShell {
 										}
 									}
 								}
+								if (edit_account.getGroup() != accounts.getAccount(edit_account).getGroup()) {
+									accounts.getAccount(edit_account).removePermission(EnumSet.allOf(Permission.class));
+									if (accounts.getAccount(edit_account).getGroup()==Group.POWER) {
+										accounts.getAccount(edit_account).addPermission(accounts.getPowerPermissions());
+										accounts.getAccount(edit_account).removeAllDefaultFilters();
+										for (Filter f : accounts.getDefaultFilters(Group.POWER)) {
+											accounts.getAccount(edit_account).addFilter(f.makeCopyWithNewId());
+										}
+									}
+									else if (accounts.getAccount(edit_account).getGroup()==Group.STANDARD){
+										accounts.getAccount(edit_account).addPermission(accounts.getStandardPermissions());
+										for (Filter f : accounts.getDefaultFilters(Group.STANDARD)) {
+											accounts.getAccount(edit_account).addDefaultFilter(f);
+										}
+										
+									}
+								}
 								accounts.saveAccounts();
 
 
@@ -776,6 +832,9 @@ public class EditShell {
 			btnCancel.setLayoutData(gd_btnCancel);
 			formToolkit.adapt(btnCancel, true, true);
 			btnCancel.setText("Cancel");
+			new Label(btnBarComposite, SWT.NONE);
+			new Label(btnBarComposite, SWT.NONE);
+			new Label(btnBarComposite, SWT.NONE);
 			new Label(btnBarComposite, SWT.NONE);
 			new Label(btnBarComposite, SWT.NONE);
 			new Label(btnBarComposite, SWT.NONE);
