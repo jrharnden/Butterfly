@@ -71,7 +71,6 @@ public class ApplicationWindow{
 	private JTextArea textAreaDialog;
 	private JTextArea textAreaConnectionList;
 	private Text textPort;
-	private Text textConnectionCount;
 	
 	/**
 	 * Launches Login window
@@ -267,6 +266,7 @@ public class ApplicationWindow{
 
 	/**
 	 * Create contents of the window.
+	 * @wbp.parser.entryPoint
 	 */
 	protected void createContents() {
 		shlButterfly = new Shell(SWT.ON_TOP | SWT.CLOSE | SWT.TITLE | SWT.MIN);
@@ -370,7 +370,7 @@ public class ApplicationWindow{
 		
 			// Initialize Listen Button for the port
 			final Button btnListen = new Button(composite, SWT.NONE);
-			GridData gd_btnListen = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 2);
+			GridData gd_btnListen = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 3);
 			gd_btnListen.heightHint = 50;
 			gd_btnListen.widthHint = 70;
 			btnListen.setLayoutData(gd_btnListen);
@@ -403,22 +403,38 @@ public class ApplicationWindow{
 		
 		// Connection Count Label
 		Label lblConnections = new Label(composite, SWT.NONE);
-		lblConnections.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblConnections.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 2));
 		formToolkit.adapt(lblConnections, true, true);
 		lblConnections.setText("Connection Count:");
 		
-			// Initialize connection count text field
-			//TODO change to JTextArea not Text
-			textConnectionCount = new Text(composite, SWT.BORDER);
-			textConnectionCount.setText("0");
-			GridData gd_textConnectionCount = new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1);
-			gd_textConnectionCount.widthHint = 266;
-			textConnectionCount.setLayoutData(gd_textConnectionCount);
-			formToolkit.adapt(textConnectionCount, true, true);
-			//disable the fields
-			textConnectionCount.setEnabled(false);
-			//ProxyLog.setCountText(textConnectionCount);
+		//Connection count text area
+		Composite composite_6 = new Composite(composite, SWT.EMBEDDED);
+		GridData gd_composite_6 = new GridData(SWT.LEFT, SWT.CENTER, true, true, 1, 2);
+		gd_composite_6.heightHint = 25;
+		gd_composite_6.widthHint = 197;
+		composite_6.setLayoutData(gd_composite_6);
+		formToolkit.adapt(composite_6);
+		formToolkit.paintBordersFor(composite_6);
 		
+		Frame frame_3 = SWT_AWT.new_Frame(composite_6);
+		
+		Panel panel_2 = new Panel();
+		frame_3.add(panel_2);
+		panel_2.setLayout(new BorderLayout(0, 0));
+		
+		JRootPane rootPane_2 = new JRootPane();
+		panel_2.add(rootPane_2);
+		rootPane_2.getContentPane().setLayout(new java.awt.GridLayout(1, 0, 0, 0));
+			
+			//*********************************************************
+			//zong where is my automobile
+			// Jtext area for the connection count
+			//*********************************************************
+			JTextArea textAreaConnectionCount = new JTextArea();
+			rootPane_2.getContentPane().add(textAreaConnectionCount);
+			textAreaConnectionCount.setEnabled(false);
+		
+				
 		Composite statusCompositeRight = new Composite(statusComposite, SWT.NONE);
 		formToolkit.adapt(statusCompositeRight);
 		formToolkit.paintBordersFor(statusCompositeRight);

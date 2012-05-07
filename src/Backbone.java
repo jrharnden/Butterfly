@@ -14,8 +14,8 @@ public class Backbone {
 	}
 	
 	public void startDisplay(){
-		Shell shell = new Shell();
-		LoginShell lw = new LoginShell(shell);
+		//Shell shell = new Shell();
+		//LoginShell lw = new LoginShell(shell);
 		ApplicationWindow ap = new ApplicationWindow();
 		//lw.open(ap);
 		ap.open();
