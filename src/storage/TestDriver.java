@@ -19,11 +19,11 @@ public class TestDriver {
 		accounts.addAccount(cd);*/
 		try {
 			Account user = accounts.getAccount("Admin",accounts.hashPass("admin"));
-			user.addFilter(new Filter("No Images", "(?i)(?s)<img(.)*?>", "<!-- Killed Image -->",false));
-			user.addFilter(new Filter("No Script", "(?i)(?s)<script(.)*?</script>", "<!-- Killed Script -->",false));
-			user.addFilter(new Filter("No Nosccript","(?i)(?s)<noscript(.)*?</noscript>","<!-- Killed Noscript -->",false));
-			user.addFilter(new Filter("No Objects", "(?i)(?s)<object(.)*?</object>", "<!-- Killed Object -->", false));
-			user.addInactiveFilter(new Filter("No Applets", "(?i)(?s)<applet(.)*?</applet>", "<!-- Killed Applet -->",false));/*
+			user.addFilter(new Filter("Remove Images", "(?i)(?s)<img(.)*?>", "<!-- Killed Image -->",false));
+			user.addFilter(new Filter("Remove Scripts", "(?i)(?s)<script(.)*?</script>", "<!-- Killed Script -->",false));
+			user.addFilter(new Filter("Remove Noscripts (use with Remove Scripts)","(?i)(?s)<noscript(.)*?</noscript>","<!-- Killed Noscript -->",false));
+			user.addFilter(new Filter("Remove Objects", "(?i)(?s)<object(.)*?</object>", "<!-- Killed Object -->", false));
+			user.addInactiveFilter(new Filter("Remove Applets", "(?i)(?s)<applet(.)*?</applet>", "<!-- Killed Applet -->",false));/*
 			user.addFilter(new Filter("No Images", "(?i)(?s)<img(.)*?>", "<!-- Killed Image -->"));
 			user.addFilter(new Filter("No Script", "(?i)(?s)<script(.)*?</script>", "<!-- Killed Script -->"));
 			user.addFilter(new Filter("No Nosccript","(?i)(?s)<noscript(.)*?</noscript>","<!-- Killed Noscript -->"));
