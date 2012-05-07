@@ -43,7 +43,7 @@ public class ProxyLog {
 		root = path;
 	}
 	
-	public static void setLogEnabled(Boolean value) {
+	public static void setLogEnabled(boolean value) {
 		isLogEnabled = value;
 	}
 	

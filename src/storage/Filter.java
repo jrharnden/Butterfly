@@ -58,7 +58,7 @@ public class Filter implements Serializable {
 		return id;
 	}
 	
-	public Boolean getHeader() {
+	public boolean getHeader() {
 		return header;
 	}
 
@@ -74,7 +74,7 @@ public class Filter implements Serializable {
 		id = i;
 	}
 	
-	public void changeHeader(Boolean h) {
+	public void changeHeader(boolean h) {
 		header = h;
 	}
 
