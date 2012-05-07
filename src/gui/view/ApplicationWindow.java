@@ -248,16 +248,18 @@ public class ApplicationWindow{
 		Display display = Display.getDefault();
 		final Shell shell = new Shell(display);
 		authenticate(shell);
-		createContents();
-		shlButterfly.open();
-		shlButterfly.layout();
-		while (!shlButterfly.isDisposed()) {
-			if (!display.readAndDispatch()) {
-				display.sleep();
+		if (account!= null) {
+			createContents();
+			shlButterfly.open();
+			shlButterfly.layout();
+			while (!shlButterfly.isDisposed()) {
+				if (!display.readAndDispatch()) {
+					display.sleep();
+				}
 			}
-		}
-		if (!shlButterfly.isDisposed()) {
-			shlButterfly.dispose();
+			if (!shlButterfly.isDisposed()) {
+				shlButterfly.dispose();
+			}
 		}
 		display.dispose();
 		System.exit(0);
@@ -947,6 +949,7 @@ public class ApplicationWindow{
 						if (!shlButterfly.isDisposed()) {
 							shlButterfly.dispose();
 						}
+						account = null;
 						open();
 					}
 				}
