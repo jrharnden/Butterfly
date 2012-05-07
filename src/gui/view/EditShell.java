@@ -547,19 +547,21 @@ public class EditShell {
 		filterBtnComposite_SOUTH.setLayout(new GridLayout(1, false));
 		
 		
-		//REMOVE BUTTON FOR editing user groups
+		// if editing user account
 		if (opened_user_account) {
+			// add remove button to delete filters
 			Button btnREmove = new Button(filterBtnComposite_SOUTH, SWT.NONE);
 			GridData gd_btnREmove = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
 			gd_btnREmove.widthHint = 77;
 			btnREmove.setLayoutData(gd_btnREmove);
 			formToolkit.adapt(btnREmove, true, true);
 			btnREmove.setText("Remove");
+			
+			// remove listener
 			btnREmove.addListener(SWT.Selection, new Listener(){
 				@Override
 				public void handleEvent(Event e) {
 					if (e.type == SWT.Selection) {
-						//TODO implement remove
 					    List al = filterActiveListViewer.getList();
 						List il = filterInactiveListViewer.getList();
 						try{

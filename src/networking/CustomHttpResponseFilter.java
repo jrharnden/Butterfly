@@ -55,6 +55,7 @@ public class CustomHttpResponseFilter implements HttpFilter {
 					html = filterHtmlString(html);
 					response.setContent(ChannelBuffers.copiedBuffer(ChannelBuffers.BIG_ENDIAN, html.getBytes(Charset.forName("UTF-8"))));					
 				}
+				response.setHeader("Content-length", html.length());
 			}
 		}
 
