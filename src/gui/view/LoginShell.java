@@ -66,7 +66,7 @@ public class LoginShell extends Dialog {
 		loginComposite.setLayout(new GridLayout(1, false));
 		
 		// Login composite
-		Composite composite_1 = new Composite(loginComposite, SWT.NONE);
+		Composite composite_1 = new Composite(loginComposite, SWT.BORDER);
 		composite_1.setLayout(new GridLayout(2, false));
 		GridData gd_composite_1 = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
 		gd_composite_1.heightHint = 173;
@@ -199,7 +199,7 @@ public class LoginShell extends Dialog {
 		 */
 		Button btnCancel = new Button(sashForm, SWT.NONE);
 		btnCancel.setText("Cancel");
-		sashForm.setWeights(new int[] {1, 1});
+		sashForm.setWeights(new int[] {142, 131});
 		btnCancel.addSelectionListener(new SelectionAdapter(){
 			public void widgetSelected(SelectionEvent e){
 				System.exit(0);

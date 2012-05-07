@@ -186,7 +186,7 @@ public class EditShell {
 		formToolkit.paintBordersFor(filterComposite);
 		filterComposite.setLayout(new GridLayout(1, false));
 		
-		Composite filterComposite_1 = new Composite(filterComposite, SWT.NONE);
+		Composite filterComposite_1 = new Composite(filterComposite, SWT.BORDER);
 		GridData gd_filterComposite_1 = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
 		gd_filterComposite_1.widthHint = 770;
 		gd_filterComposite_1.heightHint = 525;
@@ -294,10 +294,10 @@ public class EditShell {
 				for(Filter f: edit_account.getDefaultFilters())
 					inactiveList.add(f.toString());
 			}
-			Composite btnBarComposite = new Composite(filterComposite, SWT.NONE);
+			Composite btnBarComposite = new Composite(filterComposite, SWT.BORDER);
 			btnBarComposite.setLayout(new GridLayout(9, false));
 			GridData gd_btnBarComposite = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
-			gd_btnBarComposite.heightHint = 37;
+			gd_btnBarComposite.heightHint = 43;
 			gd_btnBarComposite.widthHint = 771;
 			btnBarComposite.setLayoutData(gd_btnBarComposite);
 			btnBarComposite.setBounds(0, 0, 64, 64);
@@ -561,7 +561,7 @@ public class EditShell {
 				
 				//Save the changes
 				Button btnSave = new Button(btnBarComposite, SWT.NONE);
-				GridData gd_btnSave = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+				GridData gd_btnSave = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
 				gd_btnSave.widthHint = 75;
 				btnSave.setLayoutData(gd_btnSave);
 				formToolkit.adapt(btnSave, true, true);
@@ -664,11 +664,18 @@ public class EditShell {
 			
 			//Cancel the changes
 			Button btnCancel = new Button(btnBarComposite, SWT.NONE);
-			GridData gd_btnCancel = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+			GridData gd_btnCancel = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
 			gd_btnCancel.widthHint = 75;
 			btnCancel.setLayoutData(gd_btnCancel);
 			formToolkit.adapt(btnCancel, true, true);
 			btnCancel.setText("Cancel");
+			new Label(btnBarComposite, SWT.NONE);
+			new Label(btnBarComposite, SWT.NONE);
+			new Label(btnBarComposite, SWT.NONE);
+			new Label(btnBarComposite, SWT.NONE);
+			new Label(btnBarComposite, SWT.NONE);
+			new Label(btnBarComposite, SWT.NONE);
+			new Label(btnBarComposite, SWT.NONE);
 			
 			btnCancel.addListener(SWT.Selection, new Listener(){
 				public void handleEvent(Event e){  

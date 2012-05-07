@@ -43,12 +43,15 @@ public class AccountShell extends Dialog {
 	protected Shell shell;
 	private ApplicationWindow ap;
 	
+	
 	/**
 	 * Create the shell.
 	 * @param display
+	 * @wbp.parser.constructor
 	 */
 	public AccountShell(Shell parent) {
 		super(parent);
+		//createContents();
 	}
 	
 	/**
@@ -65,6 +68,7 @@ public class AccountShell extends Dialog {
 		this.group = group;
 		
 	}
+	
 	/**
 	 * Entry point to open the shell
 	 * @param a
@@ -94,7 +98,7 @@ public class AccountShell extends Dialog {
 		return passlabel;
 	}
 	
-	//TODO why are both paths of the if else the same???????????????????????
+
 	private String getPassLabelConf(boolean changepass){
 		String passlabelconf;
 		if (changepass){
@@ -160,19 +164,19 @@ public class AccountShell extends Dialog {
 		//Account Name and password composite
 		Composite accComposite = new Composite(shell, SWT.NONE);
 		accComposite.setLayout(new GridLayout(1, false));
-		Composite accNamePassComposite = new Composite(accComposite, SWT.NONE);
+		Composite accNamePassComposite = new Composite(accComposite, SWT.BORDER);
 		GridData gd_accNamePassComposite = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-		gd_accNamePassComposite.heightHint = 125;
+		gd_accNamePassComposite.heightHint = 112;
 		gd_accNamePassComposite.widthHint = 436;
 		accNamePassComposite.setLayoutData(gd_accNamePassComposite);
 		accNamePassComposite.setLayout(new GridLayout(2, false));
 		
 		//Top label
 		Label lblPleaseFillOut = new Label(accNamePassComposite, SWT.NONE);
-		lblPleaseFillOut.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
+		GridData gd_lblPleaseFillOut = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
+		gd_lblPleaseFillOut.heightHint = 21;
+		lblPleaseFillOut.setLayoutData(gd_lblPleaseFillOut);
 		lblPleaseFillOut.setText("Please fill out the following information for the new account:");
-		new Label(accNamePassComposite, SWT.NONE);
-		new Label(accNamePassComposite, SWT.NONE);
 		
 		//Account name
 		Label lblAccountName = new Label(accNamePassComposite, SWT.NONE);
@@ -182,15 +186,15 @@ public class AccountShell extends Dialog {
 			accUserNameText = new Text(accNamePassComposite, SWT.BORDER);
 			accUserNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 			
+		//Password
+		Label lblPassword = new Label(accNamePassComposite, SWT.NONE);
+		lblPassword.setText(getPassLabel(changepassword));
+			
 			//If changing the password for the account set the account name and disable the field
 			if (changepassword) {
 				accUserNameText.setText(accname);
 				accUserNameText.setEnabled(false);
 			}
-			
-		//Password
-		Label lblPassword = new Label(accNamePassComposite, SWT.NONE);
-		lblPassword.setText(getPassLabel(changepassword));
 		
 			//Password data
 			accPassText = new Text(accNamePassComposite, SWT.BORDER | SWT.PASSWORD);
@@ -199,7 +203,6 @@ public class AccountShell extends Dialog {
 		
 		//Password confirm
 		Label lblConfirmpassword = new Label(accNamePassComposite, SWT.NONE);
-		lblConfirmpassword.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblConfirmpassword.setText(getPassLabelConf(changepassword));
 		
 			// Password confirm data
@@ -207,9 +210,9 @@ public class AccountShell extends Dialog {
 			accPassConfirmText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		//User Group information composite
-		Composite accUserGroupComposite = new Composite(accComposite, SWT.NONE);
-		GridData gd_accUserGroupComposite = new GridData(SWT.LEFT, SWT.CENTER, true, true, 1, 1);
-		gd_accUserGroupComposite.heightHint = 74;
+		Composite accUserGroupComposite = new Composite(accComposite, SWT.BORDER);
+		GridData gd_accUserGroupComposite = new GridData(SWT.LEFT, SWT.BOTTOM, true, true, 1, 1);
+		gd_accUserGroupComposite.heightHint = 71;
 		gd_accUserGroupComposite.widthHint = 435;
 		accUserGroupComposite.setLayoutData(gd_accUserGroupComposite);
 		accUserGroupComposite.setLayout(new GridLayout(2, false));
@@ -253,7 +256,7 @@ public class AccountShell extends Dialog {
 			errorLabel.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
 			
 		//Account button bar	
-		Composite accBtnBar = new Composite(accComposite, SWT.NONE);
+		Composite accBtnBar = new Composite(accComposite, SWT.BORDER);
 		accBtnBar.setLayout(new FillLayout(SWT.HORIZONTAL));
 		GridData gd_accBtnBar = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
 		gd_accBtnBar.widthHint = 436;

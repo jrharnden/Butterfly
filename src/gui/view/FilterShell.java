@@ -86,7 +86,7 @@ public class FilterShell {
 		mainComposite.setLayout(new GridLayout(2, false));
 		
 		
-		Composite nameComposite = new Composite(mainComposite, SWT.NONE);
+		Composite nameComposite = new Composite(mainComposite, SWT.BORDER);
 		nameComposite.setLayout(new GridLayout(2, false));
 		GridData gd_nameComposite = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
 		gd_nameComposite.heightHint = 36;
@@ -100,7 +100,7 @@ public class FilterShell {
 		textName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		//Right side Button composite
-		btnComposite = new Composite(mainComposite, SWT.NONE);
+		btnComposite = new Composite(mainComposite, SWT.BORDER);
 		btnComposite.setLayout(new GridLayout(1, false));
 		GridData gd_btnComposite = new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 5);
 		gd_btnComposite.widthHint = 137;
@@ -153,14 +153,17 @@ public class FilterShell {
 		
 		//Regular Express text composite
 		Label lblRegularExpression = new Label(mainComposite, SWT.NONE);
+		GridData gd_lblRegularExpression = new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1);
+		gd_lblRegularExpression.heightHint = 16;
+		lblRegularExpression.setLayoutData(gd_lblRegularExpression);
 		lblRegularExpression.setBounds(0, 0, 55, 15);
 		lblRegularExpression.setText("  Regular Expression:");
 		
-		Composite regExpComposite = new Composite(mainComposite, SWT.NONE);
+		Composite regExpComposite = new Composite(mainComposite, SWT.BORDER);
 		regExpComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
-		GridData gd_regExpComposite = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
+		GridData gd_regExpComposite = new GridData(SWT.LEFT, SWT.BOTTOM, true, true, 1, 1);
 		gd_regExpComposite.widthHint = 627;
-		gd_regExpComposite.heightHint = 192;
+		gd_regExpComposite.heightHint = 190;
 		regExpComposite.setLayoutData(gd_regExpComposite);
 
 		Composite composite_1 = new Composite(regExpComposite, SWT.EMBEDDED);
@@ -183,9 +186,9 @@ public class FilterShell {
 		Label lblReplacement = new Label(mainComposite, SWT.NONE);
 		lblReplacement.setText("  Replacement String:");
 				
-		Composite repComposite = new Composite(mainComposite, SWT.NONE);
+		Composite repComposite = new Composite(mainComposite, SWT.BORDER);
 		repComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
-		GridData gd_repComposite = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
+		GridData gd_repComposite = new GridData(SWT.LEFT, SWT.CENTER, true, true, 1, 1);
 		gd_repComposite.widthHint = 627;
 		gd_repComposite.heightHint = 192;
 		repComposite.setLayoutData(gd_repComposite);
@@ -204,7 +207,7 @@ public class FilterShell {
 		gridBagLayout.columnWidths = new int[]{0, 0};
 		gridBagLayout.rowHeights = new int[]{0, 0};
 		gridBagLayout.columnWeights = new double[]{1.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{1.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		rootPane_1.getContentPane().setLayout(gridBagLayout);
 		
 			// Replacement String text area

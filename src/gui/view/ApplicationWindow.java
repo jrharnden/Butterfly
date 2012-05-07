@@ -271,7 +271,7 @@ public class ApplicationWindow{
 	 * Create contents of the window.
 	 * @wbp.parser.entryPoint
 	 */
-	protected void createContents() {
+	protected void createContents(){
 		shlButterfly = new Shell(SWT.ON_TOP | SWT.CLOSE | SWT.TITLE | SWT.MIN);
 		shlButterfly.setSize(800, 600);
 		shlButterfly.setText("Butterfly - Logged in as "+ account.getName());
@@ -314,7 +314,7 @@ public class ApplicationWindow{
 		lblConnectionList.setText("Connection List");
 		
 		//Tons of stuff for putting jtext areas in swt applications
-		Composite composite_4 = new Composite(composite_1, SWT.NONE);
+		Composite composite_4 = new Composite(composite_1, SWT.BORDER);
 		composite_4.setLayout(new FillLayout(SWT.HORIZONTAL));
 		GridData gd_composite_4 = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
 		gd_composite_4.heightHint = 431;
@@ -341,7 +341,7 @@ public class ApplicationWindow{
 			textAreaConnectionList = new JTextArea();
 			//rootPane_1.getContentPane().add(textAreaConnectionList);
 			textAreaConnectionList.setEditable(false);
-			textAreaConnectionList.setBorder(border);
+			//textAreaConnectionList.setBorder(true);
 			JScrollPane sbConnectionList = new JScrollPane(textAreaConnectionList);
 			rootPane_1.getContentPane().add(sbConnectionList);
 		
@@ -459,7 +459,7 @@ public class ApplicationWindow{
 		lblNewLabel_2.setText("Dialog");
 		
 		//Tons of stuff for the dialog text area
-		Composite composite_3 = new Composite(composite_2, SWT.EMBEDDED);
+		Composite composite_3 = new Composite(composite_2, SWT.BORDER | SWT.EMBEDDED);
 		composite_3.setLayout(new FillLayout(SWT.HORIZONTAL));
 		GridData gd_composite_3 = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
 		gd_composite_3.heightHint = 523;
@@ -482,7 +482,7 @@ public class ApplicationWindow{
 			textAreaDialog= new JTextArea();
 			textAreaDialog.setLineWrap(true);
 			//rootPane.getContentPane().add(textAreaDialog);
-			textAreaDialog.setBorder(border); //set border
+		//	textAreaDialog.setBorder(border); //set border
 			textAreaDialog.setEditable(false); // meddling in my text area
 			JScrollPane sbDialog = new JScrollPane(textAreaDialog);
 			rootPane.getContentPane().add(sbDialog);
@@ -498,9 +498,9 @@ public class ApplicationWindow{
 		formToolkit.paintBordersFor(filterComposite);
 		filterComposite.setLayout(new GridLayout(1, false));
 		
-		Composite filterComposite_1 = new Composite(filterComposite, SWT.NONE);
+		Composite filterComposite_1 = new Composite(filterComposite, SWT.BORDER);
 		GridData gd_filterComposite_1 = new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1);
-		gd_filterComposite_1.widthHint = 768;
+		gd_filterComposite_1.widthHint = 786;
 		gd_filterComposite_1.heightHint = 474;
 		filterComposite_1.setLayoutData(gd_filterComposite_1);
 		formToolkit.adapt(filterComposite_1);
@@ -596,10 +596,10 @@ public class ApplicationWindow{
 				filterInactiveList.add(fil.toString());
 			}
 		//Filter Button Bar
-		Composite filterBtnBarComposite = new Composite(filterComposite, SWT.NONE);
+		Composite filterBtnBarComposite = new Composite(filterComposite, SWT.BORDER);
 		filterBtnBarComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
 		GridData gd_filterBtnBarComposite = new GridData(SWT.LEFT, SWT.BOTTOM, true, true, 1, 1);
-		gd_filterBtnBarComposite.widthHint = 771;
+		gd_filterBtnBarComposite.widthHint = 792;
 		gd_filterBtnBarComposite.heightHint = 28;
 		filterBtnBarComposite.setLayoutData(gd_filterBtnBarComposite);
 		formToolkit.adapt(filterBtnBarComposite);
@@ -687,11 +687,11 @@ public class ApplicationWindow{
 		//-----------------------------------------------------------------
 		//Administrator Tab
 		//-----------------------------------------------------------------
-		if(account.getGroup()==Group.ADMINISTRATOR){
+		//if(account.getGroup()==Group.ADMINISTRATOR){
 		CTabItem tbtmAdministrator = new CTabItem(tabFolder, SWT.NONE);
 		tbtmAdministrator.setText("Administrator");
 		
-		Composite admComposite = new Composite(tabFolder, SWT.NONE);
+		Composite admComposite = new Composite(tabFolder, SWT.BORDER);
 		tbtmAdministrator.setControl(admComposite);
 		formToolkit.paintBordersFor(admComposite);
 		admComposite.setLayout(new GridLayout(3, false));
@@ -747,7 +747,7 @@ public class ApplicationWindow{
 			final List inactiveList = inactiveViewer.getList();
 							
 									// Administrator button bar
-									Composite admBtnBarComposite = formToolkit.createComposite(admComposite, SWT.NONE);
+									Composite admBtnBarComposite = formToolkit.createComposite(admComposite, SWT.BORDER);
 									GridData gd_admBtnBarComposite = new GridData(SWT.LEFT, SWT.TOP, true, false, 3, 1);
 									gd_admBtnBarComposite.widthHint = 779;
 									gd_admBtnBarComposite.heightHint = 28;
@@ -892,7 +892,7 @@ public class ApplicationWindow{
 						
 				}
 		
-		}
+	//	}
 		
 		//-----------------------------------------------------------------
 		//Main menu bar
