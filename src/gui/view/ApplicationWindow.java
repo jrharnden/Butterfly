@@ -401,6 +401,7 @@ public class ApplicationWindow{
 							btnListen.setText("Stop");
 						}
 						accounts.saveAccounts();
+						accounts.loadAccounts();
 					}
 				}
 			});
@@ -781,7 +782,29 @@ public class ApplicationWindow{
 												case SWT.Selection:
 													Shell accShell = new Shell(display);
 													accountShell(accShell);
+													Accounts acc = new Accounts();
+													acc.loadAccounts();
+													AccountList.removeAll();
 													
+													AccountList.add("////////////////////Administrator////////////////////");
+													acc.loadAccounts(); 
+													for(Account a: acc){
+														if(a.getGroup()==Group.ADMINISTRATOR)
+															AccountList.add("\t"+a.getName());
+														
+													}
+													
+													AccountList.add("////////////////////Power////////////////////////");
+													for(Account a: acc){
+														if(a.getGroup()==Group.POWER)
+															AccountList.add("\t"+a.getName());
+													}
+													AccountList.add("////////////////////Standard/////////////////////");
+													for(Account a: acc){
+														if(a.getGroup()==Group.STANDARD)
+																AccountList.add("\t"+a.getName());
+															
+													}
 												}
 											}
 										}
@@ -823,6 +846,27 @@ public class ApplicationWindow{
 														}
 															//TODO If a user group is selected
 															//editUserGroup(group);
+														AccountList.removeAll();
+														
+														AccountList.add("////////////////////Administrator////////////////////");
+														acc.loadAccounts(); 
+														for(Account a1: acc){
+															if(a1.getGroup()==Group.ADMINISTRATOR)
+																AccountList.add("\t"+a1.getName());
+															
+														}
+														
+														AccountList.add("////////////////////Power////////////////////////");
+														for(Account a1: acc){
+															if(a1.getGroup()==Group.POWER)
+																AccountList.add("\t"+a1.getName());
+														}
+														AccountList.add("////////////////////Standard/////////////////////");
+														for(Account a1: acc){
+															if(a1.getGroup()==Group.STANDARD)
+																	AccountList.add("\t"+a1.getName());
+																
+														}
 													}catch(ArrayIndexOutOfBoundsException ex){
 														
 													}
@@ -940,10 +984,8 @@ public class ApplicationWindow{
 			mntmListen.addListener(SWT.Selection, new Listener(){
 				public void handleEvent(Event e){
 					if (mntmListen.getSelection()) {
-						//TODO turn on the proxy
 						System.out.println("Checked");
 					} else {
-						//TODO turn off the proxy
 						System.out.println("Uncheck");
 					}
 				}
@@ -1074,6 +1116,7 @@ public class ApplicationWindow{
 								ProxyLog.setLogEnabled(mntmEnableLogging.getSelection());
 								accounts.setLogEnabled(mntmEnableLogging.getSelection());
 								accounts.saveAccounts();
+								accounts.loadAccounts();
 							}
 						});
 						
@@ -1099,6 +1142,7 @@ public class ApplicationWindow{
 									accounts.setDialogEnabled(false);
 								}
 								accounts.saveAccounts();
+								accounts.loadAccounts();
 							}
 						});
 						
@@ -1122,6 +1166,7 @@ public class ApplicationWindow{
 									accounts.setConnectionListEnabled(false);
 								}
 								accounts.saveAccounts();
+								accounts.loadAccounts();
 							}
 						});
 					}
@@ -1145,6 +1190,7 @@ public class ApplicationWindow{
 			String filterName = fil[0];
 			account.removeFilter(Integer.parseInt(filterName));
 			accounts.saveAccounts();
+			accounts.loadAccounts();
 			inactiveFilters.removeAll();
 			activeFilters.removeAll();
 			java.util.List<Filter> fml = account.getInactiveFilters();
@@ -1170,6 +1216,7 @@ public class ApplicationWindow{
 			Filter removedFilter = account.removeInactiveFilter(Integer.parseInt(filterName));
 			account.addFilter(removedFilter);
 			accounts.saveAccounts();
+			accounts.loadAccounts();
 			il.remove(filter);
 			al.add(filter);
 		}catch(ArrayIndexOutOfBoundsException e){
@@ -1189,6 +1236,7 @@ public class ApplicationWindow{
 				removedFilter = account.removeDefaultFilter(Integer.parseInt(filterName));
 			account.addInactiveFilter(removedFilter);
 			accounts.saveAccounts();
+			accounts.loadAccounts();
 			al.remove(filter);
 			il.add(filter);
 		}catch(ArrayIndexOutOfBoundsException e){
