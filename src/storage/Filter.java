@@ -13,7 +13,7 @@ public class Filter implements Serializable {
 	private String regex, name, replaceWith;
 	private boolean header;
 
-	public Filter(String name, String regex, String replaceWith, Boolean header) throws PatternSyntaxException {
+	public Filter(String name, String regex, String replaceWith, boolean header) throws PatternSyntaxException {
 		if(header) {
 			Pattern.compile(ProxyUtils.substringAfter(regex, ":"));
 		}

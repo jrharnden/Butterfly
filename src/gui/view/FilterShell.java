@@ -38,7 +38,7 @@ public class FilterShell {
 	private Filter editFilter;
 	private Account account;
 	private Accounts accounts;
-	private Boolean header = false;
+	private boolean header = false;
 	//TODO implement method to set the text of the text area upon editing a filter
 	//TODO imp1ement method to save the text of the text area to a filter 
 	
