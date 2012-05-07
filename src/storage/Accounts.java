@@ -115,6 +115,9 @@ public class Accounts implements Serializable,Iterable<Account> {
 		}
 		return null;
 	}
+	public List<Account> getAccounts() {
+		return accounts;
+	}
 	/**
 	 * Hashes a String password
 	 * @param password text password to be hashed

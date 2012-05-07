@@ -177,7 +177,7 @@ public class Account implements Serializable {
 		if(filter == null) throw new IllegalArgumentException();
 		boolean contain = false;
 		for(Filter f: defaultFilters){
-			if(f.toString().equals(filter.toString())) contain = true;
+			if(f.getId() == filter.getId()) contain = true;
 		}
 		if (!contain)
 			defaultFilters.add(new Filter(filter));

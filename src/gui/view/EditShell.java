@@ -132,7 +132,7 @@ public class EditShell {
 		String out  = "";
 		//If the window was opened for user account editing
 		if (opened_user_account){
-			out = "Default Filters for " + edit_account.getName();
+			out = "Filters for " + edit_account.getName();
 		
 		}
 		else if(opened_user_group){out = "Default Filters";}
@@ -251,14 +251,26 @@ public class EditShell {
 				
 		}
 		if(opened_user_account) {
-			for(Filter f: edit_account.getAllFilters()){
-				if (!account.getDefaultFilters().contains(f)) {
+			for(Filter f: account.getAllFilters()){
+				boolean identical = false;
+				for (Filter df: edit_account.getDefaultFilters()) {
+					if (f.getId() == df.getId()) {
+						identical=true;;
+					}
+				}
+				if (!identical) {
 					filterActiveList_1.add(f.toString());
 				}
 			}
 		} else if (opened_user_group) {
 			for(Filter f: account.getAllFilters()){
-				if (!accounts.getDefaultFilters(edit_group).contains(f)) {
+				boolean identical = false;
+				for (Filter df: accounts.getDefaultFilters(edit_group)) {
+					if (f.getId() == df.getId()) {
+						identical=true;;
+					}
+				}
+				if (!identical) {
 					filterActiveList_1.add(f.toString());
 				}
 			}
@@ -289,6 +301,9 @@ public class EditShell {
 			Button btnAdd = new Button(filterBtnComposite_CENTER, SWT.NONE);
 			formToolkit.adapt(btnAdd, true, true);
 			btnAdd.setText("<");
+			if (opened_user_account) {
+				btnAdd.setEnabled(false);
+			}
 			
 			
 			//Remove items from active to inactive > / move from "File filters" to "Filters to be imported"
@@ -312,7 +327,7 @@ public class EditShell {
 			final ListViewer filterInactiveListViewer = new ListViewer(filterInactiveComposite, SWT.BORDER | SWT.V_SCROLL);
 			List inactiveList = filterInactiveListViewer.getList();
 			if(opened_user_account){
-				for(Filter f: edit_account.getDefaultFilters())
+				for(Filter f: edit_account.getAllFilters())
 					inactiveList.add(f.toString());
 			} else if (opened_user_group) {
 				for(Filter f: accounts.getDefaultFilters(edit_group)) {
@@ -533,13 +548,40 @@ public class EditShell {
 		
 		
 		//REMOVE BUTTON FOR editing user groups
-		// Zong 
-		Button btnREmove = new Button(filterBtnComposite_SOUTH, SWT.NONE);
-		GridData gd_btnREmove = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
-		gd_btnREmove.widthHint = 77;
-		btnREmove.setLayoutData(gd_btnREmove);
-		formToolkit.adapt(btnREmove, true, true);
-		btnREmove.setText("Remove");
+		if (opened_user_account) {
+			Button btnREmove = new Button(filterBtnComposite_SOUTH, SWT.NONE);
+			GridData gd_btnREmove = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
+			gd_btnREmove.widthHint = 77;
+			btnREmove.setLayoutData(gd_btnREmove);
+			formToolkit.adapt(btnREmove, true, true);
+			btnREmove.setText("Remove");
+			btnREmove.addListener(SWT.Selection, new Listener(){
+				@Override
+				public void handleEvent(Event e) {
+					if (e.type == SWT.Selection) {
+						//TODO implement remove
+					    List al = filterActiveListViewer.getList();
+						List il = filterInactiveListViewer.getList();
+						try{
+							String filter = il.getSelection()[0];
+							String[] fil = filter.split(":");
+							if(opened_user_account){
+								accounts.getAccount(edit_account).removeFilter(Integer.parseInt(fil[0]));
+								Filter f = accounts.getAccount(edit_account).removeDefaultFilter(Integer.parseInt(fil[0]));
+								if (f!=null) {
+									al.add(filter);
+								}
+							}
+							
+							il.remove(filter);
+							if(!opened_user_account)
+								al.add(filter);
+						}catch(ArrayIndexOutOfBoundsException err){
+						}
+					}
+				}
+			});
+		}
 				
 			
 					
@@ -664,7 +706,11 @@ public class EditShell {
 									String filterName = f.toString();
 									for(int i = 0; i < filtersStrings.length; ++i){
 										if(filterName.equals(filtersStrings[i])){
-											accounts.getAccount(edit_account).addDefaultFilter(f);
+											if (edit_account.getGroup()==Group.POWER) {
+												accounts.getAccount(edit_account).addFilter(f.makeCopyWithNewId());
+											} else {
+												accounts.getAccount(edit_account).addDefaultFilter(f);
+											}
 										}
 									}
 								}
